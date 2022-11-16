@@ -12,9 +12,9 @@ export default function DescriptionSection() {
 
 					<div className="flex flex-wrap justify-around mx-4">
 						<div id="Message" className="w-full text-left mx-8 md:w-2/5 md:m-4">
-							<h3 className="text-3xl text-gray-800 font-bold leading-none mb-3"> Lorem ipsum dolor sit amet </h3>
+							<h3 className="text-3xl text-gray-800 font-bold leading-none mb-3"> Save For Your Future </h3>
 							<p className="text-gray-600 mb-8">
-									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at ipsum eu nunc commodo posuere et sit amet ligula.
+									Check your expenses, find out where you can start saving and start keeping a little treasure to treat yourself to new experiences.
 							</p>
 						</div>
 
@@ -25,8 +25,8 @@ export default function DescriptionSection() {
 
 					<div className="flex flex-wrap justify-around flex-row-reverse mx-4">
 						<div id="Message" className="w-full text-left mx-8 md:w-2/5 md:m-4">
-							<h3 className="text-3xl text-gray-800 font-bold leading-none mb-3"> Lorem ipsum dolor sit amet </h3>
-							<p className="text-gray-600 mb-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at ipsum eu nunc commodo posuere et sit amet ligula.</p>
+							<h3 className="text-3xl text-gray-800 font-bold leading-none mb-3"> Choose Based On Personalized Data </h3>
+							<p className="text-gray-600 mb-8">Keep track of all your transactions with our intuitive and easy to use Dashboard Interface</p>
 						</div>
 
 						<div id="Image" className="w-full p-6 md:w-1/2">

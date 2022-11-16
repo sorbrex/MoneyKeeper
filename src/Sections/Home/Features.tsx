@@ -1,6 +1,8 @@
 import React from "react"
 import Title from "@UI/Typography/Title"
-import Categories from "@Assets/Categorie.png"
+import Categories from "@Assets/Categories.png"
+import Charts from "@Assets/Charts.png"
+import History from "@Assets/History.png"
 import Card from "@/UI/Card"
 
 export default function Features() {
@@ -14,25 +16,19 @@ export default function Features() {
 
 					<div className="w-full md:w-1/3 p-6 flex flex-row justify-center flex-wrap flex-grow flex-shrink">
 						<Card 
-							image={Categories} 
-							title={"Sasageyo"} 
-							body={"Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order."} 
-							buttonText={"Explore"}
-							buttonRef={"/features"}
+							image={Categories}
+							title={"Categories"}
+							body={"Observe all the transactions divided by categories, so as to understand which ones are the ones where the most money is spent."}
 						/>
 						<Card 
-							image={Categories} 
-							title={"Sasageyo"} 
-							body={"Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order."} 
-							buttonText={"Explore"}
-							buttonRef={"/features"}
+							image={Charts}
+							title={"Charts"}
+							body={"Use our charts to better compare the types of transitions and immediately highlight the most expensive ones."}
 						/>
 						<Card 
-							image={Categories} 
-							title={"Sasageyo"} 
-							body={"Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order."} 
-							buttonText={"Explore"}
-							buttonRef={"/features"}
+							image={History}
+							title={"History"}
+							body={"Always keep track of your transactions and view the history to securely remember every incoming or outgoing amount."}
 						/>
 					</div>
 				</div>

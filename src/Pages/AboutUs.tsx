@@ -1,10 +1,10 @@
 import React from "react"
 import CenteredContainer from "@/Layouts/CenteredContainer"
 
-export default function SignUp() {
+export default function AboutUs() {
 	return (
 		<CenteredContainer>
-			<h1>SignUp</h1>
+			<h1>AboutUs</h1>
 		</CenteredContainer>
 	)
 }
