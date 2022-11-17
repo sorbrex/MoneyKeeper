@@ -17,7 +17,7 @@ export default function Contact() {
 
 						<h1 className="text-4xl font-medium">Contact Us</h1>
 						<p className="mt-3">Your Opinion is Important to Us.</p>
-
+						{/**TODO: MAKE A VALIDATION AND PUT HERE THE LINK TO THE REAL API */}
 						<form action="sendToMyApi" className="mt-10">
 					
 							<div className="grid gap-6 sm:grid-cols-2">
