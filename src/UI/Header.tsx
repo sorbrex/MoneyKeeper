@@ -1,6 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { BiArrowBack, BiLogIn } from "react-icons/bi"
+import { AiOutlineArrowUp, AiOutlineLogin } from "react-icons/ai"
 import Logo from "@Assets/Logo_White.png"
 import ButtonPrimary from "@/UI/Buttons/ButtonPrimary"
 import ButtonLink from "@/UI/Buttons/ButtonLink"
@@ -15,12 +15,12 @@ export default function Header() {
 				</div>
 
 				<div id="MobileLogin" className="block sm:hidden">
-					<Link className="py-2 px-4 m-1 flex items-start" to={"/login"}><BiLogIn size="2em"/></Link>
+					<Link className="py-2 px-4 m-1 flex items-start" to={"/login"}><AiOutlineLogin size="2em"/></Link>
 				</div>
 			
 				<div id="UserInteraction" className="w-full hidden pt-6 sm:flex sm:items-center sm:w-auto sm:pt-0">
-					<ButtonLink content="Log In" pageRef="/login" icon={<BiArrowBack className='mb-1 ml-1 rotate-135'/>} />
-					<ButtonPrimary content="Get Started" pageRef="/signup" icon={<BiArrowBack className='mb-1 ml-1 rotate-135'/>} />
+					<ButtonLink content="Log In" pageRef="/login" icon={<AiOutlineArrowUp className='mb-1 ml-1 rotate-45'/>} />
+					<ButtonPrimary content="Get Started" pageRef="/signup" icon={<AiOutlineArrowUp className='mb-1 ml-1 rotate-45'/>} />
 				</div>
 			</nav>
 		</header>

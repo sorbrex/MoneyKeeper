@@ -1,6 +1,6 @@
 import React from "react"
 import Header from "@UI/Header"
-import Description from "@/Sections/Home/Description"
+import Description from "@/Sections/Home/Home_Description"
 import Features from "@Sections/Home/Features"
 import Home from "@Sections/Home/Home"
 import Footer from "@/UI/Footer"
