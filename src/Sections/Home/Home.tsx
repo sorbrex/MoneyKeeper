@@ -18,11 +18,11 @@ export default function HomeSection() {
 					<p className="leading-normal text-xl mb-6 sm:text-sm lg:text-xl xl:text-2xl">
 						Make better financial decisions based on personalized data.
 					</p>
-					<ButtonPrimary content="Get Started" icon={<BiArrowBack className='mb-1 ml-1 rotate-135'/>} pageRef={"/register"} />
+					<ButtonPrimary content="Get Started" icon={<BiArrowBack className='mb-1 ml-1 rotate-135'/>} pageRef={"/signup"} />
 				</div>
 				<img alt="Credit Card" src={Card} className="sm:w-4/5 sm:h-4/5 md:h-auto md:w-auto"/>
 			</div>
-			<img id="Home_Wawe" className="" src={Wave} />
+			<img id="Home_Wawe" src={Wave} />
 		</>
 	)
 }

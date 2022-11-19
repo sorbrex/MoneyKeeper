@@ -19,8 +19,8 @@ export default function Header() {
 				</div>
 			
 				<div id="UserInteraction" className="w-full hidden pt-6 sm:flex sm:items-center sm:w-auto sm:pt-0">
-					<ButtonLink content="Log In" icon={<BiArrowBack className='mb-1 ml-1 rotate-135'/>} />
-					<ButtonPrimary content="Get Started" icon={<BiArrowBack className='mb-1 ml-1 rotate-135'/>} />
+					<ButtonLink content="Log In" pageRef="/login" icon={<BiArrowBack className='mb-1 ml-1 rotate-135'/>} />
+					<ButtonPrimary content="Get Started" pageRef="/signup" icon={<BiArrowBack className='mb-1 ml-1 rotate-135'/>} />
 				</div>
 			</nav>
 		</header>
