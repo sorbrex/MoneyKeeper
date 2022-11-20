@@ -10,8 +10,8 @@ export default function ResponsiveLine(props: ResponsiveLineProps) {
 					<p className="text-gray-600 mb-8">{props.text}</p>
 				</div>
 
-				<div id="Line_Image" className="w-full p-6 md:w-1/2">
-					<img src={props.imgSource} className="h-2/3" alt={props.imgSource.split("/").slice(-1)[0]} />
+				<div id="Line_Image" className="max-w-full p-6 md:w-1/2">
+					<img src={props.imgSource} alt={props.imgSource.split("/").slice(-1)[0]} />
 				</div>
 				
 			</div>

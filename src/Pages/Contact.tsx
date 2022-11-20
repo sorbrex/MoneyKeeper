@@ -8,7 +8,7 @@ import Logo from "@Assets/Logo_Black.png"
 export default function Contact() {
 	return (
 		<>
-			<section id="Contact_Form" className="h-screen flex flex-col justify-end">
+			<section id="Contact_Form" className="h-screen flex flex-col">
 				<CenteredContainer>
 					<div className="mx-auto w-full max-w-lg">
 

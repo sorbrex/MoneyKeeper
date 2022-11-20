@@ -9,7 +9,7 @@ import Container from "@/Layouts/Container"
 export default function About() {
 	return (
 		<>
-			<section id="About_Page"  className="h-screen">
+			<section id="About_Page" className="h-screen">
 				
 				<Container>
 					<div id="Profile" className="m-6">
@@ -47,11 +47,11 @@ export default function About() {
 					<div id="Social" className={"flex flex-wrap justify-around mx-4 my-6 flex-col"}>
 						<h3 className="text-3xl text-gray-800 font-bold leading-none mb-3">More</h3>
 						<div className="flex flex-wrap justify-around flex-row mx-4 md:flex-row">
-							<a href="https://github.com/sorbrex" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineGithub/></a>
-							<a href="https://www.linkedin.com/in/sorbellonando/" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineLinkedin/></a>
+							<a href="https://github.com/sorbrex" target="_blank" rel="noopener noreferrer" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineGithub/></a>
+							<a href="https://www.linkedin.com/in/sorbellonando/" target="_blank" rel="noopener noreferrer" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineLinkedin/></a>
 							{/* <a href="" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineGitlab/></a> */}
-							<a href="https://nandosorbello.altervista.org/" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineGlobal/></a>
-							<a href="https://www.instagram.com/sorbrex.ns/" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineInstagram/></a>
+							<a href="https://nandosorbello.altervista.org/" target="_blank" rel="noopener noreferrer" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineGlobal/></a>
+							<a href="https://www.instagram.com/sorbrex.ns/" target="_blank" rel="noopener noreferrer" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineInstagram/></a>
 						</div>
 					</div>
 				</Container>
