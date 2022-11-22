@@ -1,17 +1,9 @@
 import React from "react"
 import { Formik, Field, Form, ErrorMessage } from "formik"
 import * as Yup from "yup"
-import Alert from "@/UI/Alert"
+import { ContactFormValues } from "@/interfaces"
 
-export default function ContactForm() {
-	const [alertShown, setalertShown] = React.useState(false)
-
-	function handleFormSubmit (values: FormValues) {
-		setTimeout(() => {
-			setalertShown(false)
-		}, 2500)
-		//Axios.post("https://api.example.com", values) Server Side there will be an endpoint that use Nodemailer to send the email
-	}
+export default function ContactForm( props: { handleFormSubmit: (values: ContactFormValues) => void } ) {
 
 	return (
 		<>
@@ -36,10 +28,9 @@ export default function ContactForm() {
 						.required("Required"),
 				})}
 				onSubmit={(values, action) => {
-					handleFormSubmit(values)
+					props.handleFormSubmit(values)
 					action.setSubmitting(false)
 					action.resetForm()
-					setalertShown(true)
 				}}
 			>
 
@@ -51,19 +42,19 @@ export default function ContactForm() {
 							In this case, i put peer on input, and on input change state i change class on label
 						*/}
 
-						<div id="Form_Element_Name" className="relative z-0">
+						<div id="Contact_Element_Name" className="relative z-0">
 							<Field name="name" type="text" placeholder=" " className="peer block w-full appearance-none border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:outline-none focus:ring-0" />
 							<label className="text-[#9CA3AF] absolute top-0 left-0 -z-10 origin-[0] transform text-lg duration-300 -translate-y-6 scale-75 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:text-pureblack peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75">Your Name</label>
 							<ErrorMessage name="name" />
 						</div>
 
-						<div id="Form_Element_Email" className="relative z-0">
+						<div id="Contact_Element_Email" className="relative z-0">
 							<Field name="email" type="text" placeholder=" " className="peer block w-full appearance-none border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:outline-none focus:ring-0" />
 							<label className=" text-[#9CA3AF] absolute top-0 left-0 -z-10 origin-[0] transform text-lg duration-300 -translate-y-6 scale-75 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:text-pureblack peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75">Your Email</label>
 							<ErrorMessage name="email" />
 						</div>
 
-						<div id="Form_Element_TextArea" className="relative z-0 col-span-2 m-1">
+						<div id="Contact_Element_TextArea" className="relative z-0 col-span-2 m-1">
 							<Field name="message" as="textarea" rows={5} placeholder=" " className="form-textarea peer block w-full appearance-none border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:outline-none focus:ring-0" style={{resize:"none"}}/>
 							<label className=" text-[#9CA3AF] absolute top-0 left-0 -z-10 origin-[0] transform text-lg duration-300 -translate-y-6 scale-75 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:text-pureblack peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 ">Your Message</label>
 							<ErrorMessage name="message" />
@@ -74,18 +65,7 @@ export default function ContactForm() {
 				</Form>
 
 			</Formik>
-
-			{/*Alert For All Good*/}
-			<Alert visible={alertShown} type="info" message="Message Sent Successfully !" />
 		</>
-		
 
 	)
-}
-
-
-type FormValues = {
-	name: string
-	email: string
-	message: string
 }

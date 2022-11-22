@@ -1,4 +1,5 @@
 import React from "react"
+import type { AlertType } from "@/interfaces"
 
 export default function Alert(props: AlertProps) {
 	const getAlertColor = () => {
@@ -45,7 +46,7 @@ export default function Alert(props: AlertProps) {
 type AlertProps = {
   visible: boolean
   message: string
-  type: "success" | "error" | "warning" | "info"
+  type: AlertType
   dismissable?: boolean
   onDismiss?: () => void
 }

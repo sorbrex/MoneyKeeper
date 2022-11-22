@@ -7,7 +7,7 @@ import {
 import "./index.css"
 import App from "./App"
 import ErrorPage from "@Pages/Base/ErrorPage"
-import LoginPage from "@Pages/App/LogIn"
+import Login from "@Pages/App/LogIn"
 import SignUp from "@Pages/App/SignUp"
 import Contact from "@Pages/Base/Contact"
 import About from "@/Pages/Base/About"
@@ -29,7 +29,7 @@ const router = createBrowserRouter([
 	},
 	{
 		path: "/login",
-		element: <LoginPage />,
+		element: <Login />,
 		errorElement: <ErrorPage />
 	},
 	{
