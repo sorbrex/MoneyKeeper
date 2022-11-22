@@ -15,14 +15,6 @@ export default function SignUp() {
 	const navigate = useNavigate()
 
 	function handleFormSubmit (values: SignUpFormValues) {
-		//DEBUG:
-		setAlertType("info")
-		setAlertMessage("Sign Up Successfully! Redirect... ")
-		setAlertShown(true)
-		setTimeout(() => {
-			setAlertShown(false)
-			navigate("/redirect")
-		}, 2500)
 		/*
 		Axios.post("https://api.example.com", values) Server Side Will Handle the Sign Up. Should Crypt the Password before send (md5 can be good)
 		.then(() => {
