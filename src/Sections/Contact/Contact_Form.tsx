@@ -16,7 +16,7 @@ export default function Contact_Form() {
 		//Server Side there will be an endpoint that use Nodemailer to send the email
 		//TODO: Set Right URL
 		setLoading(true)
-		Axios.post("https://asdasdasdasdasdasdsdasdasdasda.org/anything", values)
+		Axios.post("https://httpbin.org/anything", values)
 			.then(() => {
 				setLoading(false)
 				setAlertType("info")

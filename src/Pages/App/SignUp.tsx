@@ -4,10 +4,7 @@ import Form from "@/Sections/SignUp/SignUp_Form"
 import Footer from "@/UI/Footer"
 import Logo from "@Assets/Logo_Black.png"
 
-
-
 export default function SignUp() {
-
 	return (
 		<>
 			<section id="SignUp_Page" className="h-screen flex flex-col">

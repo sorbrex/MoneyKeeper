@@ -23,7 +23,7 @@ export default function SignUp_Form() {
 		//TODO: Set Right URL
 		values.password = sha256(values.password).toString()
 		setLoading(true)
-		Axios.post("https://api.example.com", values)
+		Axios.post("https://httpbin.org/anything", values)
 			.then(() => {
 				setLoading(false)
 				setAlertType("info")
