@@ -1,7 +1,7 @@
 import React from "react"
 import Card from "@Assets/Card.png"
 import Wave from "@Assets/WaveDark.png"
-import { BiArrowBack } from "react-icons/bi"
+import { AiOutlineArrowUp } from "react-icons/ai"
 import ButtonPrimary from "@/UI/Buttons/ButtonPrimary"
 
 export default function HomeSection() {
@@ -18,7 +18,7 @@ export default function HomeSection() {
 					<p className="leading-normal text-xl mb-6 sm:text-sm lg:text-xl xl:text-2xl">
 						Make better financial decisions based on personalized data.
 					</p>
-					<ButtonPrimary content="Get Started" icon={<BiArrowBack className='mb-1 ml-1 rotate-135'/>} pageRef={"/signup"} />
+					<ButtonPrimary content="Get Started" icon={<AiOutlineArrowUp className='mb-1 ml-1 rotate-45'/>} pageRef={"/signup"} />
 				</div>
 				<img alt="Credit Card" src={Card} className="mt-10 sm:w-4/5 sm:h-4/5 md:h-auto md:w-auto"/>
 			</div>

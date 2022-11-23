@@ -1,9 +1,49 @@
 import React from "react"
 import { Formik, Field, Form, ErrorMessage } from "formik"
 import * as Yup from "yup"
-import { SignUpFormValues } from "@/interfaces"
+import SubmitButton from "@/UI/Buttons/SubmitButton"
+import { AlertType, SignUpFormValues } from "@/interfaces"
+import { useNavigate } from "react-router-dom"
+import Axios from "axios"
+import sha256 from "crypto-js/sha256"
+import Alert from "@/UI/Alert"
 
-export default function Login( props: { handleFormSubmit: (values: SignUpFormValues) => void } ) {
+
+export default function SignUp_Form() {
+	const [alertShown, setAlertShown] = React.useState(false)
+	const [alertType, setAlertType] = React.useState<AlertType>("info")
+	const [alertMessage, setAlertMessage] = React.useState("None")
+	const [loading, setLoading] = React.useState(false)
+	const navigate = useNavigate()
+
+	function handleFormSubmit (values: SignUpFormValues) {
+		//Server Side Will Handle the Sign Up. 
+		//We Crypt the Password before sending it to the server, so it's not sent in plain text.
+		//When we will do the login, we will encode the given password and compare it to the one in the database.
+		//TODO: Set Right URL
+		values.password = sha256(values.password).toString()
+		setLoading(true)
+		Axios.post("https://api.example.com", values)
+			.then(() => {
+				setLoading(false)
+				setAlertType("info")
+				setAlertMessage("Sign Up Successfully! Redirect... ")
+				setAlertShown(true)
+				setTimeout(() => {
+					setAlertShown(false)
+					navigate("/redirect")
+				}, 1500)
+			})
+			.catch(() => {
+				setLoading(false)
+				setAlertType("error")
+				setAlertMessage("Sign Up Failed!")
+				setAlertShown(true)
+				setTimeout(() => {
+					setAlertShown(false)
+				}, 2500)
+			})
+	}
 
 	return (
 		<>
@@ -47,7 +87,7 @@ export default function Login( props: { handleFormSubmit: (values: SignUpFormVal
 
 				})}
 				onSubmit={(values, action) => {
-					props.handleFormSubmit(values)
+					handleFormSubmit(values)
 					action.setSubmitting(false)
 				}}
 			>
@@ -91,10 +131,14 @@ export default function Login( props: { handleFormSubmit: (values: SignUpFormVal
 						</div>
 					</div>
 
-					<button type="submit" className="mt-5 rounded-md bg-black px-10 py-2 text-white">Register</button>
+					<SubmitButton title={"Register"} loading={loading} />
 				</Form>
 
 			</Formik>
+
+
+			<Alert visible={alertShown} type={alertType} message={alertMessage}/>
+
 		</>
 
 	)

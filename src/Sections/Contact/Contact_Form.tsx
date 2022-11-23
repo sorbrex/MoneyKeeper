@@ -1,9 +1,41 @@
 import React from "react"
 import { Formik, Field, Form, ErrorMessage } from "formik"
 import * as Yup from "yup"
-import { ContactFormValues } from "@/interfaces"
+import { AlertType, ContactFormValues } from "@/interfaces"
+import Axios from "axios"
+import Alert from "@/UI/Alert"
+import SubmitButton from "@/UI/Buttons/SubmitButton"
 
-export default function ContactForm( props: { handleFormSubmit: (values: ContactFormValues) => void } ) {
+export default function Contact_Form() {
+	const [alertShown, setAlertShown] = React.useState(false)
+	const [alertType, setAlertType] = React.useState<AlertType>("info")
+	const [alertMessage, setAlertMessage] = React.useState("None")
+	const [loading, setLoading] = React.useState(false)
+
+	function handleFormSubmit (values: ContactFormValues) {
+		//Server Side there will be an endpoint that use Nodemailer to send the email
+		//TODO: Set Right URL
+		setLoading(true)
+		Axios.post("https://asdasdasdasdasdasdsdasdasdasda.org/anything", values)
+			.then(() => {
+				setLoading(false)
+				setAlertType("info")
+				setAlertMessage("Message Sent Successfully!")
+				setAlertShown(true)
+				setTimeout(() => {
+					setAlertShown(false)
+				}, 2500)
+			})
+			.catch(() => {
+				setLoading(false)
+				setAlertType("error")
+				setAlertMessage("Message Sent Failed!")
+				setAlertShown(true)
+				setTimeout(() => {
+					setAlertShown(false)
+				}, 2500)
+			})
+	}
 
 	return (
 		<>
@@ -28,7 +60,7 @@ export default function ContactForm( props: { handleFormSubmit: (values: Contact
 						.required("Required"),
 				})}
 				onSubmit={(values, action) => {
-					props.handleFormSubmit(values)
+					handleFormSubmit(values)
 					action.setSubmitting(false)
 					action.resetForm()
 				}}
@@ -37,7 +69,7 @@ export default function ContactForm( props: { handleFormSubmit: (values: Contact
 				{/* Actual Formik Form Structure */}
 				<Form className="mt-10 p-6">
 					<div id="GridLay" className="grid gap-6 sm:grid-cols-2">
-						{/* 
+						{/*
 							The Peer Class is used to modify sibilings element. 
 							In this case, i put peer on input, and on input change state i change class on label
 						*/}
@@ -61,10 +93,12 @@ export default function ContactForm( props: { handleFormSubmit: (values: Contact
 						</div>
 					</div>
 
-					<button type="submit" className="mt-5 rounded-md bg-black px-10 py-2 text-white">Send Message</button>
+					<SubmitButton title={"Send Message"} loading={loading} />
 				</Form>
-
 			</Formik>
+
+			<Alert visible={alertShown} type={alertType} message={alertMessage} />
+
 		</>
 
 	)
