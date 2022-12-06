@@ -13,10 +13,10 @@ export default function Contact_Form() {
 	const [loading, setLoading] = React.useState(false)
 
 	function handleFormSubmit (values: ContactFormValues) {
-		//Server Side there will be an endpoint that use Nodemailer to send the email
-		//TODO: Set Right URL
+		const baseUrl = process.env.BASE_URL || "https://localhost:3000"
+
 		setLoading(true)
-		Axios.post("https://httpbin.org/anything", values)
+		Axios.post(`${baseUrl}/contact/send` || "", values)
 			.then(() => {
 				setLoading(false)
 				setAlertType("info")
@@ -26,10 +26,10 @@ export default function Contact_Form() {
 					setAlertShown(false)
 				}, 2500)
 			})
-			.catch(() => {
+			.catch(error => {
 				setLoading(false)
 				setAlertType("error")
-				setAlertMessage("Message Sent Failed!")
+				setAlertMessage("Message Sent Failed! " + error.message)
 				setAlertShown(true)
 				setTimeout(() => {
 					setAlertShown(false)

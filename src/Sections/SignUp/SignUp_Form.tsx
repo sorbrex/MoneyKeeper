@@ -17,13 +17,11 @@ export default function SignUp_Form() {
 	const navigate = useNavigate()
 
 	function handleFormSubmit (values: SignUpFormValues) {
-		//Server Side Will Handle the Sign Up. 
-		//We Crypt the Password before sending it to the server, so it's not sent in plain text.
-		//When we will do the login, we will encode the given password and compare it to the one in the database.
-		//TODO: Set Right URL
+		const baseUrl = process.env.BASE_URL || "https://localhost:3000"
+
 		values.password = sha256(values.password).toString()
 		setLoading(true)
-		Axios.post("https://httpbin.org/anything", values)
+		Axios.post(`${baseUrl}/user/signup` || "", values)
 			.then(() => {
 				setLoading(false)
 				setAlertType("info")
@@ -34,10 +32,10 @@ export default function SignUp_Form() {
 					navigate("/redirect")
 				}, 1500)
 			})
-			.catch(() => {
+			.catch((error) => {
 				setLoading(false)
 				setAlertType("error")
-				setAlertMessage("Sign Up Failed!")
+				setAlertMessage("Sign Up Failed! " + error.message)
 				setAlertShown(true)
 				setTimeout(() => {
 					setAlertShown(false)
@@ -131,7 +129,7 @@ export default function SignUp_Form() {
 						</div>
 					</div>
 
-					<SubmitButton title={"Register"} loading={loading} />
+					<SubmitButton title={"Register"} loading={loading}/>
 				</Form>
 
 			</Formik>
