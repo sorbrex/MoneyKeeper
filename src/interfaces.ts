@@ -13,3 +13,8 @@ export type SignUpFormValues = {
   password: string
   password_confirmation: string
 }
+
+export type LogInFormValues = {
+  email: string
+  password: string
+}

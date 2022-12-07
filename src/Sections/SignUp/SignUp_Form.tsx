@@ -17,7 +17,7 @@ export default function SignUp_Form() {
 	const navigate = useNavigate()
 
 	function handleFormSubmit (values: SignUpFormValues) {
-		const baseUrl = process.env.BASE_URL || "https://localhost:3000"
+		const baseUrl = "https://localhost:3000"
 
 		values.password = sha256(values.password).toString()
 		setLoading(true)

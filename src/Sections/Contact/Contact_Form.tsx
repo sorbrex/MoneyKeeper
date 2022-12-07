@@ -13,7 +13,7 @@ export default function Contact_Form() {
 	const [loading, setLoading] = React.useState(false)
 
 	function handleFormSubmit (values: ContactFormValues) {
-		const baseUrl = process.env.BASE_URL || "https://localhost:3000"
+		const baseUrl = "https://localhost:3000"
 
 		setLoading(true)
 		Axios.post(`${baseUrl}/contact/send` || "", values)
