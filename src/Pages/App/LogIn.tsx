@@ -57,11 +57,6 @@ export default function LogIn() {
 	}
 
 	function handleFacebookResponse (userInfo: any) {
-		if (userInfo.accessToken) {
-			console.log("Logged in")
-		} else {
-			console.log("Not logged in")
-		}
 		console.log(userInfo)
 	}	
 	
