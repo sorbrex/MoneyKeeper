@@ -4,6 +4,8 @@ import Form from "@/Sections/LogIn/LogIn_Form"
 import Footer from "@/UI/Footer"
 import Logo from "@Assets/Logo_Black.png"
 import FacebookLogin from "react-facebook-login"
+import GoogleLogin from "react-google-login"
+import { gapi } from "gapi-script"
 import { AiOutlineFacebook, AiOutlineGoogle } from "react-icons/ai"
 import Axios from "axios"
 import CryptoJS from "crypto-js"
@@ -11,6 +13,8 @@ import CryptoJS from "crypto-js"
 
 export default function LogIn() {
 	const [FACEBOOK_APP_ID, setFacebookAppId] = React.useState(null)
+	const [GOOGLE_CLIENT_ID, setGoogleClientId] = React.useState(null)
+
 	const baseUrl = "http://localhost:3000"
 
 	useEffect(() => {
@@ -22,8 +26,25 @@ export default function LogIn() {
 			setFacebookAppId(decryptedAppId.toString(CryptoJS.enc.Utf8))
 		}
 
-		fetchFacebookAppId()
+		const setupGoogleLogin = async () => {
+			const requestId = Math.random().toString(36).substring(2, 15)
+			const challengeObject = (await Axios.get(`${baseUrl}/private/google_client_id?requestId=${requestId}`)).data
+			const decryptPassphrase = (await Axios.get(`${baseUrl}/private/challenge_passphrase?requestId=${requestId}&challenge=${challengeObject?.challengeKey}`)).data
+			const decryptedAppId = CryptoJS.AES.decrypt(challengeObject?.encryptedAppId, decryptPassphrase.passphrase)
+			setGoogleClientId(decryptedAppId.toString(CryptoJS.enc.Utf8))
 
+			const initClient = () => {
+				gapi.client.init({
+					clientId: GOOGLE_CLIENT_ID,
+					scope: ""
+				})
+			}
+
+			gapi.load("client:auth2", initClient)
+		}
+
+		fetchFacebookAppId()
+		setupGoogleLogin()
 	},[])
 
 
@@ -42,6 +63,14 @@ export default function LogIn() {
 			console.log("Not logged in")
 		}
 		console.log(userInfo)
+	}	
+	
+	function handleGoogleFailure (error: any) {
+		console.log("[ERROR] Google Login Failed => ", error)
+	}
+
+	function handleGoogleResponse (res: any) {
+		console.log(JSON.stringify(res.profileObj))
 	}
 
 	return (
@@ -59,20 +88,41 @@ export default function LogIn() {
 
 						<Form />
 
-						<div className="w-full flex justify-center items-center"> 
-							<div className="w-2/5 border-b-2 m-2"/> or <div className="w-2/5 border-b-2 m-2"/>
-						</div>
+						{
+							FACEBOOK_APP_ID || GOOGLE_CLIENT_ID ? (
+								<div className="w-full flex justify-center items-center"> 
+									<div className="w-2/5 border-b-2 m-2"/> or <div className="w-2/5 border-b-2 m-2"/>
+								</div>
+							) : null
+						}
+						
 
-						<div className="w-full"> 
+						<div className="w-full space-x-4"> 
 							{FACEBOOK_APP_ID ? (
 								<FacebookLogin
 									appId={FACEBOOK_APP_ID}
 									fields="name,email,picture"
 									callback={handleFacebookResponse}
 									onFailure={handleFacebookFailure}
-									icon={<AiOutlineFacebook className="w-full h-full"/>}
+									icon={<AiOutlineFacebook className="w-10 h-10"/>}
 									textButton=""
-									cssClass="w-14 h-14 text-black bg-white"
+									cssClass="text-black bg-white"
+								/>
+							) : null}
+
+
+							{GOOGLE_CLIENT_ID ? (
+								<GoogleLogin
+									clientId={GOOGLE_CLIENT_ID}
+									buttonText=""
+									render={renderProps => (
+										<button onClick={renderProps.onClick} disabled={renderProps.disabled} className="w-14 h-14 text-black bg-white">
+											<AiOutlineGoogle className="w-10 h-10"/>
+										</button>
+									)}
+									onSuccess={handleGoogleResponse}
+									onFailure={handleGoogleFailure}
+									cookiePolicy={"single_host_origin"}
 								/>
 							) : null}
 						</div>
