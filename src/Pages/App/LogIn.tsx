@@ -12,8 +12,8 @@ import CryptoJS from "crypto-js"
 
 
 export default function LogIn() {
-	const [FACEBOOK_APP_ID, setFacebookAppId] = React.useState(null)
-	const [GOOGLE_CLIENT_ID, setGoogleClientId] = React.useState(null)
+	const [FACEBOOK_APP_ID, setFacebookAppId] = React.useState<unknown>(undefined)
+	const [GOOGLE_CLIENT_ID, setGoogleClientId] = React.useState<unknown>(undefined)
 
 	const baseUrl = "http://localhost:3000"
 
@@ -95,7 +95,7 @@ export default function LogIn() {
 						<div className="w-full space-x-4"> 
 							{FACEBOOK_APP_ID ? (
 								<FacebookLogin
-									appId={FACEBOOK_APP_ID}
+									appId={FACEBOOK_APP_ID as string}
 									fields="name,email,picture"
 									callback={handleFacebookResponse}
 									onFailure={handleFacebookFailure}
@@ -108,7 +108,7 @@ export default function LogIn() {
 
 							{GOOGLE_CLIENT_ID ? (
 								<GoogleLogin
-									clientId={GOOGLE_CLIENT_ID}
+									clientId={GOOGLE_CLIENT_ID as string}
 									buttonText=""
 									render={renderProps => (
 										<button onClick={renderProps.onClick} disabled={renderProps.disabled} className="w-14 h-14 text-black bg-white">
