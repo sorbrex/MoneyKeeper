@@ -6,3 +6,4 @@ garbage
 .idea
 .DS_Store
 .env
+.firebase
