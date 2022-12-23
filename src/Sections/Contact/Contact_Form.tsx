@@ -13,7 +13,7 @@ export default function Contact_Form() {
 	const [loading, setLoading] = React.useState(false)
 
 	function handleFormSubmit (values: ContactFormValues) {
-		const baseUrl = "https://money-keeper-api.onrender.com"
+		const baseUrl = "https://localhost:8080"
 
 		setLoading(true)
 		Axios.post(`${baseUrl}/contact/send` || "", values)

@@ -22,7 +22,7 @@
         "src/UI/*"
       ],
       "@Assets/*": [
-        "src/assets/*"
+        "src/Assets/*"
       ]
     }
   },

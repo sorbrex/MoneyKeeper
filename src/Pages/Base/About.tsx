@@ -1,5 +1,5 @@
 import React from "react"
-import {AiOutlineGithub, AiOutlineLinkedin, AiOutlineGitlab, AiOutlineGlobal,AiOutlineInstagram} from "react-icons/ai"
+import {AiOutlineGithub, AiOutlineLinkedin, AiOutlineGlobal,AiOutlineInstagram} from "react-icons/ai"
 import Footer from "@/UI/Footer"
 import Propic from "@Assets/Propic.jpg"
 import PersonalSkill from "@Assets/PersonalSkill.png"

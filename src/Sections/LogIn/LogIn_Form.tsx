@@ -16,7 +16,7 @@ export default function Login_Form() {
 	const navigate = useNavigate()
 
 	function handleFormSubmit (values: LogInFormValues) {
-		const baseUrl = "https://money-keeper-api.onrender.com"
+		const baseUrl = "https://localhost:8080"
 
 		values.password = sha256(values.password).toString()
 		setLoading(true)

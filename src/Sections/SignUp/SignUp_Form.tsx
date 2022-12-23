@@ -17,7 +17,7 @@ export default function SignUp_Form() {
 	const navigate = useNavigate()
 
 	function handleFormSubmit (values: SignUpFormValues) {
-		const baseUrl = "https://money-keeper-api.onrender.com"
+		const baseUrl = "https://localhost:8080"
 
 		values.password = sha256(values.password).toString()
 		setLoading(true)
