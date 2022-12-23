@@ -12,7 +12,7 @@ export default function ErrorPage() {
 			<p>
 				<i>{error.statusText || error.message}</i>
 			</p>
-			<Link to={"/"}>Your Friend</Link>
+			<Link to={"/"}>Home Page</Link>
 		</div>
 	)
 }

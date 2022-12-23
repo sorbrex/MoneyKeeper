@@ -2,7 +2,7 @@ import React from "react"
 import CenteredContainer from "@/Layouts/CenteredContainer"
 import Form from "@/Sections/SignUp/SignUp_Form"
 import Footer from "@/UI/Footer"
-import Logo from "@Assets/Logo_Black.png"
+import LogoTitle from "@/UI/LogoTitle"
 
 export default function SignUp() {
 	return (
@@ -11,9 +11,7 @@ export default function SignUp() {
 				<CenteredContainer>
 					<div className="mx-auto w-full max-w-lg">
 
-						<div className="w-full h-auto flex justify-center items-center mb-3">
-							<img src={Logo} className="h-20" alt="MoneyKeeper Logo" />
-						</div>
+						<LogoTitle />
 
 						<h1 className="text-4xl font-medium">SignUp</h1>
 						<p className="mt-3">Create an Account and Start Saving Now</p>
