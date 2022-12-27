@@ -1,10 +1,21 @@
-import React from "react"
+import React, { useEffect } from "react"
 import CenteredContainer from "@/Layouts/CenteredContainer"
 import Form from "@/Sections/LogIn/LogIn_Form"
 import Footer from "@/UI/Footer"
 import LogoTitle from "@/UI/LogoTitle"
+import { useNavigate } from "react-router"
 
 export default function LogIn() {
+	const navigate = useNavigate()
+
+	useEffect(() => {
+		document.title = "MoneyKeeper | LogIn"
+		
+		if (localStorage.getItem("token")) {
+			navigate("/dashboard")
+		}
+	}, [])
+
 	return (
 		<>
 			<section id="Login_Page" className="h-screen flex flex-col">

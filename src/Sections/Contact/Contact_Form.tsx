@@ -5,6 +5,7 @@ import { AlertType, ContactFormValues } from "@/interfaces"
 import Axios from "axios"
 import Alert from "@/UI/Alert"
 import SubmitButton from "@/UI/Buttons/SubmitButton"
+import { BASE_URL } from "@/Helpers/Helpers"
 
 export default function Contact_Form() {
 	const [alertShown, setAlertShown] = React.useState(false)
@@ -13,10 +14,9 @@ export default function Contact_Form() {
 	const [loading, setLoading] = React.useState(false)
 
 	function handleFormSubmit (values: ContactFormValues) {
-		const baseUrl = "https://localhost:8080"
 
 		setLoading(true)
-		Axios.post(`${baseUrl}/contact/send` || "", values)
+		Axios.post(`${BASE_URL}/contact/send` || "", values)
 			.then(() => {
 				setLoading(false)
 				setAlertType("info")

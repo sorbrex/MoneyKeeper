@@ -1,13 +1,13 @@
 import React from "react"
+import Alert from "@/UI/Alert"
+import SubmitButton from "@/UI/Buttons/SubmitButton"
+import { BASE_URL } from "@/Helpers/Helpers"
+import { AlertType, SignUpFormValues } from "@/interfaces"
 import { Formik, Field, Form, ErrorMessage } from "formik"
 import * as Yup from "yup"
-import SubmitButton from "@/UI/Buttons/SubmitButton"
-import { AlertType, SignUpFormValues } from "@/interfaces"
-import { useNavigate } from "react-router-dom"
 import Axios from "axios"
 import sha256 from "crypto-js/sha256"
-import Alert from "@/UI/Alert"
-
+import { useNavigate } from "react-router"
 
 export default function SignUp_Form() {
 	const [alertShown, setAlertShown] = React.useState(false)
@@ -15,13 +15,12 @@ export default function SignUp_Form() {
 	const [alertMessage, setAlertMessage] = React.useState("None")
 	const [loading, setLoading] = React.useState(false)
 	const navigate = useNavigate()
-
+	
 	function handleFormSubmit (values: SignUpFormValues) {
-		const baseUrl = "https://localhost:8080"
 
 		values.password = sha256(values.password).toString()
 		setLoading(true)
-		Axios.post(`${baseUrl}/user/signup` || "", values)
+		Axios.post(`${BASE_URL}/user/signup` || "", values)
 			.then(() => {
 				setLoading(false)
 				setAlertType("info")

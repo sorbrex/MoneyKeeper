@@ -4,14 +4,19 @@ import LogoTitle from "@/UI/LogoTitle"
 import Footer from "@/UI/Footer"
 import { Link, useNavigate } from "react-router-dom"
 
-
 export default function Redirect() {
 	const navigate = useNavigate()
-
+	
 	useEffect (() => {
-		setTimeout(() => {
+		const isSysRedirect = sessionStorage.getItem("isSysRedirect")
+		if (isSysRedirect){
+			setTimeout(() => {
+				navigate("/login")
+			}, 5000)
+		} else {
+			sessionStorage.removeItem("isSysRedirect")
 			navigate("/login")
-		}, 5000)
+		}
 	},[])
 
 	return (

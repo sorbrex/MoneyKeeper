@@ -1,11 +1,16 @@
 import axios from "axios"
-const baseUrl = "https://localhost:8080"
+export const BASE_URL = "https://localhost:8080"
+
 export async function Auth() {
 	const savedJwt = sessionStorage.getItem("users-jwt")
 	if (savedJwt == null) {
-		return null
+		return false
 	} else {
-		axios.get(`${baseUrl}/`)
-		return savedJwt
+		const res = await axios.get(`${BASE_URL}/user/verifyJwt`)
+		if (res.status === 200) {
+			return true
+		} else {
+			return false
+		}
 	}
 }

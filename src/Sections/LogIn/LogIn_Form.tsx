@@ -1,45 +1,50 @@
 import React from "react"
-import { Formik, Field, Form, ErrorMessage } from "formik"
-import * as Yup from "yup"
+import Alert from "@/UI/Alert"
+import { BASE_URL } from "@/Helpers/Helpers"
 import SubmitButton from "@/UI/Buttons/SubmitButton"
 import { AlertType, LogInFormValues } from "@/interfaces"
-import { useNavigate } from "react-router-dom"
+import { Formik, Field, Form, ErrorMessage } from "formik"
+import * as Yup from "yup"
 import Axios from "axios"
 import sha256 from "crypto-js/sha256"
-import Alert from "@/UI/Alert"
+import { useNavigate } from "react-router"
 
 export default function Login_Form() {
 	const [alertShown, setAlertShown] = React.useState(false)
 	const [alertType, setAlertType] = React.useState<AlertType>("info")
 	const [alertMessage, setAlertMessage] = React.useState("None")
 	const [loading, setLoading] = React.useState(false)
+	const [resState, setResState] = React.useState(false)
 	const navigate = useNavigate()
 
-	function handleFormSubmit (values: LogInFormValues) {
-		const baseUrl = "https://localhost:8080"
+	async function handleFormSubmit (values: LogInFormValues) {
+		setLoading(true)
 
 		values.password = sha256(values.password).toString()
-		setLoading(true)
-		Axios.post(`${baseUrl}/user/login` || "", values)
-			.then(() => {
-				setLoading(false)
-				setAlertType("info")
-				setAlertMessage("Log In Successfully! Redirect... ")
-				setAlertShown(true)
-				setTimeout(() => {
-					setAlertShown(false)
-					navigate("/dashboard")
-				}, 1500)
-			})
-			.catch((error) => {
-				setLoading(false)
-				setAlertType("error")
-				setAlertMessage("Log In Failed! " + error.message)
-				setAlertShown(true)
-				setTimeout(() => {
-					setAlertShown(false)
-				}, 2500)
-			})
+
+		const res = await Axios.post(`${BASE_URL}/user/login` || "", values)
+		setResState(res.status.toString().includes("20"))
+		
+		resState ? manageLoginSuccess(res) : manageLoginError(res)
+		
+		setLoading(false)
+		setAlertShown(true)
+		setTimeout(() => {
+			setAlertShown(false)
+			resState && navigate("/dashboard")
+		}, 2500)
+	}
+
+	function manageLoginSuccess(res: any) {
+		console.log(res)
+		res.data.token && localStorage.setItem("users-jwt", res.data.token)
+		setAlertType("info")
+		setAlertMessage("Log In Successfully! Redirect...")
+	}
+
+	function manageLoginError(error: any) {
+		setAlertType("error")
+		setAlertMessage("Log In Failed! " + error.message)
 	}
 
 	return (
@@ -61,7 +66,7 @@ export default function Login_Form() {
 						.min(8, "Password Must Contain From 8 to 16 Characters")
 						.max(16, "Password Must Contain From 8 to 16 Characters")
 				})}
-				onSubmit={(values, action) => {
+				onSubmit={async (values, action) => {
 					handleFormSubmit(values)
 					action.setSubmitting(false)
 				}}
