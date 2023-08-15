@@ -20,12 +20,18 @@ export default function Login_Form() {
 	async function handleFormSubmit (values: LogInFormValues) {
 		setLoading(true)
 
-		values.password = sha256(values.password).toString()
+		const newValues = {
+			email: values.email,
+			password: sha256(values.password).toString()
+		}
 
-		const res = await Axios.post(`${BASE_URL}/user/login` || "", values)
-		setResState(res.status.toString().includes("20"))
+		const res = await Axios.post(`${BASE_URL}/user/login` || "", newValues).catch(error => {
+			manageLoginError(error.response.data)
+		})
+
+		setResState(res?.status.toString().includes("20") || false)
 		
-		resState ? manageLoginSuccess(res) : manageLoginError(res)
+		resState && manageLoginSuccess(res)
 		
 		setLoading(false)
 		setAlertShown(true)
@@ -43,8 +49,9 @@ export default function Login_Form() {
 	}
 
 	function manageLoginError(error: any) {
+		console.log(error)
 		setAlertType("error")
-		setAlertMessage("Log In Failed! " + error.message)
+		setAlertMessage("Log In Failed. " + error.message + "!")
 	}
 
 	return (
@@ -67,7 +74,7 @@ export default function Login_Form() {
 						.max(16, "Password Must Contain From 8 to 16 Characters")
 				})}
 				onSubmit={async (values, action) => {
-					handleFormSubmit(values)
+					await handleFormSubmit(values)
 					action.setSubmitting(false)
 				}}
 			>

@@ -16,31 +16,44 @@ export default function SignUp_Form() {
 	const [loading, setLoading] = React.useState(false)
 	const navigate = useNavigate()
 	
-	function handleFormSubmit (values: SignUpFormValues) {
-
-		values.password = sha256(values.password).toString()
+	async function handleFormSubmit (values: SignUpFormValues) {
+		
 		setLoading(true)
-		Axios.post(`${BASE_URL}/user/signup` || "", values)
-			.then(() => {
-				setLoading(false)
-				setAlertType("info")
-				setAlertMessage("Sign Up Successfully! Redirect... ")
-				setAlertShown(true)
-				setTimeout(() => {
-					setAlertShown(false)
-					navigate("/redirect")
-				}, 1500)
-			})
-			.catch((error) => {
-				setLoading(false)
-				setAlertType("error")
-				setAlertMessage("Sign Up Failed! " + error.message)
-				setAlertShown(true)
-				setTimeout(() => {
-					setAlertShown(false)
-				}, 2500)
-			})
+
+		const newValues = {
+			name: values.name,
+			surname: values.surname,
+			email: values.email,
+			password: sha256(values.password).toString()
+		}
+
+		const result = await Axios.post(`${BASE_URL}/user/signup` || "", newValues).catch(error => {
+			console.log(error)
+		})
+
+		const signupConfirmation = result?.status.toString().includes("20")
+		
+		signupConfirmation ? manageSignUpSuccess(signupConfirmation) : manageSignUpError()
+
+		setLoading(false)
+		setAlertShown(true)
+
+		setTimeout(() => {
+			setAlertShown(false)
+			signupConfirmation && navigate("/login")
+		}, 2500)
 	}
+
+	function manageSignUpSuccess(res: any) {
+		setAlertType("info")
+		setAlertMessage("Sign Up Successfully! Redirect...")
+	}
+
+	function manageSignUpError() {
+		setAlertType("error")
+		setAlertMessage("Sign Up Failed! Please Try Again.")
+	}
+
 
 	return (
 		<>
@@ -83,8 +96,8 @@ export default function SignUp_Form() {
 						.oneOf([Yup.ref("password"), null], "Passwords Must Match"),
 
 				})}
-				onSubmit={(values, action) => {
-					handleFormSubmit(values)
+				onSubmit={async (values, action) => {
+					await handleFormSubmit(values)
 					action.setSubmitting(false)
 				}}
 			>
