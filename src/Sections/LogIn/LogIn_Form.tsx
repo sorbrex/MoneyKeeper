@@ -14,30 +14,30 @@ export default function Login_Form() {
 	const [alertType, setAlertType] = React.useState<AlertType>("info")
 	const [alertMessage, setAlertMessage] = React.useState("None")
 	const [loading, setLoading] = React.useState(false)
-	const [resState, setResState] = React.useState(false)
 	const navigate = useNavigate()
 
 	async function handleFormSubmit (values: LogInFormValues) {
 		setLoading(true)
+
+		let receivedError: string | undefined = undefined
 
 		const newValues = {
 			email: values.email,
 			password: sha256(values.password).toString()
 		}
 
-		const res = await Axios.post(`${BASE_URL}/user/login` || "", newValues).catch(error => {
-			manageLoginError(error.response.data)
+		const result = await Axios.post(`${BASE_URL}/user/login` || "", newValues).catch(error => {
+			console.log("Error On Request: ", error)
+			receivedError = error?.response?.data?.error || error?.response?.data?.message || undefined
 		})
 
-		setResState(res?.status.toString().includes("20") || false)
-		
-		resState && manageLoginSuccess(res)
-		
+		const loginConfirmation = result?.status.toString().includes("20")
+		loginConfirmation ? manageLoginSuccess(result) : manageLoginError(receivedError || "Please Retry Later")
+
 		setLoading(false)
 		setAlertShown(true)
 		setTimeout(() => {
 			setAlertShown(false)
-			resState && navigate("/dashboard")
 		}, 2500)
 	}
 
@@ -46,12 +46,14 @@ export default function Login_Form() {
 		res.data.token && localStorage.setItem("users-jwt", res.data.token)
 		setAlertType("info")
 		setAlertMessage("Log In Successfully! Redirect...")
+		setTimeout(() => {
+			navigate("/dashboard")
+		}, 2500)
 	}
 
-	function manageLoginError(error: any) {
-		console.log(error)
+	function manageLoginError(error?: string) {
 		setAlertType("error")
-		setAlertMessage("Log In Failed. " + error.message + "!")
+		setAlertMessage("Log In Failed. " + error + "!")
 	}
 
 	return (

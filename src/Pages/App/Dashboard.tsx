@@ -9,6 +9,7 @@ export default function Dashboard() {
 	
 	useEffect(() => {
 		document.title = "Dashboard"
+		console.log('We are inside the dashboard')
 		Auth().then((res) => {
 			res ? setIsLogged(true) : navigate("/login")
 		})

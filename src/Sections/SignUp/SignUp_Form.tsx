@@ -17,8 +17,9 @@ export default function SignUp_Form() {
 	const navigate = useNavigate()
 	
 	async function handleFormSubmit (values: SignUpFormValues) {
-		
 		setLoading(true)
+
+		let receivedError: string | undefined = undefined
 
 		const newValues = {
 			name: values.name,
@@ -28,12 +29,12 @@ export default function SignUp_Form() {
 		}
 
 		const result = await Axios.post(`${BASE_URL}/user/signup` || "", newValues).catch(error => {
-			console.log(error)
+			console.log("Error On Request: ", error)
+			receivedError = error?.response?.data?.error || error?.response?.data?.message || undefined
 		})
 
 		const signupConfirmation = result?.status.toString().includes("20")
-		
-		signupConfirmation ? manageSignUpSuccess(signupConfirmation) : manageSignUpError()
+		signupConfirmation ? manageSignUpSuccess(signupConfirmation) :  manageSignUpError(receivedError || "Please Retry Later")
 
 		setLoading(false)
 		setAlertShown(true)
@@ -49,9 +50,9 @@ export default function SignUp_Form() {
 		setAlertMessage("Sign Up Successfully! Redirect...")
 	}
 
-	function manageSignUpError() {
+	function manageSignUpError(error?: string) {
 		setAlertType("error")
-		setAlertMessage("Sign Up Failed! Please Try Again.")
+		setAlertMessage(`Sign Up Failed! ${error}`)
 	}
 
 
