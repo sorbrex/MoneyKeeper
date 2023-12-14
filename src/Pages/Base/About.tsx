@@ -1,7 +1,7 @@
 import React from "react"
 import {AiOutlineGithub, AiOutlineLinkedin, AiOutlineGlobal,AiOutlineInstagram} from "react-icons/ai"
 import Footer from "@/UI/Footer"
-import Propic from "@Assets/Propic.jpg"
+import PersonalPhoto from "@Assets/Propic.jpg"
 import PersonalSkill from "@Assets/PersonalSkill.png"
 import Container from "@/Layouts/Container"
 
@@ -14,7 +14,7 @@ export default function About() {
 				<Container>
 					<div id="Profile" className="m-6">
 						<div className="w-full flex justify-center items-center">
-							<img src={Propic} className="p-1 h-36 rounded-full ring-2 ring-pureblack" alt="My Face" />
+							<img src={PersonalPhoto} className="p-1 h-36 rounded-full ring-2 ring-pureblack" alt="My Face" />
 						</div>
 
 						<div id="Name" className="text-gray-800 p-6">
