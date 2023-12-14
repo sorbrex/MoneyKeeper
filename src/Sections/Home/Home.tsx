@@ -1,6 +1,6 @@
 import React from "react"
-import Card from "@Assets/Card.png"
-import Wave from "@Assets/WaveDark.png"
+import Card from "@/Assets/Card.png"
+import Wave from "@/Assets/WaveDark.png"
 import { AiOutlineArrowUp } from "react-icons/ai"
 import ButtonPrimary from "@/UI/Buttons/ButtonPrimary"
 

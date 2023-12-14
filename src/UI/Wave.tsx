@@ -1,5 +1,5 @@
 import React from "react"
-import Wawe from "@Assets/Wave.png"
+import Wawe from "@/Assets/Wave.png"
 
 export default function Wave() {
 	return (

@@ -1,8 +1,8 @@
 import React from "react"
 import Title from "@UI/Typography/Title"
-import Categories from "@Assets/Categories.png"
-import Charts from "@Assets/Charts.png"
-import History from "@Assets/History.png"
+import Categories from "@/Assets/Categories.png"
+import Charts from "@/Assets/Charts.png"
+import History from "@/Assets/History.png"
 import Card from "@/UI/Card"
 
 export default function Features() {

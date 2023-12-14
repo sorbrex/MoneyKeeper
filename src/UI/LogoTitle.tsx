@@ -1,5 +1,5 @@
 import React from "react"
-import Logo from "@Assets/Logo_Black.png"
+import Logo from "@/Assets/Logo_Black.png"
 
 export default function LogoTitle() {
 	return (

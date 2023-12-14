@@ -1,7 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { AiOutlineArrowUp, AiOutlineLogin } from "react-icons/ai"
-import Logo from "@Assets/Logo_White.png"
+import Logo from "@/Assets/Logo_White.png"
 import ButtonPrimary from "@/UI/Buttons/ButtonPrimary"
 import ButtonLink from "@/UI/Buttons/ButtonLink"
 

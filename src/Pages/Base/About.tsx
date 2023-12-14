@@ -1,8 +1,8 @@
 import React from "react"
 import {AiOutlineGithub, AiOutlineLinkedin, AiOutlineGlobal,AiOutlineInstagram} from "react-icons/ai"
 import Footer from "@/UI/Footer"
-import PersonalPhoto from "@Assets/Propic.jpg"
-import PersonalSkill from "@Assets/PersonalSkill.png"
+import PersonalPhoto from "@/Assets/Propic.jpg"
+import PersonalSkill from "@/Assets/PersonalSkill.png"
 import Container from "@/Layouts/Container"
 
 

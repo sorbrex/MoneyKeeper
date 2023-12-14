@@ -1,6 +1,6 @@
 import React from "react"
-import Savings from "@Assets/Savings.png"
-import Dashboard from "@Assets/Dashboard.png"
+import Savings from "@/Assets/Savings.png"
+import Dashboard from "@/Assets/Dashboard.png"
 import HeaderTitle from "@UI/Typography/Title"
 import ResponsiveLine from "@/Layouts/ResponsiveLine"
 
