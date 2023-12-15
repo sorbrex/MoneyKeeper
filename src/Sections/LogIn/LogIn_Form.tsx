@@ -112,7 +112,6 @@ export default function Login_Form() {
 				Dont Have an Account? <Link className="mr-4 underline md:mr-6 text-linkBlue" to={"/signup"}> SignUp!</Link>
 			</div>
 
-
 			<Alert visible={alertShown} type={alertType} message={alertMessage}/>
 
 		</>

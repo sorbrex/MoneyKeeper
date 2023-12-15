@@ -8,6 +8,7 @@ import * as Yup from "yup"
 import Axios from "axios"
 import sha256 from "crypto-js/sha256"
 import { useNavigate } from "react-router"
+import {Link} from "react-router-dom";
 
 export default function SignUp_Form() {
 	const [alertShown, setAlertShown] = React.useState(false)
@@ -146,6 +147,10 @@ export default function SignUp_Form() {
 				</Form>
 
 			</Formik>
+
+			<div className="relative z-0 col-span-2 m-1 text-sm">
+				Already Have an Account? <Link className="mr-4 underline md:mr-6 text-linkBlue" to={"/login"}> LogIn!</Link>
+			</div>
 
 
 			<Alert visible={alertShown} type={alertType} message={alertMessage}/>
