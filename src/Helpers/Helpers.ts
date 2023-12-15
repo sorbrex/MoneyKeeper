@@ -1,5 +1,5 @@
 import axios from "axios"
-export const BASE_URL = "http://localhost:8080" //"https://money-keeper-api.onrender.com/"
+export const BASE_URL = "https://money-keeper-api.onrender.com" //"http://localhost:8080"
 
 export async function Auth() {
 	console.log('Checking For Saved JWT in Session')

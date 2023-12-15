@@ -8,6 +8,7 @@ import * as Yup from "yup"
 import Axios from "axios"
 import sha256 from "crypto-js/sha256"
 import { useNavigate } from "react-router"
+import {Link} from "react-router-dom";
 
 export default function Login_Form() {
 	const [alertShown, setAlertShown] = React.useState(false)
@@ -99,10 +100,17 @@ export default function Login_Form() {
 
 					</div>
 
+					<div id="ForgottenPassword" className="relative z-0 col-span-2 m-1 flex justify-end">
+						<Link className="mr-4 underline md:mr-6 text-sm text-linkBlue" to={"/recovery"}>Forgotten Password ?</Link>
+					</div>
 					<SubmitButton title={"LogIn"} loading={loading}/>
 				</Form>
 
 			</Formik>
+
+			<div className="relative z-0 col-span-2 m-1 text-sm">
+				Dont Have an Account? <Link className="mr-4 underline md:mr-6 text-linkBlue" to={"/signup"}> SignUp!</Link>
+			</div>
 
 
 			<Alert visible={alertShown} type={alertType} message={alertMessage}/>

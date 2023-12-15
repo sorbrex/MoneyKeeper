@@ -8,6 +8,7 @@ import "./index.css"
 import App from "./App"
 import ErrorPage from "@Pages/Base/ErrorPage"
 import Login from "@Pages/App/LogIn"
+import Recovery from "@Pages/App/Recovey"
 import SignUp from "@Pages/App/SignUp"
 import Contact from "@Pages/Base/Contact"
 import About from "@/Pages/Base/About"
@@ -30,6 +31,11 @@ const router = createBrowserRouter([
 	{
 		path: "/login",
 		element: <Login />,
+		errorElement: <ErrorPage />
+	},
+	{
+		path: "/recovery",
+		element: <Recovery />,
 		errorElement: <ErrorPage />
 	},
 	{
