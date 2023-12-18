@@ -11,7 +11,7 @@ export default function LogIn() {
 	useEffect(() => {
 		document.title = "MoneyKeeper | LogIn"
 		
-		if (localStorage.getItem("token")) {
+		if (sessionStorage.getItem("users-jwt")) {
 			navigate("/dashboard")
 		}
 	}, [])

@@ -1,10 +1,14 @@
-import React from "react"
+import React, {useEffect} from "react"
 import CenteredContainer from "@/Layouts/CenteredContainer"
 import Form from "@/Sections/SignUp/SignUp_Form"
 import Footer from "@/UI/Footer"
 import LogoTitle from "@/UI/LogoTitle"
 
 export default function SignUp() {
+	useEffect(() => {
+		document.title = "MoneyKeeper | SignUp"
+	}, [])
+
 	return (
 		<>
 			<section id="SignUp_Page" className="h-screen flex flex-col">

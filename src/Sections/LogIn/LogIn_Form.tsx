@@ -21,7 +21,6 @@ export default function Login_Form() {
 		setLoading(true)
 
 		let receivedError: string | undefined = undefined
-
 		const newValues = {
 			email: values.email,
 			password: sha256(values.password).toString()
@@ -43,8 +42,7 @@ export default function Login_Form() {
 	}
 
 	function manageLoginSuccess(res: any) {
-		console.log(res)
-		res.data.token && localStorage.setItem("users-jwt", res.data.token)
+		res.data.token && sessionStorage.setItem("users-jwt", res.data.token)
 		setAlertType("info")
 		setAlertMessage("Log In Successfully! Redirect...")
 		setTimeout(() => {
