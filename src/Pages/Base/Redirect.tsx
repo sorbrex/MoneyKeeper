@@ -21,7 +21,7 @@ export default function Redirect() {
 
 	return (
 		<>
-			<section id="SignUp_Page" className="h-screen flex flex-col">
+			<section id="Redirect_Section" className="h-screen flex flex-col">
 				<CenteredContainer>
 					<div className="mx-auto w-full max-w-lg">
 

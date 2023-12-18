@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react"
-import CenteredContainer from "@/Layouts/CenteredContainer"
 import { Auth } from "@/Helpers/Helpers"
 import { useNavigate } from "react-router"
+import AppHeader from "@Sections/App/AppHeader"
+import AppFooter from "@Sections/App/AppFooter"
 
 export default function Dashboard() {
 	const [isLogged, setIsLogged] = useState(false)
@@ -9,21 +10,21 @@ export default function Dashboard() {
 	
 	useEffect(() => {
 		document.title = "Dashboard"
-		console.log('We are inside the dashboard')
 		Auth().then((res) => {
 			res ? setIsLogged(true) : navigate("/login")
 		})
 	}, [])
 
 	return (
-		<CenteredContainer>
-			{
-				isLogged ? (
-					<h1>Dashboard</h1>
-				) : (
-					<h1>You are not logged in</h1>
-				)
-			}
-		</CenteredContainer>
+		<>
+			<AppHeader username="Janna" page={document.title}/>
+			{/*TODO: Should Fetch the Username from The Saved Session or Something*/}
+
+			{/*<section id="Account_Section">*/}
+			{/*	<Account />*/}
+			{/*</section>*/}
+
+			<AppFooter />
+		</>
 	)
 }
