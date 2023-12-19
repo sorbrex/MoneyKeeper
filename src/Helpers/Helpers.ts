@@ -4,7 +4,7 @@ export const BASE_URL = "https://money-keeper-api.onrender.com" //"http://localh
 export async function Auth() {
 	const savedJwt = sessionStorage.getItem("users-jwt")
 
-	if (savedJwt == null) {
+	if (!savedJwt) {
 		return false
 	} else {
 		console.log("Found:", savedJwt)
