@@ -1,5 +1,8 @@
 export type AlertType = "success" | "info" | "warning" | "error";
 
+//====================
+//==== Form Types ====
+//====================
 export type ContactFormValues = {
   name: string
   email: string
@@ -19,7 +22,21 @@ export type LogInFormValues = {
   password: string
 }
 
-
 export type RecoveryFormValues = {
   email: string
+}
+
+//====================
+//==== User Type ====
+//====================
+
+export type User = {
+  id: number
+  name: string
+  surname: string
+  email: string
+  password: string
+  completed: boolean
+  createdAt: Date
+  updatedAt: Date
 }

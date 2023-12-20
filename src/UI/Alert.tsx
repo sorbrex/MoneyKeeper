@@ -1,5 +1,5 @@
 import React from "react"
-import type { AlertType } from "@/interfaces"
+import type { AlertType } from "@/Types/Types"
 
 export default function Alert(props: AlertProps) {
 	const getAlertColor = () => {

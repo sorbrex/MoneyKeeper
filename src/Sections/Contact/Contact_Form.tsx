@@ -1,7 +1,7 @@
 import React from "react"
 import { Formik, Field, Form, ErrorMessage } from "formik"
 import * as Yup from "yup"
-import { AlertType, ContactFormValues } from "@/interfaces"
+import { AlertType, ContactFormValues } from "@/Types/Types"
 import Axios from "axios"
 import Alert from "@/UI/Alert"
 import SubmitButton from "@/UI/Buttons/SubmitButton"
