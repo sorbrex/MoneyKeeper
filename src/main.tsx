@@ -12,7 +12,6 @@ import Recovery from "@Pages/App/Recovey"
 import SignUp from "@Pages/App/SignUp"
 import Contact from "@Pages/Base/Contact"
 import About from "@/Pages/Base/About"
-import Redirect from "@Pages/Base/Redirect"
 import Account from "@/Pages/App/Account"
 import Dashboard from "@Pages/App/Dashboard"
 import History from "@Pages/App/History"
@@ -46,11 +45,6 @@ const router = createHashRouter([
 	{
 		path: "/contact",
 		element: <Contact />,
-		errorElement: <ErrorPage />
-	},
-	{
-		path: "/redirect",
-		element: <Redirect />,
 		errorElement: <ErrorPage />
 	},
 	{
