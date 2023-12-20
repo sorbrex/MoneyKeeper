@@ -1,12 +1,31 @@
 import React from "react"
+import {useNavigate} from "react-router";
+import CenteredContainer from "@/Layouts/CenteredContainer";
+import LogoTitle from "@UI/LogoTitle";
+import Form from "@Sections/Recovery/Recovery_Form";
+import Footer from "@UI/Footer";
 
 export default function Recovery() {
-	//TODO: Recovery Page
+	const navigate = useNavigate()
+
 	return (
 		<>
-			<h1 className="text-black">
-				Recovery Page
-			</h1>
+			<section id="Recovery_Page" className="h-screen flex flex-col">
+				<CenteredContainer>
+					<div className="mx-auto w-full max-w-lg">
+
+						<LogoTitle />
+
+						<h1 className="text-4xl font-medium">Recovery</h1>
+						<p className="mt-3">Insert Your Email Address To Receive a Temporary Password</p>
+
+						<Form />
+
+					</div>
+				</CenteredContainer>
+
+				<Footer />
+			</section>
 		</>
 	)
 }

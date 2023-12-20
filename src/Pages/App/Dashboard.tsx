@@ -10,6 +10,7 @@ export default function Dashboard() {
 	
 	useEffect(() => {
 		document.title = "Dashboard"
+		console.log("Dashboard Use Effect")
 		Auth().then((res) => {
 			res ? setIsLogged(true) : navigate("/login")
 		})

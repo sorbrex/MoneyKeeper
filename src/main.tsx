@@ -1,7 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import {
-	createBrowserRouter,
+	createHashRouter,
 	RouterProvider
 } from "react-router-dom"
 import "./index.css"
@@ -17,7 +17,7 @@ import Account from "@/Pages/App/Account"
 import Dashboard from "@Pages/App/Dashboard"
 import History from "@Pages/App/History"
 
-const router = createBrowserRouter([
+const router = createHashRouter([
 	{
 		path: "/",
 		element: <App />,
