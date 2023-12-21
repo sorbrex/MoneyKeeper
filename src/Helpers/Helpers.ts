@@ -1,5 +1,5 @@
 import axios from "axios"
-export const BASE_URL = "https://money-keeper-api.onrender.com" //"http://localhost:8080"
+export const BASE_URL = "http://localhost:8080" //"https://money-keeper-api.onrender.com" //
 
 export async function Auth() {
 	const savedJwt = sessionStorage.getItem("users-jwt")
@@ -7,9 +7,11 @@ export async function Auth() {
 	if (!savedJwt) {
 		return false
 	} else {
-		console.log("Found:", savedJwt)
-		console.log("Asking to Server for auth")
-		const res = await axios.get(`${BASE_URL}/user/verifyJwt?token=${savedJwt}`)
+		const res = await axios.get(`${BASE_URL}/app/verifyJwt`, {
+			headers: {
+				"Authorization": `Bearer ${savedJwt}`
+			}
+		})
 		if (res.status === 200) {
 			console.log("Server Auth")
 			return true

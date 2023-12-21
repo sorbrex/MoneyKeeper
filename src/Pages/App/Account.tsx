@@ -12,6 +12,9 @@ export default function Account() {
 		document.title = "Account"
 		Auth().then((res) => {
 			res ? setIsLogged(true) : navigate("/login")
+		}).catch((err) => {
+			console.log(err)
+			navigate("/login")
 		})
 	}, [])
 

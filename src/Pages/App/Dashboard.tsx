@@ -13,6 +13,9 @@ export default function Dashboard() {
 		console.log("Dashboard Use Effect")
 		Auth().then((res) => {
 			res ? setIsLogged(true) : navigate("/login")
+		}).catch((err) => {
+			console.log(err)
+			navigate("/login")
 		})
 	}, [])
 

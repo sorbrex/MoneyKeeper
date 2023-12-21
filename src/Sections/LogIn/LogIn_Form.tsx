@@ -8,7 +8,7 @@ import * as Yup from "yup"
 import Axios from "axios"
 import sha256 from "crypto-js/sha256"
 import { useNavigate } from "react-router"
-import {Link} from "react-router-dom";
+import {Link} from "react-router-dom"
 
 export default function Login_Form() {
 	const [alertShown, setAlertShown] = React.useState(false)

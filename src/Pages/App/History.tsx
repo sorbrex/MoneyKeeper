@@ -12,6 +12,9 @@ export default function History() {
 		document.title = "History"
 		Auth().then((res) => {
 			res ? setIsLogged(true) : navigate("/login")
+		}).catch((err) => {
+			console.log(err)
+			navigate("/login")
 		})
 	}, [])
 
