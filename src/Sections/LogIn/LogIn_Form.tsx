@@ -81,7 +81,7 @@ export default function Login_Form() {
 			>
 
 				{/* Actual Formik Form Structure */}
-				<Form className="mt-10 p-6">
+				<Form className="mt-10 p-6" >
 					<div id="GridLay" className="grid gap-6 sm:grid-cols-2">
 
 						<div id="Form_Element_Email" className="relative z-0 col-span-2 m-1">

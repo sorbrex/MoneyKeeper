@@ -67,7 +67,7 @@ export default function Contact_Form() {
 			>
 
 				{/* Actual Formik Form Structure */}
-				<Form className="mt-10 p-6">
+				<Form className="mt-10 p-6" >
 					<div id="GridLay" className="grid gap-6 sm:grid-cols-2">
 						{/*
 							The Peer Class is used to modify sibilings element. 
