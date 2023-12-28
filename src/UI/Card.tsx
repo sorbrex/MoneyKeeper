@@ -3,7 +3,7 @@ import ButtonPrimary from "./Buttons/ButtonPrimary"
 
 export default function Card(props: CardProps) {
 	return (
-		<div className="max-w-sm text-pureblack rounded-lg shadow-md m-6">
+		<div className="max-w-sm text-pureBlack rounded-lg shadow-md m-6">
 		
 			<img className="rounded-t-lg" src={props.image} alt="" />
 

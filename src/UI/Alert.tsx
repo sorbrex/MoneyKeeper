@@ -11,7 +11,7 @@ export default function Alert(props: AlertProps) {
 		case "warning":
 			return "bg-yellow-500"
 		case "info":
-			return "bg-pureblack"
+			return "bg-pureBlack"
 		default:
 			return "bg-blue-500"
 		}

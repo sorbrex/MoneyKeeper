@@ -15,6 +15,7 @@ import About from "@/Pages/Base/About"
 import Account from "@/Pages/App/Account"
 import Dashboard from "@Pages/App/Dashboard"
 import History from "@Pages/App/History"
+import Test from "@Pages/Test";
 
 const router = createHashRouter([
 	{
@@ -60,6 +61,11 @@ const router = createHashRouter([
 	{
 		path: "/history",
 		element: <History />,
+		errorElement: <ErrorPage />
+	},
+	{
+		path: "/test",
+		element: <Test />,
 		errorElement: <ErrorPage />
 	}
 ])
