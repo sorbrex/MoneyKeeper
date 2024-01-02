@@ -7,14 +7,14 @@ import {
 import "./index.css"
 import App from "./App"
 import ErrorPage from "@Pages/Base/ErrorPage"
-import Login from "@Pages/App/LogIn"
-import Recovery from "@Pages/App/Recovey"
-import SignUp from "@Pages/App/SignUp"
-import Contact from "@Pages/Base/Contact"
-import About from "@/Pages/Base/About"
-import Account from "@/Pages/App/Account"
-import Dashboard from "@Pages/App/Dashboard"
-import History from "@Pages/App/History"
+import Login from "@Pages/App/Login/LogIn"
+import Recovery from "@Pages/App/Recovery/Recovey"
+import SignUp from "@Pages/App/Signup/SignUp"
+import Contact from "@Pages/Base/Contacts/Contact"
+import About from "@Pages/Base/About/About"
+import Account from "@Pages/App/Account/Account"
+import Dashboard from "@Pages/App/Dashboard/Dashboard"
+import Movements from "@Pages/App/Movements/Movements"
 import Test from "@Pages/Test";
 
 const router = createHashRouter([
@@ -60,7 +60,7 @@ const router = createHashRouter([
 	},
 	{
 		path: "/history",
-		element: <History />,
+		element: <Movements />,
 		errorElement: <ErrorPage />
 	},
 	{
