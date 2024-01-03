@@ -31,12 +31,22 @@ export type RecoveryFormValues = {
 //====================
 
 export type User = {
+  id: string,
+  name: string,
+  surname: string,
+  email: string,
+  password: string,
+  remoteImageUrl: string
+}
+
+//==========================
+//==== Transaction Type ====
+//==========================
+export type Transaction = { //TODO: Stub Type, should write the real one
   id: number
   name: string
-  surname: string
-  email: string
-  password: string
-  completed: boolean
+  description: string
+  amount: number
   createdAt: Date
   updatedAt: Date
 }

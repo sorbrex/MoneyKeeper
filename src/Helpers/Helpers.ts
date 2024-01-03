@@ -21,3 +21,8 @@ export async function Auth() {
 		}
 	}
 }
+
+export function getAuth() {
+	const savedJwt = sessionStorage.getItem("users-jwt")
+	return savedJwt ? savedJwt : ""
+}

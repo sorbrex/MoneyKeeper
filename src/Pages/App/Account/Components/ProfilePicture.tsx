@@ -1,9 +1,15 @@
 import React from 'react';
+import Default_Propic from "@Assets/Default_Propic.png";
+import { AiOutlineEdit } from "react-icons/ai";
 
-export default function ProfilePicture(){
+export default function ProfilePicture(props:{source?: string}) {
 	return(
 		<>
-			<img src="https://as2.ftcdn.net/v2/jpg/05/49/98/39/1000_F_549983970_bRCkYfk0P6PP5fKbMhZMIb07mCJ6esXL.jpg" className="w-40 h-40 rounded-full" alt="Profile"/>
+			<div className="relative">
+			<AiOutlineEdit className="absolute right-2 top-2 text-3xl" />
+
+			<img src={props.source || Default_Propic} className="w-40 h-40 rounded-full" alt="Profile"/>
+			</div>
 		</>
 	)
 }

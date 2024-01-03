@@ -5,14 +5,11 @@ import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
 
 export default function Movements() {
-	const [isLogged, setIsLogged] = useState(false)
 	const navigate = useNavigate()
 	
 	useEffect(() => {
 		document.title = "Movements"
-		Auth().then((res) => {
-			res ? setIsLogged(true) : navigate("/login")
-		}).catch((err) => {
+		Auth().catch((err) => {
 			console.log(err)
 			navigate("/login")
 		})

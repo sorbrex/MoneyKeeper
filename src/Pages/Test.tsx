@@ -2,15 +2,30 @@ import React from 'react';
 import CenteredContainer from "@/Layouts/CenteredContainer";
 import ProfilePicture from "@Pages/App/Account/Components/ProfilePicture";
 import { AiOutlineLogout } from "react-icons/ai";
-import {ErrorMessage, Field} from "formik";
 import Title from "@UI/Simple/Typography/Title";
 import AccountInfoLabel from "@Pages/App/Account/Components/AccountInfoLabel";
+import {useGetUserQuery} from "@/Services/ServiceAPI";
+import {getAuth} from "@/Helpers/Helpers";
+import {User} from "@/Types/Types";
 
 export default function Test() {
-	const name = "John";
-	const surname = "Doe";
-	const email = "johndoe@gmail.com";
-	const password = "password";
+
+	const {
+		data: accountInfo = {} as User,
+		isLoading,
+		isFetching,
+		isError,
+		error,
+	} = useGetUserQuery(getAuth());
+
+	if (isLoading || isFetching) {
+		return <div>Loading...</div>;
+	}
+
+	if (isError) {
+		console.log({ error });
+		return <div>{JSON.stringify(error)}</div>;
+	}
 
 	return (
 		<>
@@ -24,8 +39,8 @@ export default function Test() {
 						<div id="Account_Sidebar" className="p-4 bg-pureBlack text-white flex flex-col items-center justify-between w-full md:w-1/4 min-h-[300px] md:min-h-[500px] rounded-t-xl md:rounded-l-xl md:rounded-tr-none">
 
 							<div>
-								<ProfilePicture />
-								<h1 className="text-2xl">{name} {surname}</h1>
+								<ProfilePicture source={accountInfo.remoteImageUrl} />
+								<h1 className="text-2xl">{accountInfo.name} {accountInfo.surname}</h1>
 							</div>
 
 							<div className="flex flex-row items-center justify-center md:justify-start w-full">
@@ -41,13 +56,13 @@ export default function Test() {
 							<Title title="Account Info"/>
 
 							<div id="Top_Row_Info" className="flex flex-col md:flex-row items-center justify-center md:justify-between w-full">
-								<AccountInfoLabel content={name} type="text"/>
-								<AccountInfoLabel content={surname} type="text"/>
+								<AccountInfoLabel content={accountInfo.name} type="text"/>
+								<AccountInfoLabel content={accountInfo.surname} type="text"/>
 							</div>
 
 							<div id="Bottom_Row_Info" className="flex flex-col md:flex-row items-center justify-center md:justify-between w-full">
-								<AccountInfoLabel content={email} type="email"/>
-								<AccountInfoLabel content={password} type="password"/>
+								<AccountInfoLabel content={accountInfo.email} type="email"/>
+								<AccountInfoLabel content={"placeholder"} type="password"/>
 							</div>
 
 						</div>

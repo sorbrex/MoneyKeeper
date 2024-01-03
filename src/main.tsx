@@ -4,6 +4,7 @@ import {
 	createHashRouter,
 	RouterProvider
 } from "react-router-dom"
+import {Provider} from "react-redux";
 import "./index.css"
 import App from "./App"
 import ErrorPage from "@Pages/Base/ErrorPage"
@@ -16,6 +17,7 @@ import Account from "@Pages/App/Account/Account"
 import Dashboard from "@Pages/App/Dashboard/Dashboard"
 import Movements from "@Pages/App/Movements/Movements"
 import Test from "@Pages/Test";
+import {store} from "@/Services/Store";
 
 const router = createHashRouter([
 	{
@@ -73,6 +75,8 @@ const router = createHashRouter([
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	<React.StrictMode>
-		<RouterProvider router={router} />
+		<Provider store={store}>
+			<RouterProvider router={router} />
+		</Provider>
 	</React.StrictMode>
 )
