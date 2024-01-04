@@ -61,7 +61,7 @@ const router = createHashRouter([
 		errorElement: <ErrorPage />
 	},
 	{
-		path: "/history",
+		path: "/transaction",
 		element: <Movements />,
 		errorElement: <ErrorPage />
 	},

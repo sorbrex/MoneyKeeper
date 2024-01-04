@@ -8,7 +8,7 @@ export default function Movements() {
 	const navigate = useNavigate()
 	
 	useEffect(() => {
-		document.title = "Movements"
+		document.title = "Transaction"
 		Auth().catch((err) => {
 			console.log(err)
 			navigate("/login")

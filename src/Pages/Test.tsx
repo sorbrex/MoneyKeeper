@@ -6,7 +6,8 @@ import Title from "@UI/Simple/Typography/Title";
 import AccountInfoLabel from "@Pages/App/Account/Components/AccountInfoLabel";
 import {useGetUserQuery} from "@/Services/ServiceAPI";
 import {getAuth} from "@/Helpers/Helpers";
-import {User} from "@/Types/Types";
+import {AlertType, User} from "@/Types/Types";
+import Alert from "@UI/Simple/Alert";
 
 export default function Test() {
 
@@ -40,7 +41,7 @@ export default function Test() {
 
 							<div>
 								<ProfilePicture source={accountInfo.remoteImageUrl} />
-								<h1 className="text-2xl">{accountInfo.name} {accountInfo.surname}</h1>
+								<h1 className="text-2xl mt-2">{accountInfo.name} {accountInfo.surname}</h1>
 							</div>
 
 							<div className="flex flex-row items-center justify-center md:justify-start w-full">

@@ -29,7 +29,7 @@ export default function AppHeader(props: {page: string, username: string}) {
 				<div className={`absolute right-0 top-20 bg-white min-w-[200px] min-h-[200px] flex flex-col justify-between sm:hidden ${menuOpen ? "visible" : "hidden"}`}>
 					<ContainerLeft>
 						<ButtonLink content='Dashboard' pageRef="/dashboard" underline={props.page === "Dashboard"}/>
-						<ButtonLink content='Movements' pageRef="/history" underline={props.page === "History"}/>
+						<ButtonLink content='Transaction' pageRef="/transaction" underline={props.page === "Transaction"}/>
 					</ContainerLeft>
 					<ContainerLeft>
 						<ButtonLink content={props.username} pageRef="/account" icon={<AiOutlineUser size="2em"/>} iconFirst={true} underline={props.page === "Account"}/>
@@ -43,7 +43,7 @@ export default function AppHeader(props: {page: string, username: string}) {
 				*/}
 				<div id="UserInteraction" className="w-full hidden pt-6 sm:flex sm:items-center sm:w-auto sm:pt-0">
 					<ButtonLink content='Dashboard' pageRef="/dashboard" underline={props.page === "Dashboard"}/>
-					<ButtonLink content='Movements' pageRef="/history" underline={props.page === "History"}/>
+					<ButtonLink content='Transaction' pageRef="/transaction" underline={props.page === "Transaction"}/>
 				</div>
 
 

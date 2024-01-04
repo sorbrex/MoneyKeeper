@@ -1,14 +1,30 @@
-import React from 'react';
+import React, {useState} from 'react';
+import ReactModal from 'react-modal';
 import Default_Propic from "@Assets/Default_Propic.png";
 import { AiOutlineEdit } from "react-icons/ai";
-
+import ProfilePictureModal from "@Pages/App/Account/Components/ProfilePictureModal";
 export default function ProfilePicture(props:{source?: string}) {
+	const [modalIsOpen, setModalIsOpen] = useState(false);
+
+
 	return(
 		<>
-			<div className="relative">
-			<AiOutlineEdit className="absolute right-2 top-2 text-3xl" />
+			<ReactModal
+				isOpen={modalIsOpen}
+				onRequestClose={() => setModalIsOpen(false)}
+				contentLabel="Upload Profile Picture"
+				shouldCloseOnEsc={true}
+				style={{content:{display: "flex", justifyContent: "center", alignItems: "center", height: "25%", width: "25%", margin: "auto"}}}
+				appElement={document.getElementById('root') as HTMLElement}
+			>
+				<ProfilePictureModal setModalState={ setModalIsOpen }/>
+			</ReactModal>
 
-			<img src={props.source || Default_Propic} className="w-40 h-40 rounded-full" alt="Profile"/>
+
+			<div className="relative">
+				<AiOutlineEdit className="absolute right-2 top-2 text-3xl" onClick={()=>{ setModalIsOpen(true) }} />
+
+				<img src={props.source || Default_Propic} className="w-40 h-40 rounded-full" alt="Profile"/>
 			</div>
 		</>
 	)
