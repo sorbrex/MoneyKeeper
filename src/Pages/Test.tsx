@@ -1,18 +1,32 @@
-import React from 'react';
-import CenteredContainer from "@/Layouts/CenteredContainer";
-import ProfilePicture from "@Pages/App/Account/Components/ProfilePicture";
-import { AiOutlineLogout } from "react-icons/ai";
-import Title from "@UI/Simple/Typography/Title";
-import AccountInfoLabel from "@Pages/App/Account/Components/AccountInfoLabel";
-import {useGetUserQuery} from "@/Services/ServiceAPI";
-import {getAuth} from "@/Helpers/Helpers";
-import {AlertType, User} from "@/Types/Types";
-import Alert from "@UI/Simple/Alert";
+import React, {useEffect} from 'react'
+import CenteredContainer from "@/Layouts/CenteredContainer"
+import ProfilePicture from "@Pages/App/Account/Components/ProfilePicture"
+import { AiOutlineLogout } from "react-icons/ai"
+import Title from "@UI/Simple/Typography/Title"
+import AccountInfoLabel from "@Pages/App/Account/Components/AccountInfoLabel"
+import {useGetUserQuery} from "@/Services/ServiceAPI"
+import {Auth, getAuth} from "@/Helpers/Helpers"
+import { useNavigate } from "react-router"
+import {User} from "@/Types/Types"
+import Loading from "@UI/Simple/Loading"
 
 export default function Test() {
+	const navigate = useNavigate()
+
+	useEffect( () => {
+		document.title = "Account"
+		Auth().catch((_) => {
+			navigate("/login")
+		})
+	}, [])
+
+	if (!getAuth()) {
+		return <Loading />
+	}
 
 	const {
 		data: accountInfo = {} as User,
+		refetch,
 		isLoading,
 		isFetching,
 		isError,
@@ -20,12 +34,22 @@ export default function Test() {
 	} = useGetUserQuery(getAuth());
 
 	if (isLoading || isFetching) {
-		return <div>Loading...</div>;
+		return <Loading />
 	}
 
 	if (isError) {
-		console.log({ error });
+		console.log({error});
 		return <div>{JSON.stringify(error)}</div>;
+	}
+
+	function updatePic() {
+		console.log("Updating Pic")
+		refetch()
+	}
+
+	function handleLogout() {
+		sessionStorage.removeItem("users-jwt")
+		navigate("/login")
 	}
 
 	return (
@@ -40,11 +64,11 @@ export default function Test() {
 						<div id="Account_Sidebar" className="p-4 bg-pureBlack text-white flex flex-col items-center justify-between w-full md:w-1/4 min-h-[300px] md:min-h-[500px] rounded-t-xl md:rounded-l-xl md:rounded-tr-none">
 
 							<div>
-								<ProfilePicture source={accountInfo.remoteImageUrl} />
+								<ProfilePicture source={accountInfo.remoteImageUrl} updatePic={updatePic}/>
 								<h1 className="text-2xl mt-2">{accountInfo.name} {accountInfo.surname}</h1>
 							</div>
 
-							<div className="flex flex-row items-center justify-center md:justify-start w-full">
+							<div className="flex flex-row items-center justify-center md:justify-start w-full" onClick={handleLogout}>
 								<AiOutlineLogout />
 
 								<h3 className="p-2">Log Out</h3>

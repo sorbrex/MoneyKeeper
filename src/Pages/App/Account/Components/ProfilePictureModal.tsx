@@ -5,7 +5,6 @@ import {BASE_URL, getAuth} from "@/Helpers/Helpers";
 import React from "react";
 import {AlertType} from "@/Types/Types";
 import Alert from "@UI/Simple/Alert";
-import { MKServerAPI } from "@/Services/ServiceAPI";
 const boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW";
 
 export default function ProfilePictureModal(props: ModalProps) {
@@ -20,6 +19,10 @@ export default function ProfilePictureModal(props: ModalProps) {
 		maxFiles: 1,
 		maxSize: 5 * 1024 * 1024, // 5MB
 		onDrop: (acceptedFiles: any) => {
+			setAlertType("info")
+			setAlertMessage("Uploading...")
+			setAlertShown(true)
+
 			const file = acceptedFiles[0] // Only one file allowed
 			Axios({
 				method: "post",
@@ -32,21 +35,18 @@ export default function ProfilePictureModal(props: ModalProps) {
 					'Content-Type': `multipart/form-data; boundary=${boundary}`
 				},
 			}).then((res) => {
-				console.log("Response: ", res);
-				MKServerAPI.util?.invalidateTags(["User"]) // Invalidate Cache After Update So The New Data Is Fetched
 				setAlertType("info")
 				setAlertMessage("Profile Picture Updated!")
 			}).catch((err) => {
 				console.log("Error: ", err);
 				setAlertType("error")
-				setAlertMessage("Profile Picture Update Failed. !")
+				setAlertMessage("Profile Picture Update Failed!")
 			}).finally(() => {
-				setAlertShown(true)
 				setTimeout(() => {
 					setAlertShown(false)
 					setTimeout(() => {
 						props.setModalState(false)
-					}, 500)
+					}, 300)
 				}, 2500)
 			})
 		}

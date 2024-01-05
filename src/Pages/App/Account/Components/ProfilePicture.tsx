@@ -3,7 +3,7 @@ import ReactModal from 'react-modal';
 import Default_Propic from "@Assets/Default_Propic.png";
 import { AiOutlineEdit } from "react-icons/ai";
 import ProfilePictureModal from "@Pages/App/Account/Components/ProfilePictureModal";
-export default function ProfilePicture(props:{source?: string}) {
+export default function ProfilePicture(props: ProfilePictureProps) {
 	const [modalIsOpen, setModalIsOpen] = useState(false);
 
 
@@ -12,6 +12,7 @@ export default function ProfilePicture(props:{source?: string}) {
 			<ReactModal
 				isOpen={modalIsOpen}
 				onRequestClose={() => setModalIsOpen(false)}
+				onAfterClose={() => props.updatePic()}
 				contentLabel="Upload Profile Picture"
 				shouldCloseOnEsc={true}
 				style={{content:{display: "flex", justifyContent: "center", alignItems: "center", height: "25%", width: "25%", margin: "auto"}}}
@@ -28,4 +29,9 @@ export default function ProfilePicture(props:{source?: string}) {
 			</div>
 		</>
 	)
+}
+
+type ProfilePictureProps = {
+	source?: string,
+	updatePic: () => void
 }

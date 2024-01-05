@@ -4,21 +4,20 @@ export const BASE_URL = "http://localhost:8080" //"https://money-keeper-api.onre
 export async function Auth() {
 	const savedJwt = sessionStorage.getItem("users-jwt")
 
-	if (!savedJwt) {
-		return false
-	} else {
+	if (savedJwt) {
 		const res = await axios.get(`${BASE_URL}/app/verifyJwt`, {
 			headers: {
 				"Authorization": `Bearer ${savedJwt}`
 			}
 		})
+
 		if (res.status === 200) {
-			console.log("Server Auth")
 			return true
 		} else {
-			console.log("Server No Auth")
-			return false
+			throw new Error("Invalid JWT")
 		}
+	} else {
+		throw new Error("No JWT")
 	}
 }
 
