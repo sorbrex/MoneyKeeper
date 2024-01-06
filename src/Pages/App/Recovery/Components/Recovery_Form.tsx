@@ -7,7 +7,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik"
 import * as Yup from "yup"
 import Axios from "axios"
 import { useNavigate } from "react-router"
-import {Link} from "react-router-dom";
+import {Link} from "react-router-dom"
 
 export default function Recovery_Form() {
 	const [alertShown, setAlertShown] = React.useState(false)
@@ -16,7 +16,7 @@ export default function Recovery_Form() {
 	const [loading, setLoading] = React.useState(false)
 	const navigate = useNavigate()
 
-	//TODO: To Fix
+	//TODO: To Fix. To fIX what exactly??
 	async function handleFormSubmit (values: RecoveryFormValues) {
 		setLoading(true)
 
@@ -31,7 +31,7 @@ export default function Recovery_Form() {
 		})
 
 		const recoveryConfirmation = result?.status.toString().includes("20")
-		recoveryConfirmation ? manageRecoverySuccess(result) : manageRecoveryError(receivedError || "Please Retry Later")
+		recoveryConfirmation ? manageRecoverySuccess() : manageRecoveryError(receivedError || "Please Retry Later")
 
 		setLoading(false)
 		setAlertShown(true)
@@ -40,8 +40,8 @@ export default function Recovery_Form() {
 		}, 2500)
 	}
 
-	function manageRecoverySuccess(res: any) {
-		setAlertType("info")
+	function manageRecoverySuccess() {
+		setAlertType("success")
 		setAlertMessage("Email Sent Successfully! Redirect...")
 		setTimeout(() => {
 			navigate("/login")

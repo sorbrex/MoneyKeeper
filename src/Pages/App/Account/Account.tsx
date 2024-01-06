@@ -6,18 +6,19 @@ import Title from "@UI/Simple/Typography/Title"
 import AccountInfoLabel from "@Pages/App/Account/Components/AccountInfoLabel"
 import {useGetUserQuery} from "@/Services/ServiceAPI"
 import {Auth, getAuth} from "@/Helpers/Helpers"
-import { useNavigate } from "react-router"
 import {User} from "@/Types/Types"
 import Loading from "@UI/Simple/Loading"
 import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
+import {useNavigate} from "react-router"
+import AccountPasswordLabel from "@Pages/App/Account/Components/AccountPasswordLabel"
 
 export default function Account() {
 	const navigate = useNavigate()
 
 	useEffect(() => {
 		document.title = "Account"
-		Auth().catch((err) => {
+		Auth().catch(() => {
 			navigate("/login")
 		})
 	}, [])
@@ -33,19 +34,19 @@ export default function Account() {
 		isFetching,
 		isError,
 		error,
-	} = useGetUserQuery(getAuth());
+	} = useGetUserQuery(getAuth())
 
 	if (isLoading || isFetching) {
 		return <Loading />
 	}
 
 	if (isError) {
-		console.log({error});
-		return <div>{JSON.stringify(error)}</div>;
+		console.log({error})
+		return <div>{JSON.stringify(error)}</div>
 	}
 
-	function updatePic() {
-		console.log("Updating Pic")
+	function updateAccountInfo() {
+		console.log("Updating Account Info From Server...")
 		refetch()
 	}
 
@@ -69,7 +70,7 @@ export default function Account() {
 						<div id="Account_Sidebar" className="p-4 bg-pureBlack text-white flex flex-col items-center justify-between w-full md:w-1/4 min-h-[300px] md:min-h-[500px] rounded-t-xl md:rounded-l-xl md:rounded-tr-none">
 
 							<div>
-								<ProfilePicture source={accountInfo.remoteImageUrl} updatePic={updatePic}/>
+								<ProfilePicture source={accountInfo.remoteImageUrl} updatePic={updateAccountInfo}/>
 								<h1 className="text-2xl mt-2">{accountInfo.name} {accountInfo.surname}</h1>
 							</div>
 
@@ -92,7 +93,7 @@ export default function Account() {
 
 							<div id="Bottom_Row_Info" className="flex flex-col md:flex-row items-center justify-center md:justify-between w-full">
 								<AccountInfoLabel content={accountInfo.email} type="email"/>
-								<AccountInfoLabel content={"placeholder"} type="password"/>
+								<AccountPasswordLabel originalPassword={accountInfo.password} updatePassword={updateAccountInfo}/>
 							</div>
 
 						</div>

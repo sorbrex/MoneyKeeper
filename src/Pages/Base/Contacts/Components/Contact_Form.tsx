@@ -19,7 +19,7 @@ export default function Contact_Form() {
 		Axios.post(`${BASE_URL}/contact/send` || "", values)
 			.then(() => {
 				setLoading(false)
-				setAlertType("info")
+				setAlertType("success")
 				setAlertMessage("Message Sent Successfully!")
 				setAlertShown(true)
 				setTimeout(() => {
@@ -70,8 +70,8 @@ export default function Contact_Form() {
 				<Form className="mt-10 p-6" >
 					<div id="GridLay" className="grid gap-6 sm:grid-cols-2">
 						{/*
-							The Peer Class is used to modify sibilings element. 
-							In this case, i put peer on input, and on input change state i change class on label
+							The Peer Class is used to modify siblings element.
+							In this case, I put peer on input, and on input change state I change class on label
 						*/}
 
 						<div id="Contact_Element_Name" className="relative z-0">

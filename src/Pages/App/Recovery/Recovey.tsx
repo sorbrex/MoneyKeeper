@@ -1,12 +1,10 @@
 import React from "react"
-import {useNavigate} from "react-router";
-import CenteredContainer from "@/Layouts/CenteredContainer";
-import LogoTitle from "@UI/Simple/LogoTitle";
-import Form from "@Pages/App/Recovery/Components/Recovery_Form";
-import Footer from "@UI/Complex/Footer/Footer";
+import CenteredContainer from "@/Layouts/CenteredContainer"
+import LogoTitle from "@UI/Simple/LogoTitle"
+import Form from "@Pages/App/Recovery/Components/Recovery_Form"
+import Footer from "@UI/Complex/Footer/Footer"
 
 export default function Recovery() {
-	const navigate = useNavigate()
 
 	return (
 		<>

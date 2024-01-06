@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react"
 
 export default function AccountInfoLabel (props:{content:string, type:string, editable?:boolean}) {
 	return <input type={props.type} value={props.content} className="
@@ -6,4 +6,4 @@ export default function AccountInfoLabel (props:{content:string, type:string, ed
 		min-w-[300px] md:min-w-[200px] lg:min-w-[300px]
 		text-white
 	" disabled={!props.editable} />
-};
+}

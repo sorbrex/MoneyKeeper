@@ -43,7 +43,7 @@ export default function Login_Form() {
 
 	function manageLoginSuccess(res: any) {
 		res.data.token && sessionStorage.setItem("users-jwt", res.data.token)
-		setAlertType("info")
+		setAlertType("success")
 		setAlertMessage("Log In Successfully! Redirect...")
 		setTimeout(() => {
 			navigate("/dashboard")

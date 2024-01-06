@@ -17,6 +17,13 @@ export type SignUpFormValues = {
   password_confirmation: string
 }
 
+export type PasswordChangeFormValues = {
+  oldPassword: string
+  newPassword: string
+  newPasswordConfirmation: string
+}
+
+
 export type LogInFormValues = {
   email: string
   password: string

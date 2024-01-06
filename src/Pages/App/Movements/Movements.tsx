@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import {Auth, getAuth} from "@/Helpers/Helpers"
-import { useNavigate } from "react-router"
 import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
-import Loading from "@UI/Simple/Loading";
-import {User} from "@/Types/Types";
-import {useGetUserQuery} from "@/Services/ServiceAPI";
+import Loading from "@UI/Simple/Loading"
+import {User} from "@/Types/Types"
+import {useGetUserQuery} from "@/Services/ServiceAPI"
+import {useNavigate} from "react-router"
 
 export default function Movements() {
 	const navigate = useNavigate()
-	
+
 	useEffect(() => {
 		document.title = "Transaction"
-		Auth().catch((_) => {
+		Auth().catch(() => {
 			navigate("/login")
 		})
 	}, [])
@@ -27,7 +27,7 @@ export default function Movements() {
 		isFetching,
 		isError,
 		error,
-	} = useGetUserQuery(getAuth());
+	} = useGetUserQuery(getAuth())
 
 
 	if (isLoading || isFetching) {
@@ -35,8 +35,8 @@ export default function Movements() {
 	}
 
 	if (isError) {
-		console.log({error});
-		return <div>{JSON.stringify(error)}</div>;
+		console.log({error})
+		return <div>{JSON.stringify(error)}</div>
 	}
 
 

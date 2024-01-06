@@ -1,11 +1,11 @@
-import Axios from "axios";
-import { useDropzone } from 'react-dropzone';
-import { AiOutlineUpload } from 'react-icons/ai';
-import {BASE_URL, getAuth} from "@/Helpers/Helpers";
-import React from "react";
-import {AlertType} from "@/Types/Types";
-import Alert from "@UI/Simple/Alert";
-const boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW";
+import Axios from "axios"
+import { useDropzone } from "react-dropzone"
+import { AiOutlineUpload } from "react-icons/ai"
+import {BASE_URL, getAuth} from "@/Helpers/Helpers"
+import React from "react"
+import {AlertType} from "@/Types/Types"
+import Alert from "@UI/Simple/Alert"
+const boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
 
 export default function ProfilePictureModal(props: ModalProps) {
 	const [alertShown, setAlertShown] = React.useState(false)
@@ -14,7 +14,7 @@ export default function ProfilePictureModal(props: ModalProps) {
 
 	const { getRootProps, getInputProps } = useDropzone({
 		accept: {
-			'image/png': ['.png', '.PNG', '.jpg', '.JPG', '.jpeg', '.JPEG'],
+			"image/png": [".png", ".PNG", ".jpg", ".JPG", ".jpeg", ".JPEG"],
 		},
 		maxFiles: 1,
 		maxSize: 5 * 1024 * 1024, // 5MB
@@ -31,14 +31,14 @@ export default function ProfilePictureModal(props: ModalProps) {
 					profilePicture: file
 				},
 				headers: {
-					'Authorization': `Bearer ${getAuth()}`,
-					'Content-Type': `multipart/form-data; boundary=${boundary}`
+					"Authorization": `Bearer ${getAuth()}`,
+					"Content-Type": `multipart/form-data; boundary=${boundary}`
 				},
-			}).then((res) => {
-				setAlertType("info")
+			}).then(() => {
+				setAlertType("success")
 				setAlertMessage("Profile Picture Updated!")
 			}).catch((err) => {
-				console.log("Error: ", err);
+				console.log("Error: ", err)
 				setAlertType("error")
 				setAlertMessage("Profile Picture Update Failed!")
 			}).finally(() => {
@@ -50,7 +50,7 @@ export default function ProfilePictureModal(props: ModalProps) {
 				}, 2500)
 			})
 		}
-	});
+	})
 
 	return (
 		<>

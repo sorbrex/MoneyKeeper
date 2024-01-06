@@ -8,7 +8,7 @@ import * as Yup from "yup"
 import Axios from "axios"
 import sha256 from "crypto-js/sha256"
 import { useNavigate } from "react-router"
-import {Link} from "react-router-dom";
+import {Link} from "react-router-dom"
 
 export default function SignUp_Form() {
 	const [alertShown, setAlertShown] = React.useState(false)
@@ -35,7 +35,7 @@ export default function SignUp_Form() {
 		})
 
 		const signupConfirmation = result?.status.toString().includes("20")
-		signupConfirmation ? manageSignUpSuccess(signupConfirmation) :  manageSignUpError(receivedError || "Please Retry Later")
+		signupConfirmation ? manageSignUpSuccess() :  manageSignUpError(receivedError || "Please Retry Later")
 
 		setLoading(false)
 		setAlertShown(true)
@@ -46,8 +46,8 @@ export default function SignUp_Form() {
 		}, 2500)
 	}
 
-	function manageSignUpSuccess(res: any) {
-		setAlertType("info")
+	function manageSignUpSuccess() {
+		setAlertType("success")
 		setAlertMessage("Sign Up Successfully! Redirect...")
 	}
 
@@ -108,8 +108,8 @@ export default function SignUp_Form() {
 				<Form className="mt-10 p-6">
 					<div id="GridLay" className="grid gap-6 sm:grid-cols-2">
 						{/* 
-							The Peer Class is used to modify sibilings element. 
-							In this case, i put peer on input, and on input change state i change class on label
+							The Peer Class is used to modify siblings element.
+							In this case, I put peer on input, and on input change state I change class on label
 						*/}
 
 						<div id="Form_Element_Name" className="relative z-0">

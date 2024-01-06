@@ -4,7 +4,7 @@ import {
 	createHashRouter,
 	RouterProvider
 } from "react-router-dom"
-import {Provider} from "react-redux";
+import {Provider} from "react-redux"
 import "./index.css"
 import App from "./App"
 import ErrorPage from "@Pages/Base/ErrorPage"
@@ -16,8 +16,8 @@ import About from "@Pages/Base/About/About"
 import Account from "@Pages/App/Account/Account"
 import Dashboard from "@Pages/App/Dashboard/Dashboard"
 import Movements from "@Pages/App/Movements/Movements"
-import Test from "@Pages/Test";
-import {store} from "@/Services/Store";
+import Test from "@Pages/Test"
+import {store} from "@/Services/Store"
 
 const router = createHashRouter([
 	{

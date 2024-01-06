@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect} from "react"
 import CenteredContainer from "@/Layouts/CenteredContainer"
 import ProfilePicture from "@Pages/App/Account/Components/ProfilePicture"
 import { AiOutlineLogout } from "react-icons/ai"
@@ -6,16 +6,16 @@ import Title from "@UI/Simple/Typography/Title"
 import AccountInfoLabel from "@Pages/App/Account/Components/AccountInfoLabel"
 import {useGetUserQuery} from "@/Services/ServiceAPI"
 import {Auth, getAuth} from "@/Helpers/Helpers"
-import { useNavigate } from "react-router"
 import {User} from "@/Types/Types"
 import Loading from "@UI/Simple/Loading"
+import {useNavigate} from "react-router"
 
 export default function Test() {
 	const navigate = useNavigate()
 
 	useEffect( () => {
 		document.title = "Account"
-		Auth().catch((_) => {
+		Auth().catch(() => {
 			navigate("/login")
 		})
 	}, [])
@@ -31,15 +31,15 @@ export default function Test() {
 		isFetching,
 		isError,
 		error,
-	} = useGetUserQuery(getAuth());
+	} = useGetUserQuery(getAuth())
 
 	if (isLoading || isFetching) {
 		return <Loading />
 	}
 
 	if (isError) {
-		console.log({error});
-		return <div>{JSON.stringify(error)}</div>;
+		console.log({error})
+		return <div>{JSON.stringify(error)}</div>
 	}
 
 	function updatePic() {
@@ -97,5 +97,5 @@ export default function Test() {
 
 			</section>
 		</>
-	);
+	)
 }

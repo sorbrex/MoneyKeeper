@@ -2,7 +2,7 @@ import React from "react"
 import { useRouteError, Link } from "react-router-dom"
 
 export default function ErrorPage() {
-	const error:any = useRouteError()
+	const error = useRouteError()
 	console.error(error)
 
 	return (
@@ -10,7 +10,7 @@ export default function ErrorPage() {
 			<h1>Oops!</h1>
 			<p>Sorry, an unexpected error has occurred.</p>
 			<p>
-				<i>{error.statusText || error.message}</i>
+				<i>{JSON.stringify(error)}</i>
 			</p>
 			<Link to={"/"}>Home Page</Link>
 		</div>

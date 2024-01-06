@@ -22,7 +22,7 @@ export default function HomeSection() {
 				</div>
 				<img alt="Credit Card" src={Card} className="mt-10 sm:w-4/5 sm:h-4/5 md:h-auto md:w-auto"/>
 			</div>
-			<img id="Home_Wawe" src={Wave} />
+			<img id="Home_Wave" src={Wave} alt="Wave" />
 		</>
 	)
 }
