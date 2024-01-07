@@ -26,7 +26,7 @@ export default function ProfilePictureModal(props: ModalProps) {
 			const file = acceptedFiles[0] // Only one file allowed
 			Axios({
 				method: "post",
-				url: `${BASE_URL}/app/update-profile-picture`,
+				url: `${BASE_URL}/app/updateProfilePicture`,
 				data: {
 					profilePicture: file
 				},

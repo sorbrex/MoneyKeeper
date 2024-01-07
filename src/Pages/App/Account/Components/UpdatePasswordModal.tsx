@@ -57,12 +57,13 @@ export default function UpdatePasswordModal(props: ModalProps) {
 
 		// Send Password Change Request
 		await Axios.post(
-			`${BASE_URL}/app/change-password` || "",
+			`${BASE_URL}/app/changePassword` || "",
 			{
 				newPassword: sha256(values.newPassword).toString()
 			}, {
 				headers: {
-					"Authorization": `Bearer ${getAuth()}`
+					"Authorization": `Bearer ${getAuth()}`,
+					"Content-Type": "application/json"
 				}
 			})
 			.then(response => {
