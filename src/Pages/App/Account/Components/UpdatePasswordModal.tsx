@@ -26,7 +26,6 @@ export default function UpdatePasswordModal(props: ModalProps) {
 	}
 
 	async function handlePasswordSubmit (values: PasswordChangeFormValues) {
-		console.log("Handling Password Submit")
 		setLoading(true)
 
 		// Check if old password is correct
@@ -38,7 +37,7 @@ export default function UpdatePasswordModal(props: ModalProps) {
 			setAlertShown(true)
 			setTimeout(() => {
 				setAlertShown(false)
-			})
+			}, 2500)
 			return
 		}
 
@@ -46,12 +45,12 @@ export default function UpdatePasswordModal(props: ModalProps) {
 		if(sha256(values.oldPassword).toString() === sha256(values.newPassword).toString()) {
 			console.log("New Password Cannot Be The Same As Old Password")
 			setAlertType("error")
-			setAlertMessage("New Password Cannot Be The Same As Old Password") //TODO: Stampa Errore su Console ma non su Alert. Controllare
+			setAlertMessage("New Password Cannot Be The Same As Old Password")
 			setLoading(false)
 			setAlertShown(true)
 			setTimeout(() => {
 				setAlertShown(false)
-			})
+			}, 2500)
 			return
 		}
 
@@ -118,12 +117,10 @@ export default function UpdatePasswordModal(props: ModalProps) {
 							.oneOf([Yup.ref("newPassword"), null], "Passwords Must Match"),
 				})}
 				onSubmit={async (values, action) => {
-					console.log("Submitting Form")
 					await handlePasswordSubmit(values)
 					action.setSubmitting(false)
 				}}
 				onReset={() => {
-					console.log("Resetting Form")
 					props.setModalState(false)
 				}}
 			>
