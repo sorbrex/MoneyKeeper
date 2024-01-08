@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import CenteredContainer from "@/Layouts/CenteredContainer"
 import ProfilePicture from "@Pages/App/Account/Components/ProfilePicture"
-import { AiOutlineLogout } from "react-icons/ai"
+import { AiOutlineLogout, AiOutlineDelete } from "react-icons/ai"
 import Title from "@UI/Simple/Typography/Title"
 import AccountInfoLabel from "@Pages/App/Account/Components/AccountInfoLabel"
 import {useGetUserQuery} from "@/Services/ServiceAPI"
@@ -55,6 +55,10 @@ export default function Account() {
 		navigate("/login")
 	}
 
+	function handleAccountDeletion() {
+		console.log("Deleting Account From Server...")
+	}
+
 
 	return (
 		<>
@@ -74,10 +78,14 @@ export default function Account() {
 								<h1 className="text-2xl mt-2">{accountInfo.name} {accountInfo.surname}</h1>
 							</div>
 
-							<div className="flex flex-row items-center justify-center md:justify-start w-full" onClick={handleLogout}>
-								<AiOutlineLogout />
-
-								<h3 className="p-2">Log Out</h3>
+							<div className="flex flex-row items-center justify-between w-full" onClick={handleLogout}>
+								<div className="flex flex-row items-center justify-center md:justify-start w-full" onClick={handleLogout}>
+									<AiOutlineLogout />
+									<h3 className="p-2">Log Out</h3>
+								</div>
+								<div>
+									<AiOutlineDelete className="text-xl text-contrastRed" onClick={handleAccountDeletion}/>
+								</div>
 							</div>
 
 						</div>
