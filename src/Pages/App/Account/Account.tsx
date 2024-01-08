@@ -5,13 +5,14 @@ import { AiOutlineLogout, AiOutlineDelete } from "react-icons/ai"
 import Title from "@UI/Simple/Typography/Title"
 import AccountInfoLabel from "@Pages/App/Account/Components/AccountInfoLabel"
 import {useGetUserQuery} from "@/Services/ServiceAPI"
-import {Auth, getAuth} from "@/Helpers/Helpers"
+import {Auth, BASE_URL, getAuth} from "@/Helpers/Helpers"
 import {User} from "@/Types/Types"
 import Loading from "@UI/Simple/Loading"
 import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
 import {useNavigate} from "react-router"
 import AccountPasswordLabel from "@Pages/App/Account/Components/AccountPasswordLabel"
+import Axios from "axios"
 
 export default function Account() {
 	const navigate = useNavigate()
@@ -57,7 +58,24 @@ export default function Account() {
 
 	function handleAccountDeletion() {
 		console.log("Deleting Account From Server...")
+		if (confirm("Are you sure you want to delete your account?\n All your data will be lost!")) {
+			Axios.delete(`${BASE_URL}/app/deleteUser`,{
+				headers: {
+					Authorization: `Bearer ${getAuth()}`,
+				},
+			}).then(() => {
+				alert("Account Deleted!")
+				sessionStorage.removeItem("users-jwt")
+				navigate("/login")
+			}).catch((err) => {
+				console.log(err)
+				alert("Something went wrong!")
+			})
+		} else {
+			console.log("Cancelled")
+		}
 	}
+
 
 
 	return (
@@ -78,13 +96,13 @@ export default function Account() {
 								<h1 className="text-2xl mt-2">{accountInfo.name} {accountInfo.surname}</h1>
 							</div>
 
-							<div className="flex flex-row items-center justify-between w-full" onClick={handleLogout}>
-								<div className="flex flex-row items-center justify-center md:justify-start w-full" onClick={handleLogout}>
+							<div className="flex flex-row items-center justify-between w-full">
+								<div className="flex flex-row items-center justify-center md:justify-start w-full cursor-pointer" onClick={handleLogout}>
 									<AiOutlineLogout />
 									<h3 className="p-2">Log Out</h3>
 								</div>
 								<div>
-									<AiOutlineDelete className="text-xl text-contrastRed" onClick={handleAccountDeletion}/>
+									<AiOutlineDelete className="text-xl text-contrastRed cursor-pointer" onClick={handleAccountDeletion}/>
 								</div>
 							</div>
 
