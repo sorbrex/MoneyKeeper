@@ -1,12 +1,6 @@
 import React from "react"
 import CenteredContainer from "@/Layouts/CenteredContainer"
-import CategoryIcon from "@UI/Simple/CategoryIcon";
-import Car from "@Assets/Icons/Car.png"
-import Food from "@Assets/Icons/Food.png"
-import Health from "@Assets/Icons/Health.png"
-import Hobby from "@Assets/Icons/Hobby.png"
-import Home from "@Assets/Icons/Home.png"
-
+import DatePicker from "@UI/Complex/DatePicker"
 
 export default function Test() {
 	return (
@@ -15,13 +9,15 @@ export default function Test() {
 
 				<CenteredContainer>
 					<h1 className="text-4xl font-bold">Test Page</h1>
-					<div className="flex flex-row gap-2">
-						<CategoryIcon name="Test" source={Home} color="#87d1ff"/>
-						<CategoryIcon name="Test" source={Food} color="#ff88ff"/>
-						<CategoryIcon name="Test" source={Car} color="green"/>
-						<CategoryIcon name="Test" source={Hobby} color="yellow"/>
-						<CategoryIcon name="Test" source={Health} color="purple"/>
-					</div>
+					{/*<div className="flex flex-row gap-2">*/}
+					{/*	<CategoryIcon icon="Car"/>*/}
+					{/*	<CategoryIcon icon="Food"/>*/}
+					{/*	<CategoryIcon icon="Health"/>*/}
+					{/*	<CategoryIcon icon="Hobby"/>*/}
+					{/*	<CategoryIcon icon="Home"/>*/}
+					{/*</div>*/}
+					<DatePicker/>
+
 				</CenteredContainer>
 
 			</section>

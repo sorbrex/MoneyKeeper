@@ -6,6 +6,7 @@ import {
 } from "react-router-dom"
 import {Provider} from "react-redux"
 import "./index.css"
+import "react-day-picker/dist/style.css"
 import App from "./App"
 import ErrorPage from "@Pages/Base/ErrorPage"
 import Login from "@Pages/App/Login/LogIn"
