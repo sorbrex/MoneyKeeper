@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.0.1",
+    "@tanstack/react-table": "^8.11.6",
     "axios": "^1.2.0",
     "crypto-js": "^4.1.1",
     "date-fns": "^3.2.0",
