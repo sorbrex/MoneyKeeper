@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 import { AiOutlineEdit } from "react-icons/ai"
 import ReactModal from "react-modal"
-import UpdatePasswordModal from "@Pages/App/Account/Components/UpdatePasswordModal"
+import UpdatePasswordModalForm from "@Pages/App/Account/Components/UpdatePasswordModalForm"
 
 
 export default function AccountPasswordLabel (props:AccountPasswordLabelProps) {
@@ -20,7 +20,7 @@ export default function AccountPasswordLabel (props:AccountPasswordLabelProps) {
 				style={{content:{display: "flex", justifyContent: "center", alignItems: "center", height: "75%", width: "50%", margin: "auto"}}}
 				appElement={document.getElementById("root") as HTMLElement}
 			>
-				<UpdatePasswordModal setModalState={ setModalIsOpen } originalPassword={props.originalPassword}/>
+				<UpdatePasswordModalForm setModalState={ setModalIsOpen } originalPassword={props.originalPassword}/>
 			</ReactModal>
 
 			<div className="relative flex flex-row justify-between text-white">

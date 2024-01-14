@@ -2,7 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { AiOutlineArrowUp, AiOutlineLogin } from "react-icons/ai"
 import Logo from "@Assets/Logo_White.png"
-import ButtonPrimary from "@UI/Simple/Buttons/ButtonPrimary"
+import ButtonSecondary from "@UI/Simple/Buttons/ButtonSecondary"
 import ButtonLink from "@UI/Simple/Buttons/ButtonLink"
 
 export default function Header() {
@@ -20,7 +20,7 @@ export default function Header() {
 			
 				<div id="UserInteraction" className="w-full hidden pt-6 sm:flex sm:items-center sm:w-auto sm:pt-0">
 					<ButtonLink content="Log In" pageRef="/login" icon={<AiOutlineArrowUp className='mb-1 ml-1 rotate-45'/>} />
-					<ButtonPrimary content="Get Started" pageRef="/signup" icon={<AiOutlineArrowUp className='mb-1 ml-1 rotate-45'/>} />
+					<ButtonSecondary content="Get Started" pageRef="/signup" icon={<AiOutlineArrowUp className='mb-1 ml-1 rotate-45'/>} />
 				</div>
 			</nav>
 		</header>

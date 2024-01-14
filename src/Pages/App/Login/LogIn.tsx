@@ -24,7 +24,7 @@ export default function LogIn() {
 
 	return (
 		<>
-			<section id="Login_Page" className="h-screen flex flex-col">
+			<section id="Login_Page" className="h-screen flex flex-col bg-white text-black">
 				<CenteredContainer>
 					<div className="mx-auto w-full max-w-lg">
 

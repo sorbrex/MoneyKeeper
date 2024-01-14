@@ -5,11 +5,10 @@ import PersonalPhoto from "@Assets/Propic.jpg"
 import PersonalSkill from "@Assets/PersonalSkill.png"
 import Container from "@/Layouts/Container"
 
-
 export default function About() {
 	return (
 		<>
-			<section id="About_Page" className="h-screen">
+			<section id="About_Page" className="bg-white">
 				
 				<Container>
 					<div id="Profile" className="m-6">
@@ -49,13 +48,12 @@ export default function About() {
 						<div className="flex flex-wrap justify-around flex-row mx-4 md:flex-row">
 							<a href="https://github.com/sorbrex" target="_blank" rel="noopener noreferrer" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineGithub/></a>
 							<a href="https://www.linkedin.com/in/sorbellonando/" target="_blank" rel="noopener noreferrer" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineLinkedin/></a>
-							{/* <a href="" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineGitlab/></a> */}
 							<a href="https://nandosorbello.altervista.org/" target="_blank" rel="noopener noreferrer" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineGlobal/></a>
 							<a href="https://www.instagram.com/sorbrex.ns/" target="_blank" rel="noopener noreferrer" className="text-4xl text-gray-800 font-bold leading-none mb-3 mx-4"><AiOutlineInstagram/></a>
 						</div>
 					</div>
 				</Container>
-					
+
 
 				<Footer />
 			</section>

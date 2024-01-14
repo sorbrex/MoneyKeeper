@@ -8,7 +8,7 @@ export default function Recovery() {
 
 	return (
 		<>
-			<section id="Recovery_Page" className="h-screen flex flex-col">
+			<section id="Recovery_Page" className="h-screen flex flex-col text-black bg-white">
 				<CenteredContainer>
 					<div className="mx-auto w-full max-w-lg">
 

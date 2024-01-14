@@ -7,7 +7,7 @@ import ResponsiveLine from "@/Layouts/ResponsiveLine"
 export default function DescriptionSection() {
 	return (
 		<>
-			<div id="Description__Content" className="flex flex-col w-full justify-center items-center text-center text-black">
+			<div id="Description__Content" className="flex flex-col w-full justify-center items-center text-center bg-white text-black">
 				<HeaderTitle title="Savings" underline={true} />
 
 				<div className="container max-w-5xl mx-auto m-10">

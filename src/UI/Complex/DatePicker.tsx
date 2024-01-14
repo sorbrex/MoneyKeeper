@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { format, subMonths} from "date-fns"
 import { DateRange, DayPicker} from "react-day-picker"
-import BaseButton from "@UI/Simple/Buttons/BaseButton"
+import ButtonPrimary from "@UI/Simple/Buttons/ButtonPrimary"
 
 const pastMonth = subMonths(new Date(), 1)
 const defaultSelected: DateRange = {
@@ -44,10 +44,10 @@ export default function DatePicker(){
 
 
 	return (
-		<div className="relative m-2 flex-row justify-center items-center">
-			<BaseButton content={formatSelected()} onClick={() => setCalendarVisible(!calendarVisible)} className="min-w-[300px]"/>
+		<div className="relative m-2">
+			<ButtonPrimary content={formatSelected()} onClick={() => setCalendarVisible(!calendarVisible)} className="w-[310px]"/>
 
-			<div id="Calendar" className={`${calendarVisible ? "" : "hidden"} bg-pageGray rounded-xl absolute`}>
+			<div id="Calendar" className={`${calendarVisible ? "" : "hidden"} bg-white rounded-xl shadow-xl absolute`}>
 				<DayPicker
 					showOutsideDays
 					mode="range"
@@ -56,8 +56,8 @@ export default function DatePicker(){
 					onSelect={onPick}
 					footer={
 						<div className="flex flex-col justify-center items-center">
-							<hr className="w-1/2"/>
-							<BaseButton content="Save" onClick={() => setCalendarVisible(false)} className="mt-2"/>
+							<hr className="w-2/3 mt-2"/>
+							<ButtonPrimary content="Save" onClick={() => setCalendarVisible(false)} className="mt-2 bg-pageGray"/>
 						</div>
 					}
 				/>

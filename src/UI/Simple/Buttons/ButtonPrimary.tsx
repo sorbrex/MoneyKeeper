@@ -1,11 +1,11 @@
 import React from "react"
-import { Link } from "react-router-dom"
 
-export default function ButtonPrimary(props: {content:string, icon?: React.ReactNode, pageRef?: string}) {
-	return (
-		props.pageRef ? 
-			<Link className="py-2 px-4 flex place-content-center btn bg-faceBlue" to={props.pageRef || "/notFound" }>{props.content}{props.icon && props.icon}</Link>
-			:
-			<button className="py-2 px-4 flex place-content-center btn bg-faceBlue">{props.content}{props.icon && props.icon}</button>
-	)
+export default function ButtonPrimary(props: ButtonProps){
+	return 	<button className={`px-4 py-2 bg-pureBlack rounded-md text-white hover:bg-softBlack transition-colors duration-300 ease-in-out ${props.className}`} onClick={props.onClick} >{props.content}</button>
+}
+
+type ButtonProps = {
+	className?: string
+	content: string
+	onClick: () => void
 }

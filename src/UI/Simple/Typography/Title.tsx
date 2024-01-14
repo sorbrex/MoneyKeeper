@@ -3,7 +3,7 @@ import React from "react"
 export default function Title({title, underline}:TitleProps) {
 	return (
 		<>
-			<h2 className="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
+			<h2 className="w-full my-2 text-5xl font-bold leading-tight text-center">
 				{title}
 			</h2>
 

@@ -13,6 +13,7 @@ import AppFooter from "@UI/Complex/Footer/AppFooter"
 import {useNavigate} from "react-router"
 import AccountPasswordLabel from "@Pages/App/Account/Components/AccountPasswordLabel"
 import Axios from "axios"
+import {ErrorMessage} from "formik"
 
 export default function Account() {
 	const navigate = useNavigate()
@@ -43,7 +44,7 @@ export default function Account() {
 
 	if (isError) {
 		console.log({error})
-		return <div>{JSON.stringify(error)}</div>
+		return <ErrorMessage name={JSON.stringify(error)} />
 	}
 
 	function updateAccountInfo() {
@@ -85,11 +86,11 @@ export default function Account() {
 				<AppHeader username={accountInfo.name} page={document.title}/>
 
 				<CenteredContainer>
-					<div className="rounded-2xl mx-auto w-full flex max-w-sm md:max-w-3xl lg:max-w-5xl flex-col md:flex-row shadow-lg">
+					<div className="rounded-2xl mx-auto w-full flex max-w-sm md:max-w-3xl lg:max-w-5xl flex-col md:flex-row shadow-xl">
 
 						{/*Breakpoint Usage => lg:bg-red --> From LG (1024px) and Above set Background Red*/}
 
-						<div id="Account_Sidebar" className="p-4 bg-pureBlack text-white flex flex-col items-center justify-between w-full md:w-1/4 min-h-[300px] md:min-h-[500px] rounded-t-xl md:rounded-l-xl md:rounded-tr-none">
+						<div id="Account_Sidebar" className="p-4 bg-black text-white flex flex-col items-center justify-between w-full md:w-1/4 min-h-[300px] md:min-h-[500px] rounded-t-xl md:rounded-l-xl md:rounded-tr-none">
 
 							<div>
 								<ProfilePicture source={accountInfo.remoteImageUrl} updatePic={updateAccountInfo}/>

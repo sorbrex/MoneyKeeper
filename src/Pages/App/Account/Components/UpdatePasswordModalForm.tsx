@@ -9,7 +9,7 @@ import SubmitButton from "@UI/Simple/Buttons/SubmitButton"
 import sha256 from "crypto-js/sha256"
 import DismissButton from "@UI/Simple/Buttons/DismissButton"
 
-export default function UpdatePasswordModal(props: ModalProps) {
+export default function UpdatePasswordModalForm(props: ModalProps) {
 	const [alertShown, setAlertShown] = React.useState(false)
 	const [alertType, setAlertType] = React.useState<AlertType>("info")
 	const [alertMessage, setAlertMessage] = React.useState("None")

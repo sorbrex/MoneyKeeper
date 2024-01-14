@@ -11,7 +11,7 @@ export default function SignUp() {
 
 	return (
 		<>
-			<section id="SignUp_Page" className="h-screen flex flex-col">
+			<section id="SignUp_Page" className="h-screen flex flex-col bg-white text-black">
 				<CenteredContainer>
 					<div className="mx-auto w-full max-w-lg">
 

@@ -4,9 +4,7 @@ import Food from "@Assets/Icons/Food.png"
 import Health from "@Assets/Icons/Health.png"
 import Hobby from "@Assets/Icons/Hobby.png"
 import Home from "@Assets/Icons/Home.png"
-import {Simulate} from "react-dom/test-utils"
-import select = Simulate.select
-
+import Work from "@Assets/Icons/Work.png"
 
 function selectIconToRender(iconName: Icon) {
 	switch(iconName) {
@@ -20,20 +18,20 @@ function selectIconToRender(iconName: Icon) {
 		return Hobby
 	case "Home":
 		return Home
+	case "Work":
+		return Work
 
 	default:
 		return undefined
 	}
 }
 
-export default function CategoryIcon(props:{icon: Icon, selected?: boolean}) {
+export default function CategoryIcon(props:{icon: Icon, selected?: boolean, className?: string}) {
 	return (
 		<>
-			<div className="rounded flex-row shadow-lg text-black">
-				<img src={selectIconToRender(props.icon)} alt={props.icon} className={`h-10 w-10 p-1 rounded ${props.selected && "border-solid border-2 border-faceBlue"}`}/>
-			</div>
+			<img src={selectIconToRender(props.icon)} alt={props.icon} className={`h-10 w-10 p-1 rounded ${props.selected && "border-solid border-2 border-faceBlue"} ${props.className}`}/>
 		</>
 	)
 }
 
-type Icon = "Car" | "Food" | "Health" | "Hobby" | "Home"
+export type Icon = "Car" | "Food" | "Health" | "Hobby" | "Home" | "Work"

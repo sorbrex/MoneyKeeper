@@ -23,6 +23,12 @@ export type PasswordChangeFormValues = {
   newPasswordConfirmation: string
 }
 
+export type CreateTransactionFormValues = {
+  name: string
+  description?: string
+  amount: string
+  categoryId: string
+}
 
 export type LogInFormValues = {
   email: string
@@ -49,11 +55,22 @@ export type User = {
 //==========================
 //==== Transaction Type ====
 //==========================
-export type Transaction = { //TODO: Stub Type, should write the real one
+export type Transaction = {
   id: number
   name: string
-  description: string
+  description?: string
   amount: number
+  type: "expense" | "income"
+  ownerId: string
+  categoryId: string
   createdAt: Date
-  updatedAt: Date
+}
+
+//==========================
+//===== Category Type ======
+//==========================
+export type Category = {
+  id: string
+  name: string
+  description?: string
 }

@@ -9,7 +9,7 @@ export const MKServerAPI = createApi({
 		baseUrl: `${BASE_URL}/app/`
 	}),
 	//Before the endpoints we need the tags. using tag will help us to invalidate cache and refetch data every time we add or delete a new album
-	tagTypes: ["Transaction", "User"],
+	tagTypes: ["Transaction", "User", "Category"],
 
 	endpoints: (builder) => ({
 		//User Endpoint
@@ -29,7 +29,7 @@ export const MKServerAPI = createApi({
 		updateUser: builder.mutation({
 			query: (password: string) => ({
 				url: "updateUser",
-				method: "PUT",
+				method: "PATCH",
 				headers: {
 					Authorization: `Bearer ${getAuth()}`
 				},
@@ -38,11 +38,26 @@ export const MKServerAPI = createApi({
 			invalidatesTags: ["User"],
 		}),
 
+		//Category Endpoint
+		getCategory: builder.query({
+			query: (token: string) => (
+				{
+					url: "getCategories",
+					method: "GET",
+					headers: {
+						Authorization: `Bearer ${token}`
+					}
+				}
+			),
+			providesTags: ["Category"],
+		}),
+
+
 		//Data Endpoint
 		getTransactions: builder.query({
 			query: (token:string) => (
 				{
-					url: "transactions",
+					url: "getTransactions",
 					method: "GET",
 					headers: {
 						Authorization: `Bearer ${token}`
@@ -73,8 +88,9 @@ export const MKServerAPI = createApi({
 
 export const {
 	useGetUserQuery,
-	useUpdateUserMutation,
+	//	useUpdateUserMutation,
+	useGetCategoryQuery,
 	useGetTransactionsQuery,
-	useCreateTransactionMutation,
-	useDeleteTransactionMutation
+	//useCreateTransactionMutation,
+	//useDeleteTransactionMutation
 } = MKServerAPI // Export hooks for usage in functional components

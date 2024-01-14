@@ -1,5 +1,5 @@
 import React from "react"
-import ButtonPrimary from "@UI/Simple/Buttons/ButtonPrimary"
+import ButtonSecondary from "@UI/Simple/Buttons/ButtonSecondary"
 
 export default function Card(props: CardProps) {
 	return (
@@ -11,7 +11,7 @@ export default function Card(props: CardProps) {
 				<h5 className="m-3 text-2xl font-bold tracking-tight">{props.title}</h5>			
 				<p className="font-normal">{props.body}</p>
 
-				{(props.buttonText && props.buttonRef) && <ButtonPrimary content={props.buttonText || "..."} pageRef={props.buttonRef || "/notFound"}/>}
+				{(props.buttonText && props.buttonRef) && <ButtonSecondary content={props.buttonText || "..."} pageRef={props.buttonRef || "/notFound"}/>}
 				
 
 			</div>

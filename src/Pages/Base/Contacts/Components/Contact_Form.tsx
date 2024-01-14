@@ -69,10 +69,6 @@ export default function Contact_Form() {
 				{/* Actual Formik Form Structure */}
 				<Form className="mt-10 p-6" >
 					<div id="GridLay" className="grid gap-6 sm:grid-cols-2">
-						{/*
-							The Peer Class is used to modify siblings element.
-							In this case, I put peer on input, and on input change state I change class on label
-						*/}
 
 						<div id="Contact_Element_Name" className="relative z-0">
 							<Field name="name" type="text" placeholder=" " className="peer block w-full appearance-none border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:outline-none focus:ring-0" />

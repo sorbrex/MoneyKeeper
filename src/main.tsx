@@ -8,7 +8,7 @@ import {Provider} from "react-redux"
 import "./index.css"
 import "react-day-picker/dist/style.css"
 import App from "./App"
-import ErrorPage from "@Pages/Base/ErrorPage"
+import ErrorRoutePage from "@Pages/Base/ErrorRoutePage"
 import Login from "@Pages/App/Login/LogIn"
 import Recovery from "@Pages/App/Recovery/Recovey"
 import SignUp from "@Pages/App/Signup/SignUp"
@@ -16,7 +16,7 @@ import Contact from "@Pages/Base/Contacts/Contact"
 import About from "@Pages/Base/About/About"
 import Account from "@Pages/App/Account/Account"
 import Dashboard from "@Pages/App/Dashboard/Dashboard"
-import Movements from "@Pages/App/Movements/Movements"
+import Transaction from "@Pages/App/Transaction/Transactions"
 import Test from "@Pages/Test"
 import {store} from "@/Services/Store"
 
@@ -24,52 +24,52 @@ const router = createHashRouter([
 	{
 		path: "/",
 		element: <App />,
-		errorElement: <ErrorPage />
+		errorElement: <ErrorRoutePage />
 	},
 	{
 		path: "/signup",
 		element: <SignUp />,
-		errorElement: <ErrorPage />
+		errorElement: <ErrorRoutePage />
 	},
 	{
 		path: "/login",
 		element: <Login />,
-		errorElement: <ErrorPage />
+		errorElement: <ErrorRoutePage />
 	},
 	{
 		path: "/recovery",
 		element: <Recovery />,
-		errorElement: <ErrorPage />
+		errorElement: <ErrorRoutePage />
 	},
 	{
 		path: "/about",
 		element: <About />,
-		errorElement: <ErrorPage />
+		errorElement: <ErrorRoutePage />
 	},
 	{
 		path: "/contact",
 		element: <Contact />,
-		errorElement: <ErrorPage />
+		errorElement: <ErrorRoutePage />
 	},
 	{
 		path: "/account",
 		element: <Account />,
-		errorElement: <ErrorPage />
+		errorElement: <ErrorRoutePage />
 	},
 	{
 		path: "/dashboard",
 		element: <Dashboard />,
-		errorElement: <ErrorPage />
+		errorElement: <ErrorRoutePage />
 	},
 	{
 		path: "/transaction",
-		element: <Movements />,
-		errorElement: <ErrorPage />
+		element: <Transaction />,
+		errorElement: <ErrorRoutePage />
 	},
 	{
 		path: "/test",
 		element: <Test />,
-		errorElement: <ErrorPage />
+		errorElement: <ErrorRoutePage />
 	}
 ])
 
