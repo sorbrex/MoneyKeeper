@@ -9,7 +9,7 @@ export default function Contact() {
 
 	return (
 		<>
-			<section id="Contact_Form" className="h-screen flex flex-col bg-pageGray">
+			<section id="Contact_Form" className="h-screen flex flex-col bg-white">
 				<CenteredContainer>
 					<div className="mx-auto w-full max-w-lg">
 

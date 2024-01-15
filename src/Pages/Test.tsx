@@ -7,20 +7,9 @@ export default function Test() {
 	return (
 		<>
 			<section id="Test_Page" className="h-screen flex flex-col">
-
 				<CenteredContainer>
-					{/*<h1 className="text-4xl font-bold">Tutte Cose Sopra per Reference</h1>*/}
-					{/*<div className="flex flex-row gap-2">*/}
-					{/*	<CategoryIcon icon="Car"/>*/}
-					{/*	<CategoryIcon icon="Food"/>*/}
-					{/*	<CategoryIcon icon="Health"/>*/}
-					{/*	<CategoryIcon icon="Hobby"/>*/}
-					{/*	<CategoryIcon icon="Home"/>*/}
-					{/*</div>*/}
-
 
 				</CenteredContainer>
-
 			</section>
 		</>
 	)
