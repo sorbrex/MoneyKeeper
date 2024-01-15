@@ -81,7 +81,7 @@ export default function Account() {
 
 	return (
 		<>
-			<section id="Account_Page" className="h-screen flex flex-col">
+			<section id="Account_Page" className="h-screen flex flex-col bg-white text-black">
 
 				<AppHeader username={accountInfo.name} page={document.title}/>
 
@@ -109,7 +109,7 @@ export default function Account() {
 
 						</div>
 
-						<div id="Account_Info" className="w-full md:w-3/4 flex flex-col items-center md:items-start justify-start rounded-b-xl md:rounded-r-xl bg-pageGray p-8">
+						<div id="Account_Info" className="w-full md:w-3/4 flex flex-col items-center md:items-start justify-start rounded-b-xl md:rounded-r-xl bg-pageGray text-black p-8">
 
 							<Title title="Account Info"/>
 

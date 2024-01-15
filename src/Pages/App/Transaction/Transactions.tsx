@@ -80,7 +80,7 @@ export default function Transactions() {
 
 	return (
 		<>
-			<section id="Movements_Page" className="h-screen flex flex-col text-black">
+			<section id="Movements_Page" className="h-screen flex flex-col text-black bg-white">
 				{/*MODAL*/}
 				<ReactModal
 					isOpen={modalIsOpen}
