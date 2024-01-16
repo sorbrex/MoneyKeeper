@@ -26,6 +26,27 @@ function selectIconToRender(iconName: Icon) {
 	}
 }
 
+export function retrieveColorForIcon(iconName: Icon) {
+	//Yellow => #FAEDCB | Rose => #F2C6DE | Blue => #C6DEF1 | Green => #C9E4DE | Purple => #DBCDF0 | Orange => #F7D9C4
+	switch(iconName) {
+	case "Car":
+		return "#DBCDF0"
+	case "Food":
+		return "#C9E4DE"
+	case "Health":
+		return "#F2C6DE"
+	case "Hobby":
+		return "#FAEDCB"
+	case "Home":
+		return "#C6DEF1"
+	case "Work":
+		return "#F7D9C4"
+
+	default:
+		return "#000000"
+	}
+}
+
 export default function CategoryIcon(props:{icon: Icon, selected?: boolean, className?: string}) {
 	return (
 		<>

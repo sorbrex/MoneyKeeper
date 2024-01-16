@@ -48,74 +48,50 @@ import dayjs from "dayjs"
 // }
 
 
-function normalizeTransactionDataForChart (data: Array<Transaction>) {
+function normalizeTransactionDataForChart (data: Array<Transaction>, showExpense: boolean) {
 	let normalizedData: NormalizedTransactionForChart = []
 
 	//Group By Date
 	data.forEach((transaction: Transaction) => {
 		//Search for Already Existing Date
-		const index = normalizedData.findIndex((item: any) => item.date === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
+		let index = normalizedData.findIndex((item: any) => item.date === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
 		//If Not Found, Create New Element With Date
 		if(index === -1) {
 			normalizedData.push({
 				date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
-				expense: {},
-				income: {}
+				transaction: {},
 			})
+			index = normalizedData.length - 1
 		}
 
 		//Expense or Income?
-
-		if(transaction.type === "expense") {
-			if (normalizedData[index].expense[transaction.categoryId]) {
-				normalizedData[index].expense[transaction.categoryId] += transaction.amount
+		if(showExpense && transaction.type === "expense" || !showExpense && transaction.type === "income") {
+			//If Already Existing, Add Amount
+			if (normalizedData[index].transaction?.[transaction.categoryId]) {
+				normalizedData[index].transaction[transaction.categoryId] += transaction.amount
+			} else {
+				//If Not Existing, Create New Element
+				normalizedData[index].transaction[transaction.categoryId] = transaction.amount
 			}
 		}
-		else {}
-
-
-
-		if(transaction.type === "expense") {
-			//Search for Already Existing Category
-			const index = normalizedData.findIndex((item: any) => item.date === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
-			//If Not Found, Create New Element With Category
-			if(index === -1) {
-				normalizedData.push({
-					date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
-					expense: {
-						[transaction.categoryId]: transaction.amount
-					},
-					income: {}
-				})
-			} else {
-				normalizedData[index].expense[transaction.categoryId] = transaction.amount
-			}
-		} else {
-			//Search for Already Existing Category
-			const index = normalizedData.findIndex((item: any) => item.date === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
-			//If Not Found, Create New Element With Category
-			if(index === -1) {
-				normalizedData.push({
-					date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
-					expense: {},
-					income: {
-						[transaction.categoryId]: transaction.amount
-					}
-				})
-			} else {
-				normalizedData[index].income[transaction.categoryId] = transaction.amount
-			}
-		}
-
-
-
 	})
-	return normalizedData
+
+	//Sort By Date
+	normalizedData.sort((a, b) => {
+		return dayjs(a.date).isAfter(dayjs(b.date)) ? 1 : -1
+	})
+
+	return normalizedData.map((item: any) => {
+		return {
+			date: item.date,
+			...item.transaction
+		}
+	})
 }
 
 export default function Transactions() {
 	const [modalIsOpen, setModalIsOpen] = useState(false)
-
+	const [showExpense, setShowExpense] = useState(true)
 	const navigate = useNavigate()
 
 	// Check Credentials Or Redirect
@@ -173,6 +149,7 @@ export default function Transactions() {
 		}
 	}
 
+	console.log(normalizeTransactionDataForChart(transactionList, showExpense))
 
 	return (
 		<>
@@ -196,7 +173,7 @@ export default function Transactions() {
 				{/*BODY*/}
 				<CenteredContainer>
 					{/*GRAPHIC*/}
-					<TransactionChart data={transactionList} categoryList={categoryList}/>
+					<TransactionChart data={normalizeTransactionDataForChart(transactionList, showExpense)} categoryList={categoryList}/>
 
 					{/*USER INTERACTION*/}
 					<div className="w-full flex flex-col items-center justify-center">
