@@ -66,6 +66,15 @@ export type Transaction = {
   createdAt: Date
 }
 
+export type DailyTransaction = {
+  date: string,
+  expense: {[key: string]: number},   // {category: amount} => {food: 100, transport: 50} => daily.expense.food = 100
+  income: {[key: string]: number},   // {category: amount} => {work: 100, transport: 50} => daily.income.food = 100
+}
+
+export type NormalizedTransactionForChart = Array<DailyTransaction>
+
+
 //==========================
 //===== Category Type ======
 //==========================

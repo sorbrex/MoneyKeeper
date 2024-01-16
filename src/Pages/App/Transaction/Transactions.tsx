@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from "react"
+import React, {useEffect, useState, useLayoutEffect} from "react"
 import {Auth, getAuth} from "@/Helpers/Helpers"
 import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
 import Loading from "@UI/Simple/Loading"
-import {Category, Transaction, User} from "@/Types/Types"
+import {Category, NormalizedTransactionForChart, Transaction, User} from "@/Types/Types"
 import {useGetCategoryQuery, useGetTransactionsQuery, useGetUserQuery} from "@/Services/ServiceAPI"
 import {useNavigate} from "react-router"
 import ReactModal from "react-modal"
+import TransactionChart from "@Pages/App/Transaction/Components/TransactionChart";
 import AddTransactionModalForm from "@Pages/App/Transaction/Components/AddTransactionModalForm"
 import ErrorPage from "@Pages/Base/ErrorPages"
 import CenteredContainer from "@/Layouts/CenteredContainer"
@@ -14,8 +15,103 @@ import DatePicker from "@UI/Complex/DatePicker"
 import ButtonPrimary from "@UI/Simple/Buttons/ButtonPrimary"
 import CategoryIcon, {Icon} from "@UI/Simple/CategoryIcon"
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai"
-
 import dayjs from "dayjs"
+
+
+// Reference Object for Transaction Chart
+// {
+// 	date: "01/01/2024",
+// 		expense: [
+// 	{
+// 		"category":"Home",
+// 		"amount": 129
+// 	},
+// 	{
+// 		"category":"Food",
+// 		"amount": 12
+// 	},
+// 	{
+// 		"category":"Car",
+// 		"amount": 873
+// 	},
+// 	{
+// 		"category":"Health",
+// 		"amount": 54
+// 	}
+// ],
+// 	income: [
+// 	{
+// 		"category":"Work",
+// 		"amount": 1649
+// 	},
+// ]
+// }
+
+
+function normalizeTransactionDataForChart (data: Array<Transaction>) {
+	let normalizedData: NormalizedTransactionForChart = []
+
+	//Group By Date
+	data.forEach((transaction: Transaction) => {
+		//Search for Already Existing Date
+		const index = normalizedData.findIndex((item: any) => item.date === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
+		//If Not Found, Create New Element With Date
+		if(index === -1) {
+			normalizedData.push({
+				date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
+				expense: {},
+				income: {}
+			})
+		}
+
+		//Expense or Income?
+
+		if(transaction.type === "expense") {
+			if (normalizedData[index].expense[transaction.categoryId]) {
+				normalizedData[index].expense[transaction.categoryId] += transaction.amount
+			}
+		}
+		else {}
+
+
+
+		if(transaction.type === "expense") {
+			//Search for Already Existing Category
+			const index = normalizedData.findIndex((item: any) => item.date === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
+			//If Not Found, Create New Element With Category
+			if(index === -1) {
+				normalizedData.push({
+					date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
+					expense: {
+						[transaction.categoryId]: transaction.amount
+					},
+					income: {}
+				})
+			} else {
+				normalizedData[index].expense[transaction.categoryId] = transaction.amount
+			}
+		} else {
+			//Search for Already Existing Category
+			const index = normalizedData.findIndex((item: any) => item.date === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
+			//If Not Found, Create New Element With Category
+			if(index === -1) {
+				normalizedData.push({
+					date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
+					expense: {},
+					income: {
+						[transaction.categoryId]: transaction.amount
+					}
+				})
+			} else {
+				normalizedData[index].income[transaction.categoryId] = transaction.amount
+			}
+		}
+
+
+
+	})
+	return normalizedData
+}
 
 export default function Transactions() {
 	const [modalIsOpen, setModalIsOpen] = useState(false)
@@ -100,16 +196,16 @@ export default function Transactions() {
 				{/*BODY*/}
 				<CenteredContainer>
 					{/*GRAPHIC*/}
-					<div><h1>Grafico Bello</h1></div>
+					<TransactionChart data={transactionList} categoryList={categoryList}/>
 
 					{/*USER INTERACTION*/}
-					<div className="w-full flex flex-col items-center justify-center mt-8">
+					<div className="w-full flex flex-col items-center justify-center">
 						<ButtonPrimary content="Add New" onClick={() => setModalIsOpen(true)} />
 						<DatePicker/>
 					</div>
 
 					{/*TRANSACTION LIST*/}
-					<div className="flex flex-col justify-around w-full mt-8">
+					<div className="flex flex-col w-full max-h-[300px] mt-8 overflow-y-auto">
 						{transactionList.map((transaction: Transaction) => {
 							return (
 								<div key={transaction.id} className="flex flex-row justify-between items-center m-2">
@@ -121,7 +217,7 @@ export default function Transactions() {
 										{parseCategoryIcon(transaction.categoryId)}
 									</div>
 									<div className="flex flex-col md:flex-row md:justify-between md:min-w-[300px]">
-										<p className={`text-xl font-bold ${transaction.type === "expense" ? "text-contrastRed" : "text-contrastGreen"}`}>{transaction.type === "expense" ? "-" : "+"}{transaction.amount}</p>
+										<p className={`text-xl font-bold ${transaction.type === "expense" ? "text-contrastRed" : "text-contrastGreen"}`}>{transaction.type === "expense" ? "-" : "+"}{transaction.amount}&euro;</p>
 										<p className="text-gray-500">{dayjs(transaction.createdAt).format("DD/MM/YYYY")}</p>
 									</div>
 									<div className="flex flex-col md:flex-row items-end md:items-center md:justify-around w-[100px]">
