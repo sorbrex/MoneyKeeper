@@ -16,6 +16,7 @@ import ButtonPrimary from "@UI/Simple/Buttons/ButtonPrimary"
 import CategoryIcon, {Icon} from "@UI/Simple/CategoryIcon"
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai"
 import dayjs from "dayjs"
+import Toggle from "@UI/Simple/Toggle";
 
 
 // Reference Object for Transaction Chart
@@ -92,6 +93,7 @@ function normalizeTransactionDataForChart (data: Array<Transaction>, showExpense
 export default function Transactions() {
 	const [modalIsOpen, setModalIsOpen] = useState(false)
 	const [showExpense, setShowExpense] = useState(true)
+	const [normalizedData, setNormalizedData] = useState<NormalizedTransactionForChart>([])
 	const navigate = useNavigate()
 
 	// Check Credentials Or Redirect
@@ -129,16 +131,14 @@ export default function Transactions() {
 		data: categoryList = [] as Array<Category>,
 	} = useGetCategoryQuery(getAuth())
 
-
 	if (userIsLoading || isFetching || isLoading || userIsFetching) {
 		return <Loading />
+	} else if (isError || userIsError) {
+			const realError = error || userError
+			console.log({realError})
+			return <ErrorPage message={JSON.stringify(realError)} />
 	}
 
-	if (isError || userIsError) {
-		const realError = error || userError
-		console.log({realError})
-		return <ErrorPage message={JSON.stringify(realError)} />
-	}
 
 	function parseCategoryIcon (categoryId: string) {
 		if (categoryList) {
@@ -149,7 +149,12 @@ export default function Transactions() {
 		}
 	}
 
-	console.log(normalizeTransactionDataForChart(transactionList, showExpense))
+	function handleChartToggle () {
+		setShowExpense(!showExpense)
+		console.log("Am i Showing Expense ?" + !showExpense)
+		setNormalizedData(normalizeTransactionDataForChart(transactionList, showExpense))
+		console.log(normalizedData)
+	}
 
 	return (
 		<>
@@ -173,17 +178,18 @@ export default function Transactions() {
 				{/*BODY*/}
 				<CenteredContainer>
 					{/*GRAPHIC*/}
-					<TransactionChart data={normalizeTransactionDataForChart(transactionList, showExpense)} categoryList={categoryList}/>
+					<TransactionChart data={normalizedData} categoryList={categoryList}/>
 
 					{/*USER INTERACTION*/}
 					<div className="w-full flex flex-col items-center justify-center">
+						<Toggle active={showExpense} onToggle={handleChartToggle}/>
 						<ButtonPrimary content="Add New" onClick={() => setModalIsOpen(true)} />
 						<DatePicker/>
 					</div>
 
 					{/*TRANSACTION LIST*/}
 					<div className="flex flex-col w-full max-h-[300px] mt-8 overflow-y-auto">
-						{transactionList.map((transaction: Transaction) => {
+						{transactionList.toReversed().map((transaction: Transaction) => {
 							return (
 								<div key={transaction.id} className="flex flex-row justify-between items-center m-2">
 									<div className="flex flex-col items-start justify-center min-w-[150px] text-left w-[100px] md:w-[300px]">

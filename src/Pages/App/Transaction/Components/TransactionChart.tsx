@@ -1,4 +1,4 @@
-import {useLayoutEffect, useRef} from 'react';
+import {useLayoutEffect} from 'react';
 import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
@@ -8,9 +8,7 @@ import {Icon, retrieveColorForIcon} from "@UI/Simple/CategoryIcon";
 
 export default function TransactionChart(props: TransactionChartProps) {
 
-	useLayoutEffect(() => {
-
-		// Create Root Element
+	useLayoutEffect(() => {// Create Root Element
 		let root = am5.Root.new("chartdiv");
 		root.setThemes([am5themes_Animated.new(root), am5themes_Responsive.new(root)]);
 
@@ -93,7 +91,6 @@ export default function TransactionChart(props: TransactionChartProps) {
 
 		// Create Series (Category)
 		for(let category of props.categoryList) {
-			console.log("Creating Series For Category: ", category.name, "With Color: ", retrieveColorForIcon(category.name as Icon), "And ID: ", category.id)
 			createSeries(category.name, category.id, retrieveColorForIcon(category.name as Icon))
 		}
 
