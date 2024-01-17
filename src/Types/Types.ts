@@ -24,10 +24,12 @@ export type PasswordChangeFormValues = {
 }
 
 export type CreateTransactionFormValues = {
+  id?: string
   name: string
   description?: string
   amount: string
   categoryId: string
+  type: string
 }
 
 export type LogInFormValues = {

@@ -28,40 +28,39 @@ export default function AddTransactionModalForm(props: ModalProps) {
 
 	async function handleTransactionSubmit (values: CreateTransactionFormValues) {
 		setLoading(true)
-
+		const isUpdate = !!props.presentData?.name
 		// Add New Transaction
-		await Axios.post(
-			`${BASE_URL}/app/createTransaction` || "",
-			{
-				...values,
-			}, {
-				headers: {
-					"Authorization": `Bearer ${getAuth()}`,
-					"Content-Type": "application/json"
-				}
-			})
-			.then(response => {
+		await Axios({
+			method: isUpdate ? "PATCH" : "POST",
+			url: isUpdate ? `${BASE_URL}/app/updateTransaction` : `${BASE_URL}/app/createTransaction`  || "",
+			headers: {
+				"Authorization": `Bearer ${getAuth()}`,
+				"Content-Type": "application/json"
+			},
+			data: {
+				...values
+			}
+		}).then(response => {
 				if (response.status.toString().includes("20")){
 					setAlertType("success")
-					setAlertMessage("Transaction Created!")
+					setAlertMessage(isUpdate ? "Transaction Updated!" : "Transaction Created!")
 				} else {
 					setAlertType("error")
-					setAlertMessage(`Cannot Create the Transaction! ${response.data.message}`)
+					setAlertMessage(`Cannot ${isUpdate ? 'Update' : 'Create'} the Transaction! ${response.data.message}`)
 				}
 			})
 			.catch(error => {
 				setAlertType("error")
-				setAlertMessage(`Cannot Create the Transaction! ${error}`)
+				setAlertMessage(`Cannot ${isUpdate ? 'Update' : 'Create'} the Transaction! ${error}`)
 			}).finally(() => {
 				showAlertHideModal()
 			})
 	}
 
-
 	return (
 		<>
 			<Formik
-				initialValues={{ name: "", description: "", amount: "", categoryId: "", type: "expense" }}
+				initialValues={{...props.presentData!}}
 				validationSchema={Yup.object({
 					name:
 						Yup
@@ -133,8 +132,8 @@ export default function AddTransactionModalForm(props: ModalProps) {
 						<div id="Form_Element_Type" className="relative z-0 col-span-2 m-1">
 							<div className="relative">
 								<Field name="type" as="select" className="peer block w-full appearance-none border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:outline-none focus:ring-0">
-									<option value="expense">Expense</option>
-									<option value="income">Income</option>
+									<option selected={props.presentData?.type == "expense"} value="expense">Expense</option>
+									<option selected={props.presentData?.type == "income"} value="income">Income</option>
 								</Field>
 								<AiOutlineCaretDown className="absolute right-3 top-3 -z-10"/>
 							</div>
@@ -145,13 +144,12 @@ export default function AddTransactionModalForm(props: ModalProps) {
 
 					<div className="flex flex-row items-center justify-around">
 						<DismissButton />
-						<SubmitButton title="Insert" loading={loading}/>
+						<SubmitButton title={props.presentData?.name ? "Update" : "Insert"} loading={loading}/>
 					</div>
 
 				</Form>
 
 			</Formik>
-
 
 			<div className="fixed bottom-32">
 				<Alert visible={alertShown} type={alertType} message={alertMessage}/>
@@ -162,5 +160,6 @@ export default function AddTransactionModalForm(props: ModalProps) {
 
 interface ModalProps {
 	categoryList: Array<Category>;
+	presentData?: CreateTransactionFormValues;
 	setModalState: (state: boolean) => void;
 }

@@ -3,7 +3,14 @@ import {Auth, BASE_URL, getAuth} from "@/Helpers/Helpers"
 import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
 import Loading from "@UI/Simple/Loading"
-import {AlertType, Category, NormalizedTransactionForChart, Transaction, User} from "@/Types/Types"
+import {
+	AlertType,
+	Category,
+	CreateTransactionFormValues,
+	NormalizedTransactionForChart,
+	Transaction,
+	User
+} from "@/Types/Types"
 import {useGetCategoryQuery, useGetTransactionsQuery, useGetUserQuery} from "@/Services/ServiceAPI"
 import {useNavigate} from "react-router"
 import ReactModal from "react-modal"
@@ -29,6 +36,16 @@ export default function Transactions() {
 	const [showIncome, setShowIncome] = useState(false)
 	const normalizedData = useRef<any>()
 	const navigate = useNavigate()
+	const baseFormValues: CreateTransactionFormValues = {
+		id: "",
+		name: "",
+		description: "",
+		amount: "",
+		categoryId: "",
+		type: "expense",
+	}
+	const previousTransactionData = useRef<CreateTransactionFormValues>(baseFormValues)
+
 
 	// Check Credentials Or Redirect
 	useEffect(() => {
@@ -131,7 +148,16 @@ export default function Transactions() {
 
 	function handleEdit (transactionId: string) {
 		const transaction = remoteTransactionList.find((transaction: Transaction) => transaction.id === transactionId)
+		previousTransactionData.current = {
+			id: transaction?.id,
+			name: transaction?.name,
+			description: transaction?.description,
+			amount: transaction?.amount.toString(),
+			categoryId: transaction?.categoryId,
+			type: transaction?.type,
+		}
 		//Show Modal and Fill Form with Transaction Data
+		setModalIsOpen(true)
 	}
 
 	function handleDelete (transactionId: string) {
@@ -180,14 +206,14 @@ export default function Transactions() {
 				{/*MODAL*/}
 				<ReactModal
 					isOpen={modalIsOpen}
-					onRequestClose={() => setModalIsOpen(false)}
+					onRequestClose={() => {previousTransactionData.current = baseFormValues; setModalIsOpen(false)}}
 					onAfterClose={() => refetch()}
 					contentLabel="Add Transaction"
 					shouldCloseOnEsc={true}
 					style={{content:{display: "flex", justifyContent: "center", alignItems: "center", height: "75%", width: "70%", margin: "auto"}}}
 					appElement={document.getElementById("root") as HTMLElement}
 				>
-					<AddTransactionModalForm setModalState={ setModalIsOpen } categoryList={categoryList}/>
+					<AddTransactionModalForm setModalState={ setModalIsOpen } categoryList={categoryList} presentData={previousTransactionData.current}/>
 				</ReactModal>
 
 				{/*HEADER*/}
