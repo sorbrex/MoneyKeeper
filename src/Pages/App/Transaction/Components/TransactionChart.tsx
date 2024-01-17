@@ -32,8 +32,8 @@ export default function TransactionChart(props: TransactionChartProps) {
 		let xAxis = chart.xAxes.push(
 			am5xy.CategoryAxis.new(root, {
 				categoryField: "date", // This Define Which Property of Data is used for Category Axis
-				startLocation: 0.5,
-				endLocation: 0.5,
+				startLocation: 0,
+				endLocation: 1,
 				renderer: am5xy.AxisRendererX.new(root, {}),
 				tooltip: am5.Tooltip.new(root, {})
 			})
@@ -47,7 +47,7 @@ export default function TransactionChart(props: TransactionChartProps) {
 
 		// Create Series Function To Call For Each Series (Category I Guess)
 		function createSeries(name: string, field: string, color: string) {
-			let series = chart.series.push(am5xy.SmoothedXLineSeries.new(root, {
+			let series = chart.series.push(am5xy.ColumnSeries.new(root, {
 				name: name,
 				xAxis: xAxis,
 				yAxis: yAxis,
@@ -55,35 +55,12 @@ export default function TransactionChart(props: TransactionChartProps) {
 				categoryXField: "date",
 				stacked: true,
 				stroke: am5.color(0xffffff),
+				fill: am5.color(color),
 				tooltip: am5.Tooltip.new(root, {
 					pointerOrientation: "horizontal",
-					labelText: "[bold]{name}[/]\n{categoryX}: {valueY}"
+					labelText: "[bold]{name}[/]\n{categoryX}: {valueY}€"
 				})
 			}));
-
-			series.strokes.template.setAll({
-				strokeWidth: 4,
-				strokeOpacity: 1,
-				shadowBlur: 2,
-				shadowOffsetX: 2,
-				shadowOffsetY: 2,
-				shadowColor: am5.color(0x000000),
-				shadowOpacity: 0.1
-			})
-
-			series.fills.template.setAll({
-				fillOpacity: 1,
-				visible: true,
-
-				fillPattern: am5.GrainPattern.new(root, {
-					maxOpacity: 0.15,
-					density: 0.5,
-					colors: [am5.color(0x000000), am5.color(0x000000), am5.color(0xffffff)]
-				})
-
-			});
-
-			series.set("fill", am5.color(color))
 
 			series.data.setAll(props.data);
 			series.appear(1000);
@@ -93,7 +70,6 @@ export default function TransactionChart(props: TransactionChartProps) {
 		for(let category of props.categoryList) {
 			createSeries(category.name, category.id, retrieveColorForIcon(category.name as Icon))
 		}
-
 		return () => {
 			root.dispose();
 		};

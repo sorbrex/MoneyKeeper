@@ -56,7 +56,7 @@ export type User = {
 //==== Transaction Type ====
 //==========================
 export type Transaction = {
-  id: number
+  id: string
   name: string
   description?: string
   amount: number

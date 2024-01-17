@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useLayoutEffect, useRef} from "react"
-import {Auth, getAuth} from "@/Helpers/Helpers"
+import {Auth, BASE_URL, getAuth} from "@/Helpers/Helpers"
 import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
 import Loading from "@UI/Simple/Loading"
@@ -17,6 +17,7 @@ import CategoryIcon, {Icon} from "@UI/Simple/CategoryIcon"
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai"
 import dayjs from "dayjs"
 import Toggle from "@UI/Simple/Toggle";
+import Axios from "axios";
 
 
 export default function Transactions() {
@@ -34,6 +35,42 @@ export default function Transactions() {
 	}, [])
 	if (!getAuth()) {
 		return <Loading />
+	}
+
+	//Fetch User Data
+	const {
+		data: accountInfo = {} as User,
+		isLoading: userIsLoading,
+		isFetching: userIsFetching,
+		isError: userIsError,
+		error: userError,
+	} = useGetUserQuery(getAuth())
+
+	//Fetch Transaction Data
+	const {
+		data: remoteTransactionList = [] as Array<Transaction>,
+		isLoading,
+		isFetching,
+		isError,
+		error,
+		refetch,
+		isSuccess: isTransactionFetchSuccess,
+	} = useGetTransactionsQuery(getAuth())
+
+	// Get Categories
+	const {
+		data: categoryList = [] as Array<Category>,
+	} = useGetCategoryQuery(getAuth())
+
+	if (userIsLoading || isFetching || isLoading || userIsFetching) {
+		return <Loading />
+	} else if (isError || userIsError) {
+			const realError = error || userError
+			console.log({realError})
+			return <ErrorPage message={JSON.stringify(realError)} />
+	}
+	if (isTransactionFetchSuccess) {
+		normalizeTransactionDataForChart()
 	}
 
 	// Normalize Data For Chart
@@ -81,42 +118,6 @@ export default function Transactions() {
 		console.log({normalizedData: normalizedData.current})
 	}
 
-	//Fetch User Data
-	const {
-		data: accountInfo = {} as User,
-		isLoading: userIsLoading,
-		isFetching: userIsFetching,
-		isError: userIsError,
-		error: userError,
-	} = useGetUserQuery(getAuth())
-
-	//Fetch Transaction Data
-	const {
-		data: remoteTransactionList = [] as Array<Transaction>,
-		isLoading,
-		isFetching,
-		isError,
-		error,
-		refetch,
-		isSuccess: isTransactionFetchSuccess,
-	} = useGetTransactionsQuery(getAuth())
-
-	// Get Categories
-	const {
-		data: categoryList = [] as Array<Category>,
-	} = useGetCategoryQuery(getAuth())
-
-	if (userIsLoading || isFetching || isLoading || userIsFetching) {
-		return <Loading />
-	} else if (isError || userIsError) {
-			const realError = error || userError
-			console.log({realError})
-			return <ErrorPage message={JSON.stringify(realError)} />
-	}
-	if (isTransactionFetchSuccess) {
-		normalizeTransactionDataForChart()
-	}
-
 	function parseCategoryIcon (categoryId: string) {
 		if (categoryList) {
 			const icon: Icon = categoryList.filter((category: Category) => category.id === categoryId)[0]?.name as Icon
@@ -125,6 +126,41 @@ export default function Transactions() {
 			return <></>
 		}
 	}
+
+	function handleEdit (transactionId: string) {
+		const transaction = remoteTransactionList.find((transaction: Transaction) => transaction.id === transactionId)
+		//Show Modal and Fill Form with Transaction Data
+	}
+
+	function handleDelete (transactionId: string) {
+		//Delete Transaction
+		if(confirm("Are you sure you want to delete this transaction?")) {
+			const transaction = remoteTransactionList.find((transaction: Transaction) => transaction.id === transactionId)
+			console.log({transaction})
+			//Make Server Request To Delete Transaction
+			Axios.delete(`${BASE_URL}/app/deleteTransaction`, {
+				headers: {
+					"Authorization": `Bearer ${getAuth()}`
+				},
+				data: {
+					transactionId: transactionId
+				}
+			}).then(() => {
+					//If Success, Refetch Data
+					console.log("Success")
+					refetch()
+				}).catch((error) => {
+					//If Error, Show Error
+					console.log("Error", error)
+				}).finally(()=>{
+					//In Any Case, Close Modal
+					console.log("Finally")
+				})
+		}
+	}
+
+
+
 
 	return (
 		<>
@@ -178,8 +214,8 @@ export default function Transactions() {
 										<p className="text-gray-500">{dayjs(transaction.createdAt).format("DD/MM/YYYY")}</p>
 									</div>
 									<div className="flex flex-col md:flex-row items-end md:items-center md:justify-around w-[100px]">
-										<AiOutlineEdit className="text-2xl cursor-pointer" onClick={() => console.log("Modifica")} />
-										<AiOutlineDelete className="text-2xl text-contrastRed cursor-pointer" onClick={() => console.log("Cancella")} />
+										<AiOutlineEdit className="text-2xl cursor-pointer" onClick={() => handleEdit(transaction.id)} />
+										<AiOutlineDelete className="text-2xl text-contrastRed cursor-pointer" onClick={() => handleDelete(transaction.id)} />
 									</div>
 								</div>
 							)
