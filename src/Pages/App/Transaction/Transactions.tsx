@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useLayoutEffect} from "react"
+import React, {useEffect, useState, useLayoutEffect, useRef} from "react"
 import {Auth, getAuth} from "@/Helpers/Helpers"
 import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
@@ -19,81 +19,10 @@ import dayjs from "dayjs"
 import Toggle from "@UI/Simple/Toggle";
 
 
-// Reference Object for Transaction Chart
-// {
-// 	date: "01/01/2024",
-// 		expense: [
-// 	{
-// 		"category":"Home",
-// 		"amount": 129
-// 	},
-// 	{
-// 		"category":"Food",
-// 		"amount": 12
-// 	},
-// 	{
-// 		"category":"Car",
-// 		"amount": 873
-// 	},
-// 	{
-// 		"category":"Health",
-// 		"amount": 54
-// 	}
-// ],
-// 	income: [
-// 	{
-// 		"category":"Work",
-// 		"amount": 1649
-// 	},
-// ]
-// }
-
-
-function normalizeTransactionDataForChart (data: Array<Transaction>, showExpense: boolean) {
-	let normalizedData: NormalizedTransactionForChart = []
-
-	//Group By Date
-	data.forEach((transaction: Transaction) => {
-		//Search for Already Existing Date
-		let index = normalizedData.findIndex((item: any) => item.date === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
-		//If Not Found, Create New Element With Date
-		if(index === -1) {
-			normalizedData.push({
-				date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
-				transaction: {},
-			})
-			index = normalizedData.length - 1
-		}
-
-		//Expense or Income?
-		if(showExpense && transaction.type === "expense" || !showExpense && transaction.type === "income") {
-			//If Already Existing, Add Amount
-			if (normalizedData[index].transaction?.[transaction.categoryId]) {
-				normalizedData[index].transaction[transaction.categoryId] += transaction.amount
-			} else {
-				//If Not Existing, Create New Element
-				normalizedData[index].transaction[transaction.categoryId] = transaction.amount
-			}
-		}
-	})
-
-	//Sort By Date
-	normalizedData.sort((a, b) => {
-		return dayjs(a.date).isAfter(dayjs(b.date)) ? 1 : -1
-	})
-
-	return normalizedData.map((item: any) => {
-		return {
-			date: item.date,
-			...item.transaction
-		}
-	})
-}
-
 export default function Transactions() {
 	const [modalIsOpen, setModalIsOpen] = useState(false)
-	const [showExpense, setShowExpense] = useState(true)
-	const [normalizedData, setNormalizedData] = useState<NormalizedTransactionForChart>([])
+	const [showIncome, setShowIncome] = useState(false)
+	const normalizedData = useRef<any>()
 	const navigate = useNavigate()
 
 	// Check Credentials Or Redirect
@@ -107,6 +36,51 @@ export default function Transactions() {
 		return <Loading />
 	}
 
+	// Normalize Data For Chart
+	function normalizeTransactionDataForChart (list: Array<Transaction> = remoteTransactionList) {
+		let localNormalizedData: NormalizedTransactionForChart = []
+
+		//Group By Date
+		list.forEach((transaction: Transaction) => {
+			//Search for Already Existing Date
+			let index = localNormalizedData.findIndex((item: any) => item.date === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
+			//If Not Found, Create New Element With Date
+			if(index === -1) {
+				localNormalizedData.push({
+					date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
+					transaction: {},
+				})
+				index = localNormalizedData.length - 1
+			}
+
+			//Expense or Income?
+			if(showIncome && transaction.type === "income" || !showIncome && transaction.type === "expense") {
+				//If Already Existing, Add Amount
+				if (localNormalizedData[index].transaction?.[transaction.categoryId]) {
+					localNormalizedData[index].transaction[transaction.categoryId] += transaction.amount
+				} else {
+					//If Not Existing, Create New Element
+					localNormalizedData[index].transaction[transaction.categoryId] = transaction.amount
+				}
+			}
+		})
+
+		//Sort By Date from the oldest to the newest
+		localNormalizedData.sort((a, b) => {
+			return dayjs(a.date).isBefore(dayjs(b.date)) ? -1 : 1
+		})
+
+		normalizedData.current = localNormalizedData.map((item: any) => {
+			return {
+				type: showIncome ? "income" : "expense",
+				date: item.date,
+				...item.transaction
+			}
+		})
+
+		console.log({normalizedData: normalizedData.current})
+	}
+
 	//Fetch User Data
 	const {
 		data: accountInfo = {} as User,
@@ -118,12 +92,13 @@ export default function Transactions() {
 
 	//Fetch Transaction Data
 	const {
-		data: transactionList = [] as Array<Transaction>,
+		data: remoteTransactionList = [] as Array<Transaction>,
 		isLoading,
 		isFetching,
 		isError,
 		error,
-		refetch
+		refetch,
+		isSuccess: isTransactionFetchSuccess,
 	} = useGetTransactionsQuery(getAuth())
 
 	// Get Categories
@@ -138,7 +113,9 @@ export default function Transactions() {
 			console.log({realError})
 			return <ErrorPage message={JSON.stringify(realError)} />
 	}
-
+	if (isTransactionFetchSuccess) {
+		normalizeTransactionDataForChart()
+	}
 
 	function parseCategoryIcon (categoryId: string) {
 		if (categoryList) {
@@ -147,13 +124,6 @@ export default function Transactions() {
 		} else {
 			return <></>
 		}
-	}
-
-	function handleChartToggle () {
-		setShowExpense(!showExpense)
-		console.log("Am i Showing Expense ?" + !showExpense)
-		setNormalizedData(normalizeTransactionDataForChart(transactionList, showExpense))
-		console.log(normalizedData)
 	}
 
 	return (
@@ -178,18 +148,22 @@ export default function Transactions() {
 				{/*BODY*/}
 				<CenteredContainer>
 					{/*GRAPHIC*/}
-					<TransactionChart data={normalizedData} categoryList={categoryList}/>
+					<TransactionChart data={normalizedData.current} categoryList={categoryList}/>
 
 					{/*USER INTERACTION*/}
 					<div className="w-full flex flex-col items-center justify-center">
-						<Toggle active={showExpense} onToggle={handleChartToggle}/>
+						<div className="flex flex-row justify-center">
+							<p className="mx-2">Expense</p>
+							<Toggle active={showIncome} onToggle={() => setShowIncome(!showIncome)}/>
+							<p className="mx-2">Income</p>
+						</div>
 						<ButtonPrimary content="Add New" onClick={() => setModalIsOpen(true)} />
 						<DatePicker/>
 					</div>
 
 					{/*TRANSACTION LIST*/}
-					<div className="flex flex-col w-full max-h-[300px] mt-8 overflow-y-auto">
-						{transactionList.toReversed().map((transaction: Transaction) => {
+					<div className="flex flex-col w-full max-h-[300px] overflow-y-auto">
+						{remoteTransactionList.toReversed().map((transaction: Transaction) => {
 							return (
 								<div key={transaction.id} className="flex flex-row justify-between items-center m-2">
 									<div className="flex flex-col items-start justify-center min-w-[150px] text-left w-[100px] md:w-[300px]">
