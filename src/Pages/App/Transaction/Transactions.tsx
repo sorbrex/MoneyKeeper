@@ -3,7 +3,7 @@ import {Auth, BASE_URL, getAuth} from "@/Helpers/Helpers"
 import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
 import Loading from "@UI/Simple/Loading"
-import {Category, NormalizedTransactionForChart, Transaction, User} from "@/Types/Types"
+import {AlertType, Category, NormalizedTransactionForChart, Transaction, User} from "@/Types/Types"
 import {useGetCategoryQuery, useGetTransactionsQuery, useGetUserQuery} from "@/Services/ServiceAPI"
 import {useNavigate} from "react-router"
 import ReactModal from "react-modal"
@@ -18,9 +18,13 @@ import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai"
 import dayjs from "dayjs"
 import Toggle from "@UI/Simple/Toggle";
 import Axios from "axios";
+import Alert from "@UI/Simple/Alert";
 
 
 export default function Transactions() {
+	const [alertShown, setAlertShown] = React.useState(false)
+	const [alertType, setAlertType] = React.useState<AlertType>("info")
+	const [alertMessage, setAlertMessage] = React.useState("None")
 	const [modalIsOpen, setModalIsOpen] = useState(false)
 	const [showIncome, setShowIncome] = useState(false)
 	const normalizedData = useRef<any>()
@@ -114,8 +118,6 @@ export default function Transactions() {
 				...item.transaction
 			}
 		})
-
-		console.log({normalizedData: normalizedData.current})
 	}
 
 	function parseCategoryIcon (categoryId: string) {
@@ -145,26 +147,36 @@ export default function Transactions() {
 				data: {
 					transactionId: transactionId
 				}
-			}).then(() => {
-					//If Success, Refetch Data
-					console.log("Success")
-					refetch()
-				}).catch((error) => {
-					//If Error, Show Error
-					console.log("Error", error)
-				}).finally(()=>{
-					//In Any Case, Close Modal
-					console.log("Finally")
-				})
+			}).then(response => {
+				if (response.status.toString().includes("20")){
+					setAlertType("success")
+					setAlertMessage("Transaction Deleted!")
+				} else {
+					setAlertType("error")
+					setAlertMessage(`Cannot Delete Transaction! ${response.data.message}`)
+				}
+			})
+				.catch(error => {
+					setAlertType("error")
+					setAlertMessage(`Cannot Delete Transaction! ${error}`)
+				}).finally(() => {
+				showAlertHideModal()
+			})
 		}
 	}
 
+	function showAlertHideModal() {
+		setAlertShown(true)
+		setTimeout(() => {
+			setAlertShown(false)
+		}, 2500)
+	}
 
 
 
 	return (
 		<>
-			<section id="Movements_Page" className="h-screen flex flex-col text-black bg-white">
+			<section id="Movements_Page" className="h-screen flex flex-col text-black bg-white overflow-y-auto">
 				{/*MODAL*/}
 				<ReactModal
 					isOpen={modalIsOpen}
@@ -222,6 +234,10 @@ export default function Transactions() {
 						})}
 					</div>
 				</CenteredContainer>
+
+				<div className="fixed bottom-32">
+					<Alert visible={alertShown} type={alertType} message={alertMessage}/>
+				</div>
 
 				{/*FOOTER*/}
 				<AppFooter />

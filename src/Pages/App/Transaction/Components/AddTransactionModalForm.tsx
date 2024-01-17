@@ -19,6 +19,7 @@ export default function AddTransactionModalForm(props: ModalProps) {
 		setAlertShown(true)
 		setTimeout(() => {
 			setAlertShown(false)
+			setLoading(false)
 			setTimeout(() => {
 				props.setModalState(false)
 			}, 300)
@@ -52,7 +53,6 @@ export default function AddTransactionModalForm(props: ModalProps) {
 				setAlertType("error")
 				setAlertMessage(`Cannot Create the Transaction! ${error}`)
 			}).finally(() => {
-				setLoading(false)
 				showAlertHideModal()
 			})
 	}
