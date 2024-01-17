@@ -9,9 +9,14 @@ const defaultSelected: DateRange = {
 	to: new Date()
 }
 
-export default function DatePicker(){
+export default function DatePicker(props:{initializeWithDate?: {from: Date, to: Date}}){
 	const [range, setRange] = useState<DateRange | undefined>(defaultSelected)
 	const [calendarVisible, setCalendarVisible] = useState<boolean>(false)
+
+	if (props.initializeWithDate !== undefined) {
+		const {from, to} = props.initializeWithDate
+		setRange({from, to})
+	}
 
 	function formatSelected(){
 		let formattedString = ""

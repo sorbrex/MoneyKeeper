@@ -34,6 +34,8 @@ export default function Transactions() {
 	const [alertMessage, setAlertMessage] = React.useState("None")
 	const [modalIsOpen, setModalIsOpen] = useState(false)
 	const [showIncome, setShowIncome] = useState(false)
+	const [initialDate, setInitialDate] = useState(dayjs().subtract(1, "month"))
+	const [finalDate, setFinalDate] = useState(dayjs())
 	const normalizedData = useRef<any>()
 	const navigate = useNavigate()
 	const baseFormValues: CreateTransactionFormValues = {
@@ -232,7 +234,7 @@ export default function Transactions() {
 							<p className="mx-2">Income</p>
 						</div>
 						<ButtonPrimary content="Add New" onClick={() => setModalIsOpen(true)} />
-						<DatePicker/>
+						<DatePicker initializeWithDate={{from:initialDate.toDate(), to:finalDate.toDate()}}/>
 					</div>
 
 					{/*TRANSACTION LIST*/}
