@@ -26,7 +26,17 @@ import dayjs from "dayjs"
 import Toggle from "@UI/Simple/Toggle";
 import Axios from "axios";
 import Alert from "@UI/Simple/Alert";
+import {DateRange} from "react-day-picker";
+import {subMonths} from "date-fns";
+import isBetween from "dayjs/plugin/isBetween";
+dayjs.extend(isBetween)
 
+
+const pastMonth = subMonths(new Date(), 1)
+const defaultRange: DateRange = {
+	from: pastMonth,
+	to: new Date()
+}
 
 export default function Transactions() {
 	const [alertShown, setAlertShown] = React.useState(false)
@@ -34,8 +44,8 @@ export default function Transactions() {
 	const [alertMessage, setAlertMessage] = React.useState("None")
 	const [modalIsOpen, setModalIsOpen] = useState(false)
 	const [showIncome, setShowIncome] = useState(false)
-	const [initialDate, setInitialDate] = useState(dayjs().subtract(1, "month"))
-	const [finalDate, setFinalDate] = useState(dayjs())
+	const [range, setRange] = useState<DateRange>(defaultRange)
+	const transactionList = useRef<Array<Transaction>>([])
 	const normalizedData = useRef<any>()
 	const navigate = useNavigate()
 	const baseFormValues: CreateTransactionFormValues = {
@@ -93,15 +103,18 @@ export default function Transactions() {
 			return <ErrorPage message={JSON.stringify(realError)} />
 	}
 	if (isTransactionFetchSuccess) {
+		transactionList.current = remoteTransactionList.toReversed().filter((transaction: Transaction) => {
+			return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date)
+		})
 		normalizeTransactionDataForChart()
 	}
 
 	// Normalize Data For Chart
-	function normalizeTransactionDataForChart (list: Array<Transaction> = remoteTransactionList) {
+	function normalizeTransactionDataForChart () {
 		let localNormalizedData: NormalizedTransactionForChart = []
 
 		//Group By Date
-		list.forEach((transaction: Transaction) => {
+		transactionList.current.forEach((transaction: Transaction) => {
 			//Search for Already Existing Date
 			let index = localNormalizedData.findIndex((item: any) => item.date === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
 			//If Not Found, Create New Element With Date
@@ -126,10 +139,7 @@ export default function Transactions() {
 		})
 
 		//Sort By Date from the oldest to the newest
-		localNormalizedData.sort((a, b) => {
-			return dayjs(a.date).isBefore(dayjs(b.date)) ? -1 : 1
-		})
-
+		localNormalizedData.reverse()
 		normalizedData.current = localNormalizedData.map((item: any) => {
 			return {
 				type: showIncome ? "income" : "expense",
@@ -146,6 +156,11 @@ export default function Transactions() {
 		} else {
 			return <></>
 		}
+	}
+
+	function handleChangeDateRange (range: DateRange | undefined) {
+		if (range === undefined) return
+		setRange(range)
 	}
 
 	function handleEdit (transactionId: string) {
@@ -200,8 +215,6 @@ export default function Transactions() {
 		}, 2500)
 	}
 
-
-
 	return (
 		<>
 			<section id="Movements_Page" className="h-screen flex flex-col text-black bg-white overflow-y-auto">
@@ -234,12 +247,13 @@ export default function Transactions() {
 							<p className="mx-2">Income</p>
 						</div>
 						<ButtonPrimary content="Add New" onClick={() => setModalIsOpen(true)} />
-						<DatePicker initializeWithDate={{from:initialDate.toDate(), to:finalDate.toDate()}}/>
+						<DatePicker onRangeSelected={handleChangeDateRange} range={range} />
 					</div>
 
 					{/*TRANSACTION LIST*/}
 					<div className="flex flex-col w-full max-h-[300px] overflow-y-auto">
-						{remoteTransactionList.toReversed().map((transaction: Transaction) => {
+						{transactionList.current.length === 0 && <h1 className="text-center text-gray-500 mt-16">No Transactions Found</h1>}
+						{transactionList.current.map((transaction: Transaction) => {
 							return (
 								<div key={transaction.id} className="flex flex-row justify-between items-center m-2">
 									<div className="flex flex-col items-start justify-center min-w-[150px] text-left w-[100px] md:w-[300px]">

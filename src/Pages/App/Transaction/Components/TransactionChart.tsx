@@ -76,7 +76,7 @@ export default function TransactionChart(props: TransactionChartProps) {
 	}, [props]);
 
 	return (
-		<div id="chartdiv" className="w-full min-h-[100px] md:min-h-[400px] mt-4"></div>
+		<div id="chartdiv" className="w-full h-[100px] md:h-[400px] mt-4"></div>
 	);
 }
 
