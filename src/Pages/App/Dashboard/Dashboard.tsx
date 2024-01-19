@@ -42,11 +42,6 @@ export default function Dashboard() {
 	return (
 		<>
 			<AppHeader username={accountInfo.name} page={document.title}/>
-			{/*TODO: Should Fetch the Username from The Saved Session or Something*/}
-
-			{/*<section id="Account_Section">*/}
-			{/*	<Account />*/}
-			{/*</section>*/}
 
 			<AppFooter />
 		</>
