@@ -98,9 +98,9 @@ export default function Transactions() {
 	if (userIsLoading || isFetching || isLoading || userIsFetching) {
 		return <Loading />
 	} else if (isError || userIsError) {
-			const realError = error || userError
-			console.log({realError})
-			return <ErrorPage message={JSON.stringify(realError)} />
+		const realError = error || userError
+		console.log({realError})
+		return <ErrorPage message={JSON.stringify(realError)} />
 	}
 	if (isTransactionFetchSuccess) {
 		transactionList.current = remoteTransactionList.toReversed().filter((transaction: Transaction) => {
@@ -111,7 +111,7 @@ export default function Transactions() {
 
 	// Normalize Data For Chart
 	function normalizeTransactionDataForChart () {
-		let localNormalizedData: NormalizedTransactionForChart = []
+		const localNormalizedData: NormalizedTransactionForChart = []
 
 		//Group By Date
 		transactionList.current.forEach((transaction: Transaction) => {
