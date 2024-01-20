@@ -14,21 +14,21 @@ import {
 import {useGetCategoryQuery, useGetTransactionsQuery, useGetUserQuery} from "@/Services/ServiceAPI"
 import {useNavigate} from "react-router"
 import ReactModal from "react-modal"
-import TransactionChart from "@Pages/App/Transaction/Components/TransactionChart";
+import TransactionChart from "@Pages/App/Transaction/Components/TransactionChart"
 import AddTransactionModalForm from "@Pages/App/Transaction/Components/AddTransactionModalForm"
 import ErrorPage from "@Pages/Base/ErrorPages"
 import CenteredContainer from "@/Layouts/CenteredContainer"
 import DatePicker from "@UI/Complex/DatePicker"
 import ButtonPrimary from "@UI/Simple/Buttons/ButtonPrimary"
 import CategoryIcon, {Icon} from "@UI/Simple/CategoryIcon"
-import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai"
 import dayjs from "dayjs"
-import Toggle from "@UI/Simple/Toggle";
-import Axios from "axios";
-import Alert from "@UI/Simple/Alert";
-import {DateRange} from "react-day-picker";
-import {subMonths} from "date-fns";
-import isBetween from "dayjs/plugin/isBetween";
+import Toggle from "@UI/Simple/Toggle"
+import Axios from "axios"
+import Alert from "@UI/Simple/Alert"
+import {DateRange} from "react-day-picker"
+import {subMonths} from "date-fns"
+import isBetween from "dayjs/plugin/isBetween"
+import TransactionList from "@UI/Complex/TransactionList"
 dayjs.extend(isBetween)
 
 
@@ -149,15 +149,6 @@ export default function Transactions() {
 		})
 	}
 
-	function parseCategoryIcon (categoryId: string) {
-		if (categoryList) {
-			const icon: Icon = categoryList.filter((category: Category) => category.id === categoryId)[0]?.name as Icon
-			return <CategoryIcon icon={icon} />
-		} else {
-			return <></>
-		}
-	}
-
 	function handleChangeDateRange (range: DateRange | undefined) {
 		if (range === undefined) return
 		setRange(range)
@@ -203,8 +194,8 @@ export default function Transactions() {
 					setAlertType("error")
 					setAlertMessage(`Cannot Delete Transaction! ${error}`)
 				}).finally(() => {
-				showAlertHideModal()
-			})
+					showAlertHideModal()
+				})
 		}
 	}
 
@@ -251,30 +242,7 @@ export default function Transactions() {
 					</div>
 
 					{/*TRANSACTION LIST*/}
-					<div className="flex flex-col w-full max-h-[300px] overflow-y-auto">
-						{transactionList.current.length === 0 && <h1 className="text-center text-gray-500 mt-16">No Transactions Found</h1>}
-						{transactionList.current.map((transaction: Transaction) => {
-							return (
-								<div key={transaction.id} className="flex flex-row justify-between items-center m-2">
-									<div className="flex flex-col items-start justify-center min-w-[150px] text-left w-[100px] md:w-[300px]">
-										<h1 className="text-xl font-bold">{transaction.name}</h1>
-										<p className="text-gray-500">{transaction.description}</p>
-									</div>
-									<div className="flex flex-col m-2">
-										{parseCategoryIcon(transaction.categoryId)}
-									</div>
-									<div className="flex flex-col md:flex-row md:justify-between md:min-w-[300px]">
-										<p className={`text-xl font-bold ${transaction.type === "expense" ? "text-contrastRed" : "text-contrastGreen"}`}>{transaction.type === "expense" ? "-" : "+"}{transaction.amount}&euro;</p>
-										<p className="text-gray-500">{dayjs(transaction.createdAt).format("DD/MM/YYYY")}</p>
-									</div>
-									<div className="flex flex-col md:flex-row items-end md:items-center md:justify-around w-[100px]">
-										<AiOutlineEdit className="text-2xl cursor-pointer" onClick={() => handleEdit(transaction.id)} />
-										<AiOutlineDelete className="text-2xl text-contrastRed cursor-pointer" onClick={() => handleDelete(transaction.id)} />
-									</div>
-								</div>
-							)
-						})}
-					</div>
+					<TransactionList transaction={transactionList.current} onEdit={handleEdit} onDelete={handleDelete} categoryList={categoryList} />
 				</CenteredContainer>
 
 				<div className="fixed bottom-32">

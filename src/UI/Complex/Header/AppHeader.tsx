@@ -46,7 +46,6 @@ export default function AppHeader(props: {page: string, username: string}) {
 					<ButtonLink content='Transaction' pageRef="/transaction" underline={props.page === "Transaction"}/>
 				</div>
 
-
 				<div id="Account" className="w-full hidden pt-6 sm:flex sm:items-center sm:w-auto sm:pt-0">
 					<ButtonLink content={props.username} pageRef="/account" icon={<AiOutlineUser size="2em" className="ml-2"/>} underline={props.page === "Account"}/>
 				</div>

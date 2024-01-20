@@ -5,6 +5,7 @@ import Health from "@Assets/Icons/Health.png"
 import Hobby from "@Assets/Icons/Hobby.png"
 import Home from "@Assets/Icons/Home.png"
 import Work from "@Assets/Icons/Work.png"
+import {Category} from "@/Types/Types"
 
 function selectIconToRender(iconName: Icon) {
 	switch(iconName) {
@@ -25,6 +26,16 @@ function selectIconToRender(iconName: Icon) {
 		return undefined
 	}
 }
+
+export function parseCategoryIcon (categoryList: Category[], categoryId: string) {
+	if (categoryList) {
+		const icon: Icon = categoryList.filter((category: Category) => category.id === categoryId)[0]?.name as Icon
+		return <CategoryIcon icon={icon} />
+	} else {
+		return <></>
+	}
+}
+
 
 export function retrieveColorForIcon(iconName: Icon) {
 	//Yellow => #FAEDCB | Rose => #F2C6DE | Blue => #C6DEF1 | Green => #C9E4DE | Purple => #DBCDF0 | Orange => #F7D9C4
