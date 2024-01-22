@@ -1,20 +1,42 @@
-import React, { useEffect } from "react"
+import React, {useEffect, useRef, useState} from "react"
 import {Auth, getAuth} from "@/Helpers/Helpers"
 import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
 import Loading from "@UI/Simple/Loading"
-import {User} from "@/Types/Types"
-import {useGetUserQuery} from "@/Services/ServiceAPI"
+import {
+	Category,
+	NormalizedTransactionForChart,
+	Transaction,
+	User
+} from "@/Types/Types"
+import {useGetCategoryQuery, useGetTransactionsQuery, useGetUserQuery} from "@/Services/ServiceAPI"
 import {useNavigate} from "react-router"
-import CenteredContainer from "@/Layouts/CenteredContainer"
-import Title from "@UI/Simple/Typography/Title"
-import Container from "@/Layouts/Container"
+import TransactionList from "@UI/Complex/TransactionList"
+import ErrorPage from "@Pages/Base/ErrorPages"
+import dayjs from "dayjs"
+import {DateRange} from "react-day-picker"
+import {subMonths} from "date-fns"
+import DatePicker from "@UI/Complex/DatePicker"
+import CategoryIcon, {Icon} from "@UI/Simple/CategoryIcon"
+import ButtonPrimary from "@UI/Simple/Buttons/ButtonPrimary"
+import ButtonSecondary from "@UI/Simple/Buttons/ButtonSecondary"
+
+const pastMonth = subMonths(new Date(), 1)
+const defaultRange: DateRange = {
+	from: pastMonth,
+	to: new Date()
+}
 
 export default function Dashboard() {
 	const navigate = useNavigate()
+	const [selectedCategories, setSelectedCategories] = useState<Array<string>>(["Hobby"])
 	const [cashAvailable, setCashAvailable] = React.useState(0)
 	const [monthExpense, setMonthExpense] = React.useState(0)
 	const [monthIncome, setMonthIncome] = React.useState(0)
+	const [showIncome, setShowIncome] = useState(false)
+	const [range, setRange] = useState<DateRange>(defaultRange)
+	const transactionList = useRef<Array<Transaction>>([])
+	const normalizedData = useRef<any>()
 
 	useEffect(() => {
 		document.title = "Dashboard"
@@ -22,34 +44,98 @@ export default function Dashboard() {
 			navigate("/login")
 		})
 	}, [])
-
 	if (!getAuth()) {
 		return <Loading />
 	}
 
+	//Fetch User Data
 	const {
 		data: accountInfo = {} as User,
+		isLoading: userIsLoading,
+		isFetching: userIsFetching,
+		isError: userIsError,
+		error: userError,
+	} = useGetUserQuery(getAuth())
+
+	//Fetch Transaction Data
+	const {
+		data: remoteTransactionList = [] as Array<Transaction>,
 		isLoading,
 		isFetching,
 		isError,
 		error,
-	} = useGetUserQuery(getAuth())
+		isSuccess: isTransactionFetchSuccess,
+	} = useGetTransactionsQuery({token: getAuth(), limit: 2})
 
+	// Get Categories
+	const {
+		data: categoryList = [] as Array<Category>,
+	} = useGetCategoryQuery(getAuth())
 
-	if (isLoading || isFetching) {
+	if (userIsLoading || isFetching || isLoading || userIsFetching) {
 		return <Loading />
+	} else if (isError || userIsError) {
+		const realError = error || userError
+		console.log({realError})
+		return <ErrorPage message={JSON.stringify(realError)} />
+	}
+	if (isTransactionFetchSuccess) {
+		transactionList.current = remoteTransactionList.toReversed().filter((transaction: Transaction) => {
+			return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date)
+		})
+		normalizeTransactionDataForChart()
 	}
 
-	if (isError) {
-		console.log({error})
-		return <div>{JSON.stringify(error)}</div>
+	// Normalize Data For Chart
+	function normalizeTransactionDataForChart () {
+		const localNormalizedData: NormalizedTransactionForChart = []
+
+		//Group By Date
+		transactionList.current.forEach((transaction: Transaction) => {
+			//Search for Already Existing Date
+			let index = localNormalizedData.findIndex((item: any) => item.date === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
+			//If Not Found, Create New Element With Date
+			if(index === -1) {
+				localNormalizedData.push({
+					date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
+					transaction: {},
+				})
+				index = localNormalizedData.length - 1
+			}
+
+			//Expense or Income?
+			if(showIncome && transaction.type === "income" || !showIncome && transaction.type === "expense") {
+				//If Already Existing, Add Amount
+				if (localNormalizedData[index].transaction?.[transaction.categoryId]) {
+					localNormalizedData[index].transaction[transaction.categoryId] += transaction.amount
+				} else {
+					//If Not Existing, Create New Element
+					localNormalizedData[index].transaction[transaction.categoryId] = transaction.amount
+				}
+			}
+		})
+
+		//Sort By Date from the oldest to the newest
+		localNormalizedData.reverse()
+		normalizedData.current = localNormalizedData.map((item: any) => {
+			return {
+				type: showIncome ? "income" : "expense",
+				date: item.date,
+				...item.transaction
+			}
+		})
+	}
+
+	function handleChangeDateRange (range: DateRange | undefined) {
+		if (range === undefined) return
+		setRange(range)
 	}
 
 	return (
 		<>
 			<AppHeader username={accountInfo.name} page={document.title}/>
 			<section id="Dashboard_Page" className="text-black body-font">
-				<div id="InternalLayout" className="w-full h-screen py-24 flex flex-col md:flex-row">
+				<div id="InternalLayout" className="w-full h-screen py-24 px-4 flex flex-col md:flex-row">
 					<div id="Sidebar" className="w-full md:max-w-[200px] lg:max-w-[300px]">
 						<div id="Available" className="w-full my-4">
 							<h4 className="text-center md:text-left">Cash Available:</h4>
@@ -70,39 +156,34 @@ export default function Dashboard() {
 						<div id="Charts" className="md:flex">
 
 							{/*Column Clustered Chart Expenses - Incomes Filtered*/}
-							<div id="ExpenseIncomeClusteredChart" className="border-2 border-blue-600 w-full">
+							<div id="ExpenseIncomeClusteredChart" className="w-full">
 
-
-								<div id="UserInteraction">
-									{/*Category Row*/}
-									{/*Date Picker*/}
-									<div id="UserInteraction_Filter" className="border-2 w-full">
-										<p>UserInteraction_Filter</p>
-									</div>
-
-									{/*Date Shortcuts*/}
-									{/*Range Expenses - Incomes*/}
-									<div id="UserInteraction_DefaultRange" className="border-2 w-full">
-										<p>UserInteraction_DefaultRange</p>
-									</div>
+								{/*Range Expenses - Incomes*/}
+								<div id="UserInteraction_DefaultRange" className="w-full flex justify-around items-center">
+									<button type="button" onClick={()=>console.log("AAAAA")} className="w-[50px] h-[25px] bg-gray-300 rounded shadow">1D</button>
+									<button type="button" onClick={()=>console.log("AAAAA")} className="w-[50px] h-[25px] bg-gray-300 rounded shadow">1W</button>
+									<button type="button" onClick={()=>console.log("AAAAA")} className="w-[50px] h-[25px] bg-gray-300 rounded shadow">1M</button>
+									<button type="button" onClick={()=>console.log("AAAAA")} className="w-[50px] h-[25px] bg-gray-300 rounded shadow">3M</button>
+									<button type="button" onClick={()=>console.log("AAAAA")} className="w-[50px] h-[25px] bg-gray-300 rounded shadow">1Y</button>
+									<button type="button" onClick={()=>console.log("AAAAA")} className="w-[50px] h-[25px] bg-gray-300 rounded shadow">ALL</button>
 								</div>
 
 								{/*Column Clustered Chart*/}
 								<div id="ExpenseIncomeClusteredChart_Chart" className="border-2 w-full">
 									<p>ExpenseIncomeClusteredChart_Chart</p>
 								</div>
-
 							</div>
 
 							{/*Pie Chart Ever Categories Expenses*/}
 							<div id="CategoryPieChart" className="border-2 w-full">
-								<p>CategoryPieChart</p>
+								Category Pie
 							</div>
+
 						</div>
 
 						{/*Transactions List*/}
 						<div id="TransactionList" className="border-2 w-full">
-							<p>Transactions</p>
+							<TransactionList transaction={transactionList.current} categoryList={categoryList} />
 						</div>
 					</div>
 				</div>

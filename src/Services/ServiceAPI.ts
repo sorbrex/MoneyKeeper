@@ -55,12 +55,12 @@ export const MKServerAPI = createApi({
 
 		//Data Endpoint
 		getTransactions: builder.query({
-			query: (token:string) => (
+			query: (args:{token:string, limit?:number}) => (
 				{
-					url: "getTransactions",
+					url: `getTransactions${args.limit && "?limit=" + args.limit}`,
 					method: "GET",
 					headers: {
-						Authorization: `Bearer ${token}`
+						Authorization: `Bearer ${args.token}`
 					}
 				}
 			),

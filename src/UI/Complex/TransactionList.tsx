@@ -22,10 +22,13 @@ export default function TransactionList(props:TransactionListProps) {
 							<p className={`text-xl font-bold ${transaction.type === "expense" ? "text-contrastRed" : "text-contrastGreen"}`}>{transaction.type === "expense" ? "-" : "+"}{transaction.amount}&euro;</p>
 							<p className="text-gray-500">{dayjs(transaction.createdAt).format("DD/MM/YYYY")}</p>
 						</div>
-						<div className="flex flex-col md:flex-row items-end md:items-center md:justify-around w-[100px]">
-							<AiOutlineEdit className="text-2xl cursor-pointer" onClick={() => props.onEdit(transaction.id)} />
-							<AiOutlineDelete className="text-2xl text-contrastRed cursor-pointer" onClick={() => props.onDelete(transaction.id)} />
-						</div>
+						{
+							(props.editable) &&
+								<div className="flex flex-col md:flex-row items-end md:items-center md:justify-around w-[100px]">
+									<AiOutlineEdit className="text-2xl cursor-pointer" onClick={() => props.onEdit && props.onEdit(transaction.id)} />
+									<AiOutlineDelete className="text-2xl text-contrastRed cursor-pointer" onClick={() => props.onDelete && props.onDelete(transaction.id)} />
+								</div>
+						}
 					</div>
 				)
 			})}
@@ -37,6 +40,6 @@ type TransactionListProps = {
 	transaction: Transaction[]
 	categoryList: Category[]
 	editable?: boolean
-	onEdit: (transactionId: string) => void
-	onDelete: (transactionId: string) => void
+	onEdit?: (transactionId: string) => void
+	onDelete?: (transactionId: string) => void
 }

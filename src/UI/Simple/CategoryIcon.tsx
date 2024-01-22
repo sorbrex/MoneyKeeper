@@ -58,10 +58,10 @@ export function retrieveColorForIcon(iconName: Icon) {
 	}
 }
 
-export default function CategoryIcon(props:{icon: Icon, selected?: boolean, className?: string}) {
+export default function CategoryIcon(props:{icon: Icon, className?: string}) {
 	return (
 		<>
-			<img src={selectIconToRender(props.icon)} alt={props.icon} className={`h-10 w-10 p-1 rounded ${props.selected && "border-solid border-2 border-faceBlue"} ${props.className}`}/>
+			<img src={selectIconToRender(props.icon)} alt={props.icon} className={`h-10 w-10 p-1 rounded ${props.className}`}/>
 		</>
 	)
 }

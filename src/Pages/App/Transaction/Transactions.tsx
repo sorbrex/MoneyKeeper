@@ -20,7 +20,6 @@ import ErrorPage from "@Pages/Base/ErrorPages"
 import CenteredContainer from "@/Layouts/CenteredContainer"
 import DatePicker from "@UI/Complex/DatePicker"
 import ButtonPrimary from "@UI/Simple/Buttons/ButtonPrimary"
-import CategoryIcon, {Icon} from "@UI/Simple/CategoryIcon"
 import dayjs from "dayjs"
 import Toggle from "@UI/Simple/Toggle"
 import Axios from "axios"
@@ -88,7 +87,7 @@ export default function Transactions() {
 		error,
 		refetch,
 		isSuccess: isTransactionFetchSuccess,
-	} = useGetTransactionsQuery(getAuth())
+	} = useGetTransactionsQuery({token:getAuth()})
 
 	// Get Categories
 	const {
@@ -171,8 +170,6 @@ export default function Transactions() {
 	function handleDelete (transactionId: string) {
 		//Delete Transaction
 		if(confirm("Are you sure you want to delete this transaction?")) {
-			const transaction = remoteTransactionList.find((transaction: Transaction) => transaction.id === transactionId)
-			console.log({transaction})
 			//Make Server Request To Delete Transaction
 			Axios.delete(`${BASE_URL}/app/deleteTransaction`, {
 				headers: {
@@ -196,6 +193,7 @@ export default function Transactions() {
 				}).finally(() => {
 					showAlertHideModal()
 				})
+
 		}
 	}
 
@@ -242,11 +240,13 @@ export default function Transactions() {
 					</div>
 
 					{/*TRANSACTION LIST*/}
-					<TransactionList transaction={transactionList.current} onEdit={handleEdit} onDelete={handleDelete} categoryList={categoryList} />
+					<TransactionList transaction={transactionList.current} categoryList={categoryList} editable={true} onEdit={handleEdit} onDelete={handleDelete} />
 				</CenteredContainer>
 
-				<div className="fixed bottom-32">
-					<Alert visible={alertShown} type={alertType} message={alertMessage}/>
+				<div className="fixed bottom-32 w-full flex justify-center items-center">
+					<div className="max-w-xl">
+						<Alert visible={alertShown} type={alertType} message={alertMessage}/>
+					</div>
 				</div>
 
 				{/*FOOTER*/}
