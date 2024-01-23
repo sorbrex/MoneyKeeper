@@ -57,7 +57,7 @@ export const MKServerAPI = createApi({
 		getTransactions: builder.query({
 			query: (args:{token:string, limit?:number}) => (
 				{
-					url: `getTransactions${args.limit && "?limit=" + args.limit}`,
+					url: `getTransactions${args.limit ? ("?limit=" + args.limit):""}`,
 					method: "GET",
 					headers: {
 						Authorization: `Bearer ${args.token}`

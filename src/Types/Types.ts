@@ -73,7 +73,14 @@ export type DailyTransaction = {
   transaction: {[key: string]: number},   // {category: amount} => {food: 100, transport: 50} => daily.expense.food = 100
 }
 
+export type CollectionOfTransactionForData = {
+  date: string,
+  expense: {[key: string]: number},
+  income: {[key: string]: number}
+}
+
 export type NormalizedTransactionForChart = Array<DailyTransaction>
+export type NormalizedTransactionForClustered = Array<CollectionOfTransactionForData>
 
 
 //==========================
