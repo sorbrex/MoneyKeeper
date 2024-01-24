@@ -1,133 +1,108 @@
 import { useLayoutEffect } from 'react';
 import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
-import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import {Category, NormalizedTransactionForChart} from "@/Types/Types";
+import {Icon, retrieveColorForIcon} from "@UI/Simple/CategoryIcon";
+import {color} from "@amcharts/amcharts5";
+import am5themes_Responsive from "@amcharts/amcharts5/themes/Responsive";
+import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 export default function ClusteredChart(props: ClusteredChartProps) {
 	useLayoutEffect(() => {
-		let root = am5.Root.new("chartdiv");
+		const normalizedData = props.data
 
+		let root = am5.Root.new("chartdiv");
 		root.setThemes([
-			am5themes_Animated.new(root)
+			am5themes_Animated.new(root),
+			am5themes_Responsive.new(root)
 		]);
 
-		let chart = root.container.children.push(am5xy.XYChart.new(root, {
-			panX: false,
-			panY: false,
-			wheelX: "panX",
-			wheelY: "zoomX",
-			paddingLeft: 0,
-			layout: root.verticalLayout
-		}));
-
-		let xRenderer = am5xy.AxisRendererX.new(root, {
-			cellStartLocation: 0.1,
-			cellEndLocation: 0.9,
-			minorGridEnabled: true
-		});
+		let chart = root.container.children.push(
+			am5xy.XYChart.new(root, {
+				panX: true,
+				panY: false,
+				wheelX: "panX",
+				wheelY: "zoomX"
+			}));
 
 		let xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
-			categoryField: "year",
-			renderer: xRenderer,
+			categoryField: "date",
+			startLocation: 0,
+			endLocation: 1,
+			renderer: am5xy.AxisRendererX.new(root, {
+				minorGridEnabled: true
+			}),
 			tooltip: am5.Tooltip.new(root, {})
 		}));
-
-		xRenderer.grid.template.setAll({
-			location: 1
-		})
-
-		let data = [{
-			"year": "2021",
-			"europe": 2.5,
-			"namerica": 2.5,
-			"asia": 2.1,
-			"lamerica": 1,
-			"meast": 0.8,
-			"africa": 0.4
-		}, {
-			"year": "2022",
-			"europe": 2.6,
-			"namerica": 2.7,
-			"asia": 2.2,
-			"lamerica": 0.5,
-			"meast": 0.4,
-			"africa": 0.3
-		}, {
-			"year": "2023",
-			"europe": 2.8,
-			"namerica": 2.9,
-			"asia": 2.4,
-			"lamerica": 0.3,
-			"meast": 0.9,
-			"africa": 0.5
-		}];
-
-		xAxis.data.setAll(data);
+		xAxis.data.setAll(normalizedData);
 
 		let yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-			min: 0,
-			renderer: am5xy.AxisRendererY.new(root, {
-				strokeOpacity: 0.1
-			})
+			renderer: am5xy.AxisRendererY.new(root, {})
 		}));
 
 		function makeSeries(name: string, fieldName: string, stacked: boolean) {
 			let series = chart.series.push(am5xy.ColumnSeries.new(root, {
-				stacked: stacked,
 				name: name,
 				xAxis: xAxis,
 				yAxis: yAxis,
 				valueYField: fieldName,
-				categoryXField: "year"
+				categoryXField: "date",
+				stacked: stacked,
+				fill: color(retrieveColorForIcon(name as Icon)),
 			}));
 
 			series.columns.template.setAll({
-				tooltipText: "{name}, {categoryX}:{valueY}",
+				tooltipText: "[bold]{name}[/], {categoryX}: \n{valueY}€",
 				width: am5.percent(90),
 				tooltipY: am5.percent(10)
 			});
-			series.data.setAll(data);
 
-			// Make stuff animate on load
-			// https://www.amcharts.com/docs/v5/concepts/animations/
-			series.appear();
-
-			series.bullets.push(function () {
-				return am5.Bullet.new(root, {
-					locationY: 0.5,
-					sprite: am5.Label.new(root, {
-						text: "{valueY}",
-						fill: root.interfaceColors.get("alternativeText"),
-						centerY: am5.percent(50),
-						centerX: am5.percent(50),
-						populateText: true
-					})
-				});
-			});
-
+			series.data.setAll(normalizedData);
+			series.appear(1000);
 		}
 
-		makeSeries("Europe", "europe", false);
-		makeSeries("North America", "namerica", true);
-		makeSeries("Asia", "asia", false);
-		makeSeries("Latin America", "lamerica", true);
-		makeSeries("Middle East", "meast", true);
-		makeSeries("Africa", "africa", true);
+		const allIndexes = Object.keys(normalizedData)
+		console.log(`Total Of Day To Display: ${allIndexes.length}\n\n`)
+		// First we loop for each date
+		for (let index of allIndexes) {
+			console.log(`Creating series for Date => ${normalizedData[index as unknown as number].date}`)
+			// Now we loop for each transactionId (expense_ or income_) of the date. All TransactionIds match a category
+			const allTransactionIds = Object.keys(normalizedData[index as unknown as number])
+			const allExpenseIds = allTransactionIds.filter((transactionId: string) => transactionId.includes("expense_"))
+			const allIncomeIds = allTransactionIds.filter((transactionId: string) => transactionId.includes("income_"))
 
+			if(allExpenseIds.length > 0) {
+				const firstExpenseId = allExpenseIds.pop() as string
+				const firstExpenseName = props.categoryList.find((category: Category) => category.id === firstExpenseId?.split("_")[1])?.name || "Expense"
+				makeSeries(firstExpenseName, firstExpenseId, false)
+				for (let expenseId of allExpenseIds) {
+					const categoryId = expenseId.split("_")[1]
+					const categoryName = props.categoryList.find((category: Category) => category.id === categoryId)?.name || "Expense"
+					makeSeries(categoryName, expenseId, true)
+				}
+			}
 
-// Make stuff animate on load
-// https://www.amcharts.com/docs/v5/concepts/animations/
-		chart.appear(1000, 100);
+			if(allIncomeIds.length > 0) {
+				const firstIncomeId = allIncomeIds.pop() as string
+				const firstIncomeName = props.categoryList.find((category: Category) => category.id === firstIncomeId?.split("_")[1])?.name || "Income"
+				makeSeries(firstIncomeName, firstIncomeId, false)
+				for (let incomeId of allIncomeIds) {
+					const categoryId = incomeId.split("_")[1]
+					const categoryName = props.categoryList.find((category: Category) => category.id === categoryId)?.name || "Income"
+					makeSeries(categoryName, incomeId, true)
+				}
+			}
 
+			break
+		}
 
 		return () => {
 			root.dispose();
 		};
-	}, []);
+	}, [props.data]);
 
 	return (
-		<div id="chartdiv" style={{ width: "500px", height: "500px" }}></div>
+		<div id="chartdiv" className="w-full min-h-[400px]"></div>
 	);
 }
 

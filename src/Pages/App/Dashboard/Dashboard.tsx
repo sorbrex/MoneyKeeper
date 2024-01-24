@@ -5,7 +5,7 @@ import AppFooter from "@UI/Complex/Footer/AppFooter"
 import Loading from "@UI/Simple/Loading"
 import {
 	Category,
-	NormalizedTransactionForChart, NormalizedTransactionForClustered,
+	NormalizedTransactionForChart,
 	Transaction,
 	User
 } from "@/Types/Types"
@@ -87,7 +87,7 @@ export default function Dashboard() {
 
 	// Normalize Data For Chart
 	function normalizeTransactionDataForChart () {
-		const localNormalizedData: NormalizedTransactionForClustered = []
+		const localNormalizedData: NormalizedTransactionForChart = []
 
 		//Group By Date
 		transactionList.current.forEach((transaction: Transaction) => {
@@ -97,8 +97,7 @@ export default function Dashboard() {
 			if(index === -1) {
 				localNormalizedData.push({
 					date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
-					income: {},
-					expense: {}
+					transaction: {},
 				})
 				index = localNormalizedData.length - 1
 			}
@@ -106,19 +105,19 @@ export default function Dashboard() {
 			//Expense or Income?
 			if(transaction.type === "income") {
 				//If Already Existing, Add Amount
-				if (localNormalizedData[index].income?.[transaction.categoryId]) {
-					localNormalizedData[index].income[transaction.categoryId] += transaction.amount
+				if (localNormalizedData[index].transaction?.["income_" + transaction.categoryId]) {
+					localNormalizedData[index].transaction["income_" + transaction.categoryId] += transaction.amount
 				} else {
 					//If Not Existing, Create New Element
-					localNormalizedData[index].income[transaction.categoryId] = transaction.amount
+					localNormalizedData[index].transaction["income_" + transaction.categoryId] = transaction.amount
 				}
 			} else {
 				//If Already Existing, Add Amount
-				if (localNormalizedData[index].expense?.[transaction.categoryId]) {
-					localNormalizedData[index].expense[transaction.categoryId] += transaction.amount
+				if (localNormalizedData[index].transaction?.["expense_" + transaction.categoryId]) {
+					localNormalizedData[index].transaction["expense_" + transaction.categoryId]  += transaction.amount
 				} else {
 					//If Not Existing, Create New Element
-					localNormalizedData[index].expense[transaction.categoryId] = transaction.amount
+					localNormalizedData[index].transaction["expense_" + transaction.categoryId]  = transaction.amount
 				}
 			}
 		})
@@ -128,11 +127,9 @@ export default function Dashboard() {
 		normalizedData.current = localNormalizedData.map((item: any) => {
 			return {
 				date: item.date,
-				...item.income,
-				...item.expense
+				...item.transaction
 			}
 		})
-		console.log("Dashboard: ", normalizedData.current)
 	}
 
 	function handleChangeDateRange (newRange: string) {
