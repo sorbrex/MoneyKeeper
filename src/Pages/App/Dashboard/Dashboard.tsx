@@ -4,7 +4,7 @@ import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
 import Loading from "@UI/Simple/Loading"
 import {
-	Category,
+	Category, NormalizedCategoryForChart,
 	NormalizedTransactionForChart, RequestStatus,
 	Transaction,
 	User
@@ -17,6 +17,8 @@ import dayjs from "dayjs"
 import {DateRange} from "react-day-picker"
 import {subMonths} from "date-fns"
 import ClusteredChart from "@Pages/App/Dashboard/Components/ClusteredChart";
+import OriginalChartFromDemo from "@Pages/App/Dashboard/Components/OriginalChartFromDemo";
+import CategoryPieChart from "@Pages/App/Dashboard/Components/CategoryPieChart";
 const pastMonth = subMonths(new Date(), 1)
 const defaultRange: DateRange = {
 	from: pastMonth,
@@ -32,8 +34,8 @@ export default function Dashboard() {
 	const [defaultRangeSelected, setDefaultRangeSelected] = useState("1M")
 	const [transactionList, setTransactionList] = useState<Array<Transaction> | null>()
 	const [dataFetched, setDataFetched] = useState<RequestStatus>("idle")
-	const [normalizedData, setNormalizedData] = useState<NormalizedTransactionForChart>()
-	//const normalizedData = useRef<any>()
+	const [normalizedTransactionData, setNormalizedTransactionData] = useState<NormalizedTransactionForChart>()
+	const [normalizedCategoryData, setNormalizedCategoryData] = useState<NormalizedCategoryForChart>()
 
 	//Fetch User Data
 	const {
@@ -69,7 +71,8 @@ export default function Dashboard() {
 
 	useEffect(() => {
 		retrieveGeneralCashInfo()
-		normalizeTransactionDataForChart()
+		normalizeTransactionDataForClusteredChart()
+		normalizeTransactionDataForPieChart()
 	}, [transactionList]);
 
 	useEffect(() => {
@@ -93,7 +96,7 @@ export default function Dashboard() {
 	}
 
 	// Normalize Data For Chart
-	function normalizeTransactionDataForChart () {
+	function normalizeTransactionDataForClusteredChart () {
 		if (!transactionList) return
 
 		const localNormalizedData: NormalizedTransactionForChart = []
@@ -124,7 +127,40 @@ export default function Dashboard() {
 
 		//Sort By Date from the oldest to the newest
 		localNormalizedData.reverse()
-		setNormalizedData(localNormalizedData)
+		console.log("Normalized Data: ", localNormalizedData)
+		setNormalizedTransactionData(localNormalizedData)
+	}
+
+	function normalizeTransactionDataForPieChart () {
+		if (!transactionList) return
+
+		const filteredTransactionList = transactionList.filter((transaction: Transaction) => {
+			return transaction.type !== "income"
+		})
+
+		const localNormalizedData: NormalizedCategoryForChart = []
+
+		filteredTransactionList.forEach((transaction: Transaction) => {
+			const categoryName = categoryList.find((category: Category) => category.id === transaction.categoryId)?.name || "Expense"
+
+			let index = localNormalizedData.findIndex((item: any) => item["category"] === transaction.name)
+
+			if (index === -1) {
+				localNormalizedData.push({
+					category: transaction.categoryId,
+					amount: transaction.amount
+				})
+			} else {
+				if (localNormalizedData[index as unknown as number]) {
+					localNormalizedData[index].amount += transaction.amount
+				} else {
+					localNormalizedData[index].amount = transaction.amount
+				}
+			}
+		})
+
+		console.log("Normalized Data For Category Pie: ", localNormalizedData)
+		setNormalizedCategoryData(localNormalizedData)
 	}
 
 	function retrieveGeneralCashInfo () {
@@ -234,14 +270,15 @@ export default function Dashboard() {
 
 								{/*Column Clustered Chart*/}
 								<div id="ExpenseIncomeClusteredChart_Chart" className="w-full min-h-[400px]">
-									<ClusteredChart chartId="ClusteredChart" data={normalizedData} categoryList={categoryList} />
+									<ClusteredChart chartId="ClusteredChart" data={normalizedTransactionData} categoryList={categoryList} />
 								</div>
 							</div>
 
 							{/*Pie Chart Ever Categories Expenses*/}
-							<div id="CategoryPieChart" className="border-2 w-full flex flex-col justify-center items-center">
+							<div id="CategoryPieChart" className="w-full flex flex-col justify-center items-center">
 								<div className="w-full items-center justify-start">
 									<h1 className="text-center md:text-left mb-4 text-4xl">Expenses By Category:</h1>
+									<CategoryPieChart chartId="CategoryPie" data={normalizedCategoryData} categoryList={categoryList} />
 								</div>
 							</div>
 

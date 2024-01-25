@@ -71,7 +71,8 @@ export default function ClusteredChart(props: ClusteredChartProps) {
 		const allIndexes = Object.keys(props.data)
 		// First we loop for each date
 		for (let index of allIndexes) {
-			console.log(`Creating series for Date => ${props.data[index as unknown as number].date}`)
+			console.log(`\n\n\nCreating series for Date => ${props.data[index as unknown as number].date}`)
+			console.log("Looping Object: ",props.data[index as unknown as number])
 			// Now we loop for each transactionId (expense_ or income_) of the date. All TransactionIds match a category
 			const allTransactionIds = Object.keys(props.data[index as unknown as number])
 			const allExpenseIds = allTransactionIds.filter((transactionId: string) => transactionId.includes("expense_"))
@@ -80,6 +81,7 @@ export default function ClusteredChart(props: ClusteredChartProps) {
 			if(allExpenseIds.length > 0) {
 				const firstExpenseId = allExpenseIds.pop() as string
 				const firstExpenseName = props.categoryList.find((category: Category) => category.id === firstExpenseId?.split("_")[1])?.name || "Expense"
+				console.log("First Expense: ", firstExpenseId)
 				makeSeries(firstExpenseName, firstExpenseId, false)
 				for (let expenseId of allExpenseIds) {
 					console.log("Creating Expense: ", expenseId)
@@ -92,6 +94,7 @@ export default function ClusteredChart(props: ClusteredChartProps) {
 			if(allIncomeIds.length > 0) {
 				const firstIncomeId = allIncomeIds.pop() as string
 				const firstIncomeName = props.categoryList.find((category: Category) => category.id === firstIncomeId?.split("_")[1])?.name || "Income"
+				console.log("First Income: ", firstIncomeId)
 				makeSeries(firstIncomeName, firstIncomeId, false)
 				for (let incomeId of allIncomeIds) {
 					console.log("Creating Income: ", incomeId)
@@ -104,7 +107,7 @@ export default function ClusteredChart(props: ClusteredChartProps) {
 		}
 
 		return () => root.current?.dispose();
-	}, []);
+	}, [props.data]);
 
 	return (
 		<div id={props.chartId} className="w-full min-h-[400px]"></div>

@@ -81,3 +81,10 @@ export type Category = {
   name: string
   description?: string
 }
+
+export type CategoryWithAmount = {
+  category: string
+  amount: number
+}
+
+export type NormalizedCategoryForChart = Array<CategoryWithAmount>
