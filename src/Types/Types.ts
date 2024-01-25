@@ -1,5 +1,5 @@
 export type AlertType = "success" | "info" | "warning" | "error";
-
+export type RequestStatus = "idle"|"good"|"error"|"running"
 //====================
 //==== Form Types ====
 //====================
@@ -68,11 +68,7 @@ export type Transaction = {
   createdAt: Date
 }
 
-export type DailyTransaction = {
-  date: string
-  transaction: {[key: string]: number}   // {category: amount} => {food: 100, transport: 50} => daily.expense.food = 100
-}
-
+export type DailyTransaction = {[key: string]: number | string}   // {category: amount} => {food: 100, transport: 50} => daily.expense.food = 100
 
 export type NormalizedTransactionForChart = Array<DailyTransaction>
 

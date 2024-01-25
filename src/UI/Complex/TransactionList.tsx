@@ -7,8 +7,8 @@ import {parseCategoryIcon} from "@UI/Simple/CategoryIcon"
 export default function TransactionList(props:TransactionListProps) {
 	return (
 		<div className="flex flex-col w-full max-h-[300px] overflow-y-auto">
-			{props.transaction.length === 0 && <h1 className="text-center text-gray-500 mt-16">No Transactions Found</h1>}
-			{props.transaction.map((transaction: Transaction) => {
+			{(!props.transaction || props.transaction.length === 0) && <h1 className="text-center text-gray-500 mt-16 min-h-[100px]">No Transactions Found</h1>}
+			{(props.transaction && props.transaction.length > 0) && props.transaction.map((transaction: Transaction) => {
 				return (
 					<div key={transaction.id} className="flex flex-row justify-between items-center m-2">
 						<div className="flex flex-col items-start justify-center min-w-[150px] text-left w-[100px] md:w-[300px]">
@@ -37,7 +37,7 @@ export default function TransactionList(props:TransactionListProps) {
 }
 
 type TransactionListProps = {
-	transaction: Transaction[]
+	transaction?: Transaction[]
 	categoryList: Category[]
 	editable?: boolean
 	onEdit?: (transactionId: string) => void
