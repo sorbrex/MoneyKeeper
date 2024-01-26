@@ -9,7 +9,7 @@ export default function AppHeader(props: {page: string, username: string}) {
 
 	return (
 		<header className="w-full">
-			<nav id="NavBar" className="fixed z-10 top-0 flex items-center justify-between w-full p-4 select-none bg-white text-black">
+			<nav id="NavBar" className="flex items-center justify-between w-full p-4 select-none bg-white text-black">
 				<div id="Brand" className="text-2xl flex items-center justify-center">
 					<img src={Logo} alt='Logo' className="h-9 w-9 m-2"/>
 					Money Keeper

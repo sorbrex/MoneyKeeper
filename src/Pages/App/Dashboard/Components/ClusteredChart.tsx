@@ -65,46 +65,41 @@ export default function ClusteredChart(props: ClusteredChartProps) {
 			series.appear(1000);
 		}
 
+		// makeSeries(firstExpenseName, firstExpenseId, false)
 
 		console.log("Received Data: ", props.data)
+		const allUniqueSeries = new Set<string>();
 
 		const allIndexes = Object.keys(props.data)
 		// First we loop for each date
 		for (let index of allIndexes) {
-			console.log(`\n\n\nCreating series for Date => ${props.data[index as unknown as number].date}`)
-			console.log("Looping Object: ",props.data[index as unknown as number])
-			// Now we loop for each transactionId (expense_ or income_) of the date. All TransactionIds match a category
-			const allTransactionIds = Object.keys(props.data[index as unknown as number])
-			const allExpenseIds = allTransactionIds.filter((transactionId: string) => transactionId.includes("expense_"))
-			const allIncomeIds = allTransactionIds.filter((transactionId: string) => transactionId.includes("income_"))
-
-			if(allExpenseIds.length > 0) {
-				const firstExpenseId = allExpenseIds.pop() as string
-				const firstExpenseName = props.categoryList.find((category: Category) => category.id === firstExpenseId?.split("_")[1])?.name || "Expense"
-				console.log("First Expense: ", firstExpenseId)
-				makeSeries(firstExpenseName, firstExpenseId, false)
-				for (let expenseId of allExpenseIds) {
-					console.log("Creating Expense: ", expenseId)
-					const categoryId = expenseId.split("_")[1]
-					const categoryName = props.categoryList.find((category: Category) => category.id === categoryId)?.name || "Expense"
-					makeSeries(categoryName, expenseId, true)
+			const allTransactionIds = Object.keys(props.data[index as unknown as number]).filter((transactionId: string) => transactionId.includes("expense_") || transactionId.includes("income_"))
+			allTransactionIds.forEach((transactionId: string) => {
+				if (!allUniqueSeries.has(transactionId)){
+					console.log("TransactionId: ", transactionId)
+					allUniqueSeries.add(transactionId)
 				}
-			}
-
-			if(allIncomeIds.length > 0) {
-				const firstIncomeId = allIncomeIds.pop() as string
-				const firstIncomeName = props.categoryList.find((category: Category) => category.id === firstIncomeId?.split("_")[1])?.name || "Income"
-				console.log("First Income: ", firstIncomeId)
-				makeSeries(firstIncomeName, firstIncomeId, false)
-				for (let incomeId of allIncomeIds) {
-					console.log("Creating Income: ", incomeId)
-					const categoryId = incomeId.split("_")[1]
-					const categoryName = props.categoryList.find((category: Category) => category.id === categoryId)?.name || "Income"
-					makeSeries(categoryName, incomeId, true)
-				}
-			}
-
+			})
 		}
+
+		let isFirstIncome = true;
+		let isFirstExpense = true;
+
+		allUniqueSeries.forEach((transactionId: string) => {
+			const categoryName = props.categoryList.find((category: Category) =>
+				category.id === transactionId.replace("income_","").replace("expense_","")
+			)?.name as string
+
+			if (transactionId.includes("income_") && isFirstIncome) {
+				makeSeries(categoryName, transactionId, false)
+				isFirstIncome = false;
+			}
+			if (transactionId.includes("expense_") && isFirstExpense) {
+				makeSeries(categoryName, transactionId, false)
+				isFirstExpense = false;
+			}
+			makeSeries(categoryName, transactionId, true)
+		})
 
 		return () => root.current?.dispose();
 	}, [props.data]);

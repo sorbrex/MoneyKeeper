@@ -6,7 +6,7 @@ import {parseCategoryIcon} from "@UI/Simple/CategoryIcon"
 
 export default function TransactionList(props:TransactionListProps) {
 	return (
-		<div className="flex flex-col w-full max-h-[300px] overflow-y-auto">
+		<div className="flex flex-col w-full h-full">
 			{(!props.transaction || props.transaction.length === 0) && <h1 className="text-center text-gray-500 mt-16 min-h-[100px]">No Transactions Found</h1>}
 			{(props.transaction && props.transaction.length > 0) && props.transaction.map((transaction: Transaction) => {
 				return (

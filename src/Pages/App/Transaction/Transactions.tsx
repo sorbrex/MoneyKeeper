@@ -119,8 +119,7 @@ export default function Transactions() {
 			//If Not Found, Create New Element With Date
 			if(index === -1) {
 				localNormalizedData.push({
-					date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
-					transaction: {},
+					date: dayjs(transaction.createdAt).format("DD/MM/YYYY")
 				})
 				index = localNormalizedData.length - 1
 			}
@@ -128,11 +127,11 @@ export default function Transactions() {
 			//Expense or Income?
 			if(showIncome && transaction.type === "income" || !showIncome && transaction.type === "expense") {
 				//If Already Existing, Add Amount
-				if (localNormalizedData[index].transaction?.[transaction.categoryId]) {
-					localNormalizedData[index].transaction[transaction.categoryId] += transaction.amount
+				if (localNormalizedData[index][transaction.categoryId]) {
+					localNormalizedData[index][transaction.categoryId] = localNormalizedData[index][transaction.categoryId] as number + transaction.amount
 				} else {
 					//If Not Existing, Create New Element
-					localNormalizedData[index].transaction[transaction.categoryId] = transaction.amount
+					localNormalizedData[index][transaction.categoryId] = transaction.amount
 				}
 			}
 		})
@@ -142,8 +141,7 @@ export default function Transactions() {
 		normalizedData.current = localNormalizedData.map((item: any) => {
 			return {
 				type: showIncome ? "income" : "expense",
-				date: item.date,
-				...item.transaction
+				...item,
 			}
 		})
 	}
@@ -206,7 +204,11 @@ export default function Transactions() {
 
 	return (
 		<>
-			<section id="Movements_Page" className="h-screen flex flex-col text-black bg-white overflow-y-auto">
+
+			{/*HEADER*/}
+			<AppHeader username={accountInfo.name} page={document.title}/>
+
+			<section id="Movements_Page" className="flex flex-col text-black bg-white overflow-y-auto">
 				{/*MODAL*/}
 				<ReactModal
 					isOpen={modalIsOpen}
@@ -220,38 +222,36 @@ export default function Transactions() {
 					<AddTransactionModalForm setModalState={ setModalIsOpen } categoryList={categoryList} presentData={previousTransactionData.current}/>
 				</ReactModal>
 
-				{/*HEADER*/}
-				<AppHeader username={accountInfo.name} page={document.title}/>
+					<div id="toggler" className="flex flex-row justify-center">
+						<p className="mx-2">Expense</p>
+						<Toggle active={showIncome} onToggle={() => setShowIncome(!showIncome)}/>
+						<p className="mx-2">Income</p>
+					</div>
 
-				{/*BODY*/}
-				<CenteredContainer>
 					{/*GRAPHIC*/}
 					<TransactionChart data={normalizedData.current} categoryList={categoryList}/>
 
 					{/*USER INTERACTION*/}
 					<div className="w-full flex flex-col items-center justify-center">
-						<div className="flex flex-row justify-center">
-							<p className="mx-2">Expense</p>
-							<Toggle active={showIncome} onToggle={() => setShowIncome(!showIncome)}/>
-							<p className="mx-2">Income</p>
-						</div>
-						<ButtonPrimary content="Add New" onClick={() => setModalIsOpen(true)} />
 						<DatePicker onRangeSelected={handleChangeDateRange} range={range} />
+						<ButtonPrimary content="Add New" onClick={() => setModalIsOpen(true)} />
 					</div>
 
-					{/*TRANSACTION LIST*/}
-					<TransactionList transaction={transactionList.current} categoryList={categoryList} editable={true} onEdit={handleEdit} onDelete={handleDelete} />
-				</CenteredContainer>
 
+					{/*TRANSACTION LIST*/}
+				<div className="max-h-[250px] overflow-y-auto">
+					<TransactionList transaction={transactionList.current} categoryList={categoryList} editable={true} onEdit={handleEdit} onDelete={handleDelete} />
+				</div>
 				<div className="fixed bottom-32 w-full flex justify-center items-center">
 					<div className="max-w-xl">
 						<Alert visible={alertShown} type={alertType} message={alertMessage}/>
 					</div>
 				</div>
 
-				{/*FOOTER*/}
-				<AppFooter />
 			</section>
+
+			{/*FOOTER*/}
+			<AppFooter />
 		</>
 	)
 }

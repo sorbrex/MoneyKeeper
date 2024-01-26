@@ -13,9 +13,7 @@ export default function CategoryPieChart(props: CategoryPieChartProps){
 
 		if (!root.current) root.current = am5.Root.new(props.chartId);
 
-		root.current.setThemes([
-			am5themes_Animated.new(root.current)
-		]);
+		root.current.setThemes([am5themes_Animated.new(root.current)]);
 
 		let chart = root.current.container.children.push(
 			am5percent.PieChart.new(root.current, {
@@ -27,14 +25,15 @@ export default function CategoryPieChart(props: CategoryPieChartProps){
 		let series = chart.series.push(am5percent.PieSeries.new(root.current, {
 			valueField: "amount",
 			categoryField: "category",
-			alignLabels: false
+			alignLabels: false,
 		}));
 
 		series.labels.template.setAll({
-			textType: "circular",
-			centerX: 0,
-			centerY: 0
+			fontSize: 12,
+			fontWeight: "bold",
+			oversizedBehavior: "hide",
 		});
+
 
 		series.slices.template.setAll({
 			fillOpacity: 0.5,
@@ -42,27 +41,17 @@ export default function CategoryPieChart(props: CategoryPieChartProps){
 			strokeWidth: 2
 		});
 
-		series.data.setAll(props.data as unknown[]);
-
-		let legend = chart.children.push(am5.Legend.new(root.current, {
-			centerX: am5.percent(50),
-			x: am5.percent(50),
-			marginTop: 15,
-			marginBottom: 15,
-		}));
-
-		legend.data.setAll(series.dataItems);
+		series.data.setAll(props.data);
 
 		series.appear(1000, 100);
-
 
 		return () => {
 			root.current?.dispose();
 		};
-	}, []);
+	}, [props.data]);
 
 	return (
-		<div id={props.chartId} style={{ width: "500px", height: "500px" }}></div>
+		<div id={props.chartId} className="w-full min-h-[500px]"></div>
 	);
 }
 

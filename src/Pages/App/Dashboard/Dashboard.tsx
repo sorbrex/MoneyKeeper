@@ -105,7 +105,7 @@ export default function Dashboard() {
 			let index = localNormalizedData.findIndex((item: any) => item["date"] === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
 			if(index === -1) {
 				localNormalizedData.push({
-					date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
+					date: dayjs(transaction.createdAt).format("DD/MM/YYYY")
 				})
 				index = localNormalizedData.length - 1
 			}
@@ -147,7 +147,7 @@ export default function Dashboard() {
 
 			if (index === -1) {
 				localNormalizedData.push({
-					category: transaction.categoryId,
+					category: categoryName,
 					amount: transaction.amount
 				})
 			} else {
@@ -232,7 +232,7 @@ export default function Dashboard() {
 		<>
 			<AppHeader username={accountInfo.name} page={document.title}/>
 			<section id="Dashboard_Page" className="text-black body-font">
-				<div id="InternalLayout" className="w-full h-screen py-24 px-4 flex flex-col md:flex-row">
+				<div id="InternalLayout" className="w-full px-4 flex flex-col md:flex-row">
 					<div id="Sidebar" className="w-full md:max-w-[200px] lg:max-w-[300px]">
 						<div id="Available" className="w-full my-4">
 							<h4 className="text-center md:text-left">Cash Available:</h4>
@@ -250,16 +250,16 @@ export default function Dashboard() {
 					<div id="DashboardContent" className="w-full">
 
 						{/*Charts*/}
-						<div id="Charts" className="md:flex">
+						<div id="Charts" className="flex flex-col xl:flex-row">
 
 							{/*Column Clustered Chart Expenses - Incomes Filtered*/}
 							<div id="ExpenseIncomeClusteredChart" className="w-full flex flex-col justify-center items-center">
-								<div className="w-full items-center justify-start">
-									<h1 className="text-center md:text-left mb-4  text-4xl">Expenses & Incomes:</h1>
+								<div className="w-full items-center mb-4 justify-start">
+									<h1 className="text-center md:text-left text-4xl">Expenses & Incomes:</h1>
 								</div>
 
 								{/*Range Expenses - Incomes*/}
-								<div id="UserInteraction_DefaultRange" className="w-full max-w-xl flex justify-around items-center">
+								<div id="UserInteraction_DefaultRange" className="w-full max-w-xl xl:h-24 flex justify-around items-center">
 									<button type="button" onClick={()=>handleChangeDateRange("1D")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("1D") && "border-2 border-softBlack"}`}>1D</button>
 									<button type="button" onClick={()=>handleChangeDateRange("1W")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("1W") && "border-2 border-softBlack"}`}>1W</button>
 									<button type="button" onClick={()=>handleChangeDateRange("1M")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("1M") && "border-2 border-softBlack"}`}>1M</button>
@@ -269,7 +269,7 @@ export default function Dashboard() {
 								</div>
 
 								{/*Column Clustered Chart*/}
-								<div id="ExpenseIncomeClusteredChart_Chart" className="w-full min-h-[400px]">
+								<div id="ExpenseIncomeClusteredChart_Chart" className="w-full min-h-[400px] flex justify-center items-end">
 									<ClusteredChart chartId="ClusteredChart" data={normalizedTransactionData} categoryList={categoryList} />
 								</div>
 							</div>
@@ -277,17 +277,17 @@ export default function Dashboard() {
 							{/*Pie Chart Ever Categories Expenses*/}
 							<div id="CategoryPieChart" className="w-full flex flex-col justify-center items-center">
 								<div className="w-full items-center justify-start">
-									<h1 className="text-center md:text-left mb-4 text-4xl">Expenses By Category:</h1>
-									<CategoryPieChart chartId="CategoryPie" data={normalizedCategoryData} categoryList={categoryList} />
+									<h1 className="text-center md:text-left xl:mt-0 text-4xl">Expenses By Category:</h1>
 								</div>
+								{/*<CategoryPieChart chartId="CategoryPie" data={normalizedCategoryData} categoryList={categoryList} />*/}
 							</div>
 
 						</div>
 
 						{/*Transactions List*/}
-						<div id="TransactionList" className="w-full mt-8">
-							<h1 className="text-center md:text-left  text-4xl">Last Transactions:</h1>
-							<TransactionList transaction={transactionList?.slice(-3)} categoryList={categoryList} />
+						<div id="TransactionList" className="w-full mt-8 mb-8">
+							<h1 className="text-center md:text-left text-4xl">Last Transactions:</h1>
+							<TransactionList transaction={transactionList?.slice(-2)} categoryList={categoryList} />
 						</div>
 					</div>
 				</div>
