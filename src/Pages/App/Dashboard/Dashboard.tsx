@@ -4,7 +4,7 @@ import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
 import Loading from "@UI/Simple/Loading"
 import {
-	Category, NormalizedCategoryForChart,
+	Category, CategoryWithAmount, DailyTransaction, NormalizedCategoryForChart,
 	NormalizedTransactionForChart, RequestStatus,
 	Transaction,
 	User
@@ -16,9 +16,10 @@ import ErrorPage from "@Pages/Base/ErrorPages"
 import dayjs from "dayjs"
 import {DateRange} from "react-day-picker"
 import {subMonths} from "date-fns"
-import ClusteredChart from "@Pages/App/Dashboard/Components/ClusteredChart";
-import OriginalChartFromDemo from "@Pages/App/Dashboard/Components/OriginalChartFromDemo";
-import CategoryPieChart from "@Pages/App/Dashboard/Components/CategoryPieChart";
+import ClusteredChart from "@Pages/App/Dashboard/Components/ClusteredChart"
+import OriginalChartFromDemo from "@Pages/App/Dashboard/Components/OriginalChartFromDemo"
+import CategoryPieChart from "@Pages/App/Dashboard/Components/CategoryPieChart"
+
 const pastMonth = subMonths(new Date(), 1)
 const defaultRange: DateRange = {
 	from: pastMonth,
@@ -32,8 +33,8 @@ export default function Dashboard() {
 	const [monthIncome, setMonthIncome] = React.useState(0)
 	const [range, setRange] = useState<DateRange | undefined>(defaultRange)
 	const [defaultRangeSelected, setDefaultRangeSelected] = useState("1M")
-	const [transactionList, setTransactionList] = useState<Array<Transaction> | null>()
-	const [dataFetched, setDataFetched] = useState<RequestStatus>("idle")
+	const [transactionList, setTransactionList] = useState<Array<Transaction>>([])
+	const [dataFetchedStatus, setDataFetchedStatus] = useState<RequestStatus>("idle")
 	const [normalizedTransactionData, setNormalizedTransactionData] = useState<NormalizedTransactionForChart>()
 	const [normalizedCategoryData, setNormalizedCategoryData] = useState<NormalizedCategoryForChart>()
 
@@ -47,8 +48,8 @@ export default function Dashboard() {
 	//Fetch Transaction Data
 	const {
 		data: remoteTransactionList = [] as Array<Transaction>,
-		isError,
-		error,
+		isError: transactionIsError,
+		error: transactionError,
 	} = useGetTransactionsQuery({token: getAuth()})
 
 	// Get Categories
@@ -57,8 +58,8 @@ export default function Dashboard() {
 	} = useGetCategoryQuery(getAuth())
 
 	useEffect(() => {
+		setDataFetchedStatus("good")
 		if (remoteTransactionList.length > 0) {
-			setDataFetched("good")
 			const localTransactionList = remoteTransactionList.toReversed()
 			setTransactionList(localTransactionList)
 			if (range) {
@@ -67,17 +68,19 @@ export default function Dashboard() {
 				}))
 			}
 		}
-	}, [remoteTransactionList, range]);
+	}, [remoteTransactionList, range])
 
 	useEffect(() => {
 		retrieveGeneralCashInfo()
 		normalizeTransactionDataForClusteredChart()
 		normalizeTransactionDataForPieChart()
-	}, [transactionList]);
+	}, [transactionList])
 
 	useEffect(() => {
-		setDataFetched("error")
-	}, [isError, userIsError]);
+		if ((transactionIsError && transactionError) || (userIsError && userError)) {
+			setDataFetchedStatus("error")
+		}
+	}, [transactionIsError, userIsError])
 
 	useEffect(() => {
 		document.title = "Dashboard"
@@ -86,13 +89,20 @@ export default function Dashboard() {
 		})
 	}, [])
 
-	if (!getAuth() || dataFetched === "running") {
+	if (!getAuth() || dataFetchedStatus === "running") {
 		return <Loading />
 	}
 
-	if (dataFetched === "error") {
-		const realError = error || userError
-		return <ErrorPage message={JSON.stringify(realError)} />
+	// Error Handling Page
+	if (dataFetchedStatus === "error") {
+		if (userIsError && userError) {
+			console.error("User Error => ", userError)
+			return <ErrorPage message={JSON.stringify(userError)} />
+		}
+		if (transactionIsError && transactionError) {
+			console.error("Transaction Error => ", transactionError)
+			return <ErrorPage message={JSON.stringify(transactionError)} />
+		}
 	}
 
 	// Normalize Data For Chart
@@ -102,7 +112,7 @@ export default function Dashboard() {
 		const localNormalizedData: NormalizedTransactionForChart = []
 
 		transactionList.forEach((transaction: Transaction) => {
-			let index = localNormalizedData.findIndex((item: any) => item["date"] === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
+			let index = localNormalizedData.findIndex((item: DailyTransaction) => item["date"] === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
 			if(index === -1) {
 				localNormalizedData.push({
 					date: dayjs(transaction.createdAt).format("DD/MM/YYYY")
@@ -143,7 +153,7 @@ export default function Dashboard() {
 		filteredTransactionList.forEach((transaction: Transaction) => {
 			const categoryName = categoryList.find((category: Category) => category.id === transaction.categoryId)?.name || "Expense"
 
-			let index = localNormalizedData.findIndex((item: any) => item["category"] === transaction.name)
+			const index = localNormalizedData.findIndex((item: CategoryWithAmount) => item.category === transaction.name)
 
 			if (index === -1) {
 				localNormalizedData.push({
@@ -159,7 +169,6 @@ export default function Dashboard() {
 			}
 		})
 
-		console.log("Normalized Data For Category Pie: ", localNormalizedData)
 		setNormalizedCategoryData(localNormalizedData)
 	}
 
@@ -186,45 +195,45 @@ export default function Dashboard() {
 
 	function handleChangeDateRange (newRange: string) {
 		switch (newRange) {
-			case "1D":
-				setRange({
-					from: dayjs().subtract(1, "day").toDate(),
-					to: new Date()
-				})
-				setDefaultRangeSelected("1D")
-				break
-			case "1W":
-				setRange({
-					from: dayjs().subtract(1, "week").toDate(),
-					to: new Date()
-				})
-				setDefaultRangeSelected("1W")
-				break
-			case "1M":
-				setRange({
-					from: dayjs().subtract(1, "month").toDate(),
-					to: new Date()
-				})
-				setDefaultRangeSelected("1M")
-				break
-			case "3M":
-				setRange({
-					from: dayjs().subtract(3, "month").toDate(),
-					to: new Date()
-				})
-				setDefaultRangeSelected("3M")
-				break
-			case "1Y":
-				setRange({
-					from: dayjs().subtract(1, "year").toDate(),
-					to: new Date()
-				})
-				setDefaultRangeSelected("1Y")
-				break
-			case "0":
-				setRange(undefined)
-				setDefaultRangeSelected("ALL")
-				break
+		case "1D":
+			setRange({
+				from: dayjs().subtract(1, "day").toDate(),
+				to: new Date()
+			})
+			setDefaultRangeSelected("1D")
+			break
+		case "1W":
+			setRange({
+				from: dayjs().subtract(1, "week").toDate(),
+				to: new Date()
+			})
+			setDefaultRangeSelected("1W")
+			break
+		case "1M":
+			setRange({
+				from: dayjs().subtract(1, "month").toDate(),
+				to: new Date()
+			})
+			setDefaultRangeSelected("1M")
+			break
+		case "3M":
+			setRange({
+				from: dayjs().subtract(3, "month").toDate(),
+				to: new Date()
+			})
+			setDefaultRangeSelected("3M")
+			break
+		case "1Y":
+			setRange({
+				from: dayjs().subtract(1, "year").toDate(),
+				to: new Date()
+			})
+			setDefaultRangeSelected("1Y")
+			break
+		case "0":
+			setRange(undefined)
+			setDefaultRangeSelected("ALL")
+			break
 		}
 	}
 
