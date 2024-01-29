@@ -1,50 +1,46 @@
 import React from "react"
 import CenteredContainer from "@/Layouts/CenteredContainer"
-import Title from "@UI/Simple/Typography/Title"
-import {CategoryWithAmount} from "@/Types/Types"
-import {Chart as ChartJS, ArcElement, Tooltip, Legend, Chart} from "chart.js"
-import CategoryPieChart from "@Pages/App/Dashboard/Components/CategoryPieChart"
-ChartJS.register(ArcElement, Tooltip, Legend)
+import TransactionChart from "@Pages/App/Transaction/Components/TransactionChart";
 
-const stubData: CategoryWithAmount[] = [
+const stubData = [
 	{
+		"date": "2021-09-01",
 		"category": "Food",
 		"amount": 79
 	},
 	{
+		"date": "2021-09-01",
 		"category": "Health",
 		"amount": 210
 	},
 	{
+		"date": "2021-09-01",
 		"category": "Hobby",
 		"amount": 25
 	},
 	{
+		"date": "2021-09-02",
 		"category": "Home",
 		"amount": 24
 	},
 	{
+		"date": "2021-09-02",
 		"category": "Car",
 		"amount": 137
 	}
 ]
 
 
+//Every Category is a Dataset and Everyt Day is a Label and the Amount is the Value
+
 export default function Test() {
 	return (
 		<>
 			<section id="ChartJS_BarChart" className="flex flex-col bg-white text-black">
 				<CenteredContainer>
-					<Title title="ChartJS Bar Chart" />
-					{/*<OriginalPieFromLibrary data={stubData} />*/}
+					<TransactionChart data={stubData}/>
 				</CenteredContainer>
 			</section>
 		</>
 	)
-}
-
-
-function OriginalPieFromLibrary(props:{data:CategoryWithAmount[]}){
-
-
 }

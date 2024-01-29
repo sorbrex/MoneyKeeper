@@ -7,7 +7,7 @@ import {
 	AlertType,
 	Category,
 	CreateTransactionFormValues,
-	NormalizedTransactionForChart,
+	NormalizedTransactionForChart, RequestStatus,
 	Transaction,
 	User
 } from "@/Types/Types"
@@ -44,7 +44,8 @@ export default function Transactions() {
 	const [modalIsOpen, setModalIsOpen] = useState(false)
 	const [showIncome, setShowIncome] = useState(false)
 	const [range, setRange] = useState<DateRange>(defaultRange)
-	const transactionList = useRef<Array<Transaction>>([])
+	const [dataFetchedStatus, setDataFetchedStatus] = useState<RequestStatus>("idle")
+	const [transactionList, setTransactionList] = useState<Array<Transaction>>([])
 	const normalizedData = useRef<any>()
 	const navigate = useNavigate()
 	const baseFormValues: CreateTransactionFormValues = {
@@ -72,8 +73,6 @@ export default function Transactions() {
 	//Fetch User Data
 	const {
 		data: accountInfo = {} as User,
-		isLoading: userIsLoading,
-		isFetching: userIsFetching,
 		isError: userIsError,
 		error: userError,
 	} = useGetUserQuery(getAuth())
@@ -81,12 +80,9 @@ export default function Transactions() {
 	//Fetch Transaction Data
 	const {
 		data: remoteTransactionList = [] as Array<Transaction>,
-		isLoading,
-		isFetching,
-		isError,
-		error,
+		isError: transactionIsError,
+		error: transactionError,
 		refetch,
-		isSuccess: isTransactionFetchSuccess,
 	} = useGetTransactionsQuery({token:getAuth()})
 
 	// Get Categories
@@ -94,32 +90,71 @@ export default function Transactions() {
 		data: categoryList = [] as Array<Category>,
 	} = useGetCategoryQuery(getAuth())
 
-	if (userIsLoading || isFetching || isLoading || userIsFetching) {
+
+	useEffect(() => {
+		setDataFetchedStatus("good")
+		if (remoteTransactionList.length > 0) {
+			const localTransactionList = remoteTransactionList.toReversed()
+			setTransactionList(localTransactionList)
+			if (range) {
+				setTransactionList(localTransactionList.filter((transaction: Transaction) => {
+					return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date)
+				}))
+			}
+		}
+	}, [remoteTransactionList, range])
+
+	useEffect(() => {
+		normalizeDataForAreaChart()
+	}, [transactionList])
+
+	useEffect(() => {
+		if ((transactionIsError && transactionError) || (userIsError && userError)) {
+			setDataFetchedStatus("error")
+		}
+	}, [transactionIsError, userIsError])
+
+
+	if (!getAuth() || dataFetchedStatus === "running") {
 		return <Loading />
-	} else if (isError || userIsError) {
-		const realError = error || userError
-		console.log({realError})
-		return <ErrorPage message={JSON.stringify(realError)} />
 	}
-	if (isTransactionFetchSuccess) {
-		transactionList.current = remoteTransactionList.toReversed().filter((transaction: Transaction) => {
-			return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date)
-		})
-		normalizeTransactionDataForChart()
+
+	if (dataFetchedStatus === "error") {
+		if (userIsError && userError) {
+			console.error("User Error => ", userError)
+			return <ErrorPage message={JSON.stringify(userError)} />
+		}
+		if (transactionIsError && transactionError) {
+			console.error("Transaction Error => ", transactionError)
+			return <ErrorPage message={JSON.stringify(transactionError)} />
+		}
 	}
 
 	// Normalize Data For Chart
-	function normalizeTransactionDataForChart () {
+	function normalizeDataForAreaChart () {
 		const localNormalizedData: NormalizedTransactionForChart = []
 
+		//{
+		//	"date": "01/09/2021",
+		//	"Food": [79],
+		//	"Health": [210],
+		//	"Hobby": [25],
+		//	"Home": [100],
+		//	"Car": [80]
+		//}
+
 		//Group By Date
-		transactionList.current.forEach((transaction: Transaction) => {
+		transactionList.forEach((transaction: Transaction) => {
 			//Search for Already Existing Date
 			let index = localNormalizedData.findIndex((item: any) => item.date === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
-			//If Not Found, Create New Element With Date
+
+			//If Not Found, Create New Element With Date and Category Amount
 			if(index === -1) {
 				localNormalizedData.push({
-					date: dayjs(transaction.createdAt).format("DD/MM/YYYY")
+					date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
+					...categoryList.map((category: Category) => {
+						return {category.name: 0}
+					})
 				})
 				index = localNormalizedData.length - 1
 			}
@@ -229,7 +264,7 @@ export default function Transactions() {
 					</div>
 
 					{/*GRAPHIC*/}
-					<TransactionChart data={normalizedData.current} categoryList={categoryList}/>
+					<TransactionChart data={normalizedData.current}/>
 
 					{/*USER INTERACTION*/}
 					<div className="w-full flex flex-col items-center justify-center">
@@ -240,7 +275,7 @@ export default function Transactions() {
 
 					{/*TRANSACTION LIST*/}
 				<div className="max-h-[250px] overflow-y-auto">
-					<TransactionList transaction={transactionList.current} categoryList={categoryList} editable={true} onEdit={handleEdit} onDelete={handleDelete} />
+					<TransactionList transaction={transactionList} categoryList={categoryList} editable={true} onEdit={handleEdit} onDelete={handleDelete} />
 				</div>
 				<div className="fixed bottom-32 w-full flex justify-center items-center">
 					<div className="max-w-xl">

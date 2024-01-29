@@ -1,87 +1,126 @@
-import {useLayoutEffect} from 'react';
-import * as am5 from "@amcharts/amcharts5";
-import * as am5xy from "@amcharts/amcharts5/xy";
-import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
-import am5themes_Responsive from "@amcharts/amcharts5/themes/Responsive";
-import {Category, NormalizedTransactionForChart} from "@/Types/Types";
-import {Icon, retrieveColorForIcon} from "@UI/Simple/CategoryIcon";
+import React, {useEffect, useState} from "react";
+import { NormalizedTransactionForChart} from "@/Types/Types";
+import { Line } from 'react-chartjs-2';
+import {
+	Chart as ChartJS,
+	CategoryScale,
+	LinearScale,
+	PointElement,
+	LineElement,
+	Title,
+	Tooltip,
+	Filler,
+	Legend,
+	CoreChartOptions,
+	ElementChartOptions,
+	PluginChartOptions,
+	DatasetChartOptions,
+	ScaleChartOptions,
+	ChartTypeRegistry, LineControllerChartOptions,
+} from 'chart.js';
+import {getAllColors} from "@UI/Simple/CategoryIcon";
+import {_DeepPartialObject} from "chart.js/dist/types/utils";
+
+ChartJS.register(
+	CategoryScale,
+	LinearScale,
+	PointElement,
+	LineElement,
+	Title,
+	Tooltip,
+	Filler,
+	Legend
+);
+
 
 export default function TransactionChart(props: TransactionChartProps) {
 
-	useLayoutEffect(() => {// Create Root Element
-		let root = am5.Root.new("chartdiv");
-		root.setThemes([am5themes_Animated.new(root), am5themes_Responsive.new(root)]);
+	//const data = props.data.map((tuple) => tuple.category)
+	//const labels = props.data.map((tuple) => tuple.date)
 
-		// Create chart with option to move and resize the chart
-		let chart = root.container.children.push(
-			am5xy.XYChart.new(root, {
-				panX: true,
-				panY: true,
-				wheelX: "panX",
-				wheelY: "zoomX",
-				pinchZoomX: true
-			})
-		);
+	const chartOption = {
+		responsive: true,
+		elements: {
+			line: {
+				tension: 0.3
+			}
+		},
+		plugins: {
+			legend: {
+				display: true,
+				position: "bottom",
+				align: "center",
+				fullSize: true,
+				labels: {
+					boxWidth: 20,
+					boxHeight: 20,
+					padding: 20,
+					usePointStyle: true,
+					font: {
+						size: 14,
+					}
+				}
+			}
+		},
+	} as _DeepPartialObject<CoreChartOptions<"line"> & ElementChartOptions<"line"> & PluginChartOptions<"line"> & DatasetChartOptions<"line"> & LineControllerChartOptions>
 
-		let cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
-			behavior: "none"
-		}));
-		cursor.lineY.set("visible", false);
+	const [chartData, setChartData] = useState({
+		//labels: labels,
+		datasets: [
+			{
+				fill: true,
+				label: 'Casa',
+				data: [25, 59, 80, 81, 56, 55, 40],
+				borderColor: 'rgb(53, 162, 235)',
+				backgroundColor: 'rgba(53, 162, 235, 0.5)',
+			},
+			{
+				fill: true,
+				label: 'Macchina',
+				data: [32, 55, 45, 67, 89, 23, 45],
+				borderColor: 'rgb(255, 99, 132)',
+				backgroundColor: 'rgba(255, 99, 132, 0.5)',
+			},
+			{
+				fill: true,
+				label: 'Medicine',
+				data: [13, 25, 59, 80, 81, 56, 55],
+				borderColor: 'rgb(75, 192, 192)',
+				backgroundColor: 'rgba(75, 192, 192, 0.5)',
+			},
+			{
+				fill: true,
+				label: 'Passatempi',
+				data: [42, 13, 25, 59, 80, 81, 56],
+				borderColor: 'rgb(255, 205, 86)',
+				backgroundColor: 'rgba(255, 205, 86, 0.5)',
+			}
+		]
+	})
 
-		// Create X-Axis (Horizontal Axis)
-		let xAxis = chart.xAxes.push(
-			am5xy.CategoryAxis.new(root, {
-				categoryField: "date", // This Define Which Property of Data is used for Category Axis
-				startLocation: 0,
-				endLocation: 1,
-				renderer: am5xy.AxisRendererX.new(root, {}),
-				tooltip: am5.Tooltip.new(root, {})
-			})
-		);
-		xAxis.data.setAll(props.data);
+	//
+	// useEffect(() => {
+	// 	const data = props.data.map((category) => category.amount)
+	//
+	// 	setChartData({
+	// 		...chartData,
+	// 		labels: labels,
+	// 		datasets: [
+	// 			{
+	// 				...chartData.datasets[0],
+	// 				// data: data
+	// 			}
+	// 		]
+	// 	})
+	// }, [props.data])
 
-		// Create Y-Axis (Vertical Axis)
-		let yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-			renderer: am5xy.AxisRendererY.new(root, {})
-		}));
 
-		// Create Series Function To Call For Each Series (Category I Guess)
-		function createSeries(name: string, field: string, color: string) {
-			let series = chart.series.push(am5xy.ColumnSeries.new(root, {
-				name: name,
-				xAxis: xAxis,
-				yAxis: yAxis,
-				valueYField: field, // This Define Which Property of Data is used for Value Axis
-				categoryXField: "date",
-				stacked: true,
-				stroke: am5.color(0xffffff),
-				fill: am5.color(color),
-				tooltip: am5.Tooltip.new(root, {
-					pointerOrientation: "horizontal",
-					labelText: "[bold]{name}[/]\n{categoryX}: {valueY}€"
-				})
-			}));
-
-			series.data.setAll(props.data);
-			series.appear(1000);
-		}
-
-		// Create Series (Category)
-		for(let category of props.categoryList) {
-			createSeries(category.name, category.id, retrieveColorForIcon(category.name as Icon))
-		}
-		return () => {
-			root.dispose();
-		};
-	}, [props]);
 
 	return (
-		<div id="chartdiv" className="w-full h-[100px] md:h-[400px] mt-4"></div>
+		<Line data={chartData} options={chartOption} />
 	);
 }
 
 type TransactionChartProps = {
-	data: NormalizedTransactionForChart,
-	categoryList: Category[]
-	type?: "expense" | "income"
+	data: NormalizedTransactionForChart
 }

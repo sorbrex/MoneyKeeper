@@ -1,21 +1,65 @@
 import React, {useEffect, useState} from "react"
 import { CategoryWithAmount } from "@/Types/Types"
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"
-import { Doughnut } from "react-chartjs-2"
+import {
+	Chart as ChartJS,
+	CategoryScale,
+	LinearScale,
+	PointElement,
+	LineElement,
+	Title,
+	Tooltip,
+	Filler,
+	Legend,
+	CoreChartOptions,
+	ElementChartOptions,
+	PluginChartOptions,
+	DatasetChartOptions,
+	DoughnutControllerChartOptions,
+} from 'chart.js';
+import {Doughnut} from 'react-chartjs-2';
 import { getAllColors } from "@UI/Simple/CategoryIcon"
+import {_DeepPartialObject} from "chart.js/dist/types/utils";
 
-ChartJS.register(ArcElement, Tooltip, Legend)
+ChartJS.register(
+	CategoryScale,
+	LinearScale,
+	PointElement,
+	LineElement,
+	Title,
+	Tooltip,
+	Filler,
+	Legend
+);
 
 export default function CategoryPieChart(props: PieChartProps) {
 	const data = props.data.map((category: CategoryWithAmount) => category.amount)
 	const labels = props.data.map((tuple: CategoryWithAmount) => tuple.category)
-	const chartOptions = {
+
+	const chartOption = {
 		responsive: true,
-		title: {
-			display: true,
-			text: "Chart.js Line Chart - Cubic interpolation mode"
-		}
-	}
+		maintainAspectRatio: false,
+		plugins: {
+			legend: {
+				display: true,
+				position: "top" as const,
+				align: "center",
+				fullSize: true,
+				labels: {
+					boxWidth: 20,
+					boxHeight: 20,
+					padding: 20,
+					usePointStyle: true,
+					font: {
+						size: 14,
+					}
+				}
+			},
+			title: {
+				display: true,
+				text: 'Chart.js Line Chart',
+			},
+		},
+	} as _DeepPartialObject<CoreChartOptions<"doughnut"> & ElementChartOptions<"doughnut"> & PluginChartOptions<"doughnut"> & DatasetChartOptions<"doughnut"> & DoughnutControllerChartOptions>
 
 	const [chartData, setChartData] = useState({
 		type: "doughnut",
@@ -27,7 +71,8 @@ export default function CategoryPieChart(props: PieChartProps) {
 				backgroundColor: getAllColors(),
 				borderColor: "#fff",
 				borderWidth: 1,
-				hoverOffset: 4
+				padding: 10,
+				hoverOffset: 8
 			}
 		]
 	})
@@ -37,6 +82,7 @@ export default function CategoryPieChart(props: PieChartProps) {
 
 		setChartData({
 			...chartData,
+			labels: labels,
 			datasets: [
 				{
 					...chartData.datasets[0],
@@ -46,7 +92,9 @@ export default function CategoryPieChart(props: PieChartProps) {
 		})
 	}, [props.data])
 
-	return <Doughnut  data={chartData} options={chartOptions} />
+	return(
+			<Doughnut data={chartData} options={chartOption}/>
+	)
 }
 
 type PieChartProps = {

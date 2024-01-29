@@ -92,43 +92,6 @@ export default function Dashboard() {
 		})
 	}, [])
 
-	useEffect(() => {
-		const ctx = document.getElementById("originalFromLib")
-
-		if (!ctx) return
-		if (pieChartRef.current) {
-			pieChartRef.current.destroy()
-		}
-
-		pieChartRef.current = new Chart(ctx, {
-			type: "pie",
-			data: {
-				labels: ["OK", "WARNING", "CRITICAL", "UNKNOWN"],
-				datasets: [{
-					label: "# of Tomatoes",
-					data: [12, 19, 3, 5],
-					backgroundColor: [
-						"rgba(255, 99, 132, 0.5)",
-						"rgba(54, 162, 235, 0.2)",
-						"rgba(255, 206, 86, 0.2)",
-						"rgba(75, 192, 192, 0.2)"
-					],
-					borderColor: [
-						"rgba(255,99,132,1)",
-						"rgba(54, 162, 235, 1)",
-						"rgba(255, 206, 86, 1)",
-						"rgba(75, 192, 192, 1)"
-					],
-					borderWidth: 1
-				}]
-			},
-			options: {
-				//cutoutPercentage: 40,
-				responsive: false,
-			}
-		})
-	}, [normalizedCategoryData])
-
 	if (!getAuth() || dataFetchedStatus === "running") {
 		return <Loading />
 	}
@@ -326,14 +289,12 @@ export default function Dashboard() {
 							</div>
 
 							{/*Pie Chart Ever Categories Expenses*/}
-							<div id="CategoryPieChart" className=" border-2 border-red-500 w-full flex flex-col justify-center items-center ">
-								<div className="border-2 border-green-500 w-full items-center justify-start">
+							<div id="CategoryPieChart" className="w-full flex flex-col justify-center items-center ">
+								<div className="w-full items-center justify-start">
 									<h1 className="text-center md:text-left xl:mt-0 text-4xl">Expenses By Category:</h1>
 								</div>
-								<div className="border-2 border-blue-500 w-full h-[400px]">
-									{/*{normalizedCategoryData ? <CategoryPieChart data={normalizedCategoryData} /> : <Loading />}*/}
-									<canvas id="originalFromLib" width="400" height="400"></canvas>
-
+								<div className="w-full h-[400px]">
+									{normalizedCategoryData ? <CategoryPieChart data={normalizedCategoryData} /> : <Loading />}
 								</div>
 							</div>
 						</div>

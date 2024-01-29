@@ -37,29 +37,14 @@ export function parseCategoryIcon (categoryList: Category[], categoryId: string)
 }
 
 export function getAllColors() {
-	return ["#F99A26", "#0E0091", "#E5446D", "#A288A6", "#4ECDC4", "#DDC3D0"]
-}
-
-
-export function retrieveColorForIcon(iconName: Icon) {
-	//Yellow => #FAEDCB | Rose => #F2C6DE | Blue => #C6DEF1 | Green => #C9E4DE | Purple => #DBCDF0 | Orange => #F7D9C4
-	switch(iconName) {
-	case "Car":
-		return "#F99A26" //"#DBCDF0"
-	case "Food":
-		return "#0E0091" //"#C9E4DE"
-	case "Health":
-		return "#E5446D" //"#F2C6DE"
-	case "Hobby":
-		return "#A288A6" //"#FAEDCB"
-	case "Home":
-		return "#4ECDC4" //"#C6DEF1"
-	case "Work":
-		return "#DDC3D0"//"#F7D9C4"
-
-	default:
-		return "#000"
-	}
+	return [
+		"#F27289",
+		"#574144",
+		"#BFA5A7",
+		"#00B2A3",
+		"#007C6F",
+		"#A27C2F"
+	]
 }
 
 export function CategoryIcon(props:{icon: Icon, className?: string}) {
