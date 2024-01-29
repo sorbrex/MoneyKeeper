@@ -19,6 +19,8 @@ import {subMonths} from "date-fns"
 import ClusteredChart from "@Pages/App/Dashboard/Components/ClusteredChart"
 import OriginalChartFromDemo from "@Pages/App/Dashboard/Components/OriginalChartFromDemo"
 import CategoryPieChart from "@Pages/App/Dashboard/Components/CategoryPieChart"
+import {Chart} from "chart.js"
+import {current} from "@reduxjs/toolkit"
 
 const pastMonth = subMonths(new Date(), 1)
 const defaultRange: DateRange = {
@@ -28,15 +30,16 @@ const defaultRange: DateRange = {
 
 export default function Dashboard() {
 	const navigate = useNavigate()
-	const [cashAvailable, setCashAvailable] = React.useState(0)
-	const [monthExpense, setMonthExpense] = React.useState(0)
-	const [monthIncome, setMonthIncome] = React.useState(0)
+	const [cashAvailable, setCashAvailable] = useState(0)
+	const [monthExpense, setMonthExpense] = useState(0)
+	const [monthIncome, setMonthIncome] = useState(0)
 	const [range, setRange] = useState<DateRange | undefined>(defaultRange)
 	const [defaultRangeSelected, setDefaultRangeSelected] = useState("1M")
 	const [transactionList, setTransactionList] = useState<Array<Transaction>>([])
 	const [dataFetchedStatus, setDataFetchedStatus] = useState<RequestStatus>("idle")
 	const [normalizedTransactionData, setNormalizedTransactionData] = useState<NormalizedTransactionForChart>()
 	const [normalizedCategoryData, setNormalizedCategoryData] = useState<NormalizedCategoryForChart>()
+	const pieChartRef = React.useRef<any>()
 
 	//Fetch User Data
 	const {
@@ -88,6 +91,43 @@ export default function Dashboard() {
 			navigate("/login")
 		})
 	}, [])
+
+	useEffect(() => {
+		const ctx = document.getElementById("originalFromLib")
+
+		if (!ctx) return
+		if (pieChartRef.current) {
+			pieChartRef.current.destroy()
+		}
+
+		pieChartRef.current = new Chart(ctx, {
+			type: "pie",
+			data: {
+				labels: ["OK", "WARNING", "CRITICAL", "UNKNOWN"],
+				datasets: [{
+					label: "# of Tomatoes",
+					data: [12, 19, 3, 5],
+					backgroundColor: [
+						"rgba(255, 99, 132, 0.5)",
+						"rgba(54, 162, 235, 0.2)",
+						"rgba(255, 206, 86, 0.2)",
+						"rgba(75, 192, 192, 0.2)"
+					],
+					borderColor: [
+						"rgba(255,99,132,1)",
+						"rgba(54, 162, 235, 1)",
+						"rgba(255, 206, 86, 1)",
+						"rgba(75, 192, 192, 1)"
+					],
+					borderWidth: 1
+				}]
+			},
+			options: {
+				//cutoutPercentage: 40,
+				responsive: false,
+			}
+		})
+	}, [normalizedCategoryData])
 
 	if (!getAuth() || dataFetchedStatus === "running") {
 		return <Loading />
@@ -148,26 +188,28 @@ export default function Dashboard() {
 			return transaction.type !== "income"
 		})
 
-		const localNormalizedData: NormalizedCategoryForChart = []
+		const categoryTotals = {}
 
-		filteredTransactionList.forEach((transaction: Transaction) => {
-			const categoryName = categoryList.find((category: Category) => category.id === transaction.categoryId)?.name || "Expense"
+		filteredTransactionList.forEach(transaction => {
+			const categoryId = transaction.categoryId
 
-			const index = localNormalizedData.findIndex((item: CategoryWithAmount) => item.category === transaction.name)
-
-			if (index === -1) {
-				localNormalizedData.push({
-					category: categoryName,
-					amount: transaction.amount
-				})
+			if (Object.hasOwn(categoryTotals, categoryId)) {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				categoryTotals[categoryId] += transaction.amount
 			} else {
-				if (localNormalizedData[index as unknown as number]) {
-					localNormalizedData[index].amount += transaction.amount
-				} else {
-					localNormalizedData[index].amount = transaction.amount
-				}
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				categoryTotals[categoryId] = transaction.amount
 			}
 		})
+
+		const localNormalizedData: NormalizedCategoryForChart = Object.entries(categoryTotals).map(([categoryId, totalAmount])=> ({
+			category: categoryList.find((category: Category) => category.id === categoryId)?.name || "Expense",
+			amount : totalAmount as number
+		}))
+
+		console.log(localNormalizedData)
 
 		setNormalizedCategoryData(localNormalizedData)
 	}
@@ -279,18 +321,21 @@ export default function Dashboard() {
 
 								{/*Column Clustered Chart*/}
 								<div id="ExpenseIncomeClusteredChart_Chart" className="w-full min-h-[400px] flex justify-center items-end">
-									<ClusteredChart chartId="ClusteredChart" data={normalizedTransactionData} categoryList={categoryList} />
+									{/*<ClusteredChart chartId="ClusteredChart" data={normalizedTransactionData} categoryList={categoryList} />*/}
 								</div>
 							</div>
 
 							{/*Pie Chart Ever Categories Expenses*/}
-							<div id="CategoryPieChart" className="w-full flex flex-col justify-center items-center">
-								<div className="w-full items-center justify-start">
+							<div id="CategoryPieChart" className=" border-2 border-red-500 w-full flex flex-col justify-center items-center ">
+								<div className="border-2 border-green-500 w-full items-center justify-start">
 									<h1 className="text-center md:text-left xl:mt-0 text-4xl">Expenses By Category:</h1>
 								</div>
-								{/*<CategoryPieChart chartId="CategoryPie" data={normalizedCategoryData} categoryList={categoryList} />*/}
-							</div>
+								<div className="border-2 border-blue-500 w-full h-[400px]">
+									{/*{normalizedCategoryData ? <CategoryPieChart data={normalizedCategoryData} /> : <Loading />}*/}
+									<canvas id="originalFromLib" width="400" height="400"></canvas>
 
+								</div>
+							</div>
 						</div>
 
 						{/*Transactions List*/}

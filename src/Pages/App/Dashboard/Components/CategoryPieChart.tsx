@@ -1,62 +1,54 @@
-import * as am5 from "@amcharts/amcharts5";
-import * as am5percent from "@amcharts/amcharts5/percent";
-import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
-import {useLayoutEffect, useRef} from "react";
-import {Category, NormalizedCategoryForChart} from "@/Types/Types";
-import {Root} from "@amcharts/amcharts5";
+import React, {useEffect, useState} from "react"
+import { CategoryWithAmount } from "@/Types/Types"
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"
+import { Doughnut } from "react-chartjs-2"
+import { getAllColors } from "@UI/Simple/CategoryIcon"
 
-export default function CategoryPieChart(props: CategoryPieChartProps){
-	const root = useRef<Root>()
+ChartJS.register(ArcElement, Tooltip, Legend)
 
-	useLayoutEffect(() => {
-		if (!props.data) return;
+export default function CategoryPieChart(props: PieChartProps) {
+	const data = props.data.map((category: CategoryWithAmount) => category.amount)
+	const labels = props.data.map((tuple: CategoryWithAmount) => tuple.category)
+	const chartOptions = {
+		responsive: true,
+		title: {
+			display: true,
+			text: "Chart.js Line Chart - Cubic interpolation mode"
+		}
+	}
 
-		if (!root.current) root.current = am5.Root.new(props.chartId);
+	const [chartData, setChartData] = useState({
+		type: "doughnut",
+		labels: labels,
+		datasets: [
+			{
+				label: "Amount: ",
+				data: data,
+				backgroundColor: getAllColors(),
+				borderColor: "#fff",
+				borderWidth: 1,
+				hoverOffset: 4
+			}
+		]
+	})
 
-		root.current.setThemes([am5themes_Animated.new(root.current)]);
+	useEffect(() => {
+		const data = props.data.map((category: CategoryWithAmount) => category.amount)
 
-		let chart = root.current.container.children.push(
-			am5percent.PieChart.new(root.current, {
-				layout: root.current.verticalLayout,
-				innerRadius: am5.percent(50)
-			})
-		);
+		setChartData({
+			...chartData,
+			datasets: [
+				{
+					...chartData.datasets[0],
+					data: data
+				}
+			]
+		})
+	}, [props.data])
 
-		let series = chart.series.push(am5percent.PieSeries.new(root.current, {
-			valueField: "amount",
-			categoryField: "category",
-			alignLabels: false,
-		}));
-
-		series.labels.template.setAll({
-			fontSize: 12,
-			fontWeight: "bold",
-			oversizedBehavior: "hide",
-		});
-
-
-		series.slices.template.setAll({
-			fillOpacity: 0.5,
-			stroke: am5.color(0xffffff),
-			strokeWidth: 2
-		});
-
-		series.data.setAll(props.data);
-
-		series.appear(1000, 100);
-
-		return () => {
-			root.current?.dispose();
-		};
-	}, [props.data]);
-
-	return (
-		<div id={props.chartId} className="w-full min-h-[500px]"></div>
-	);
+	return <Doughnut  data={chartData} options={chartOptions} />
 }
 
-type CategoryPieChartProps = {
-	data?: NormalizedCategoryForChart
-	chartId: string
-	categoryList: Category[]
+type PieChartProps = {
+	data: CategoryWithAmount[]
 }

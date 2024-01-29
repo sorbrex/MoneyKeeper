@@ -36,6 +36,10 @@ export function parseCategoryIcon (categoryList: Category[], categoryId: string)
 	}
 }
 
+export function getAllColors() {
+	return ["#F99A26", "#0E0091", "#E5446D", "#A288A6", "#4ECDC4", "#DDC3D0"]
+}
+
 
 export function retrieveColorForIcon(iconName: Icon) {
 	//Yellow => #FAEDCB | Rose => #F2C6DE | Blue => #C6DEF1 | Green => #C9E4DE | Purple => #DBCDF0 | Orange => #F7D9C4
@@ -54,11 +58,11 @@ export function retrieveColorForIcon(iconName: Icon) {
 		return "#DDC3D0"//"#F7D9C4"
 
 	default:
-		return "#000000"
+		return "#000"
 	}
 }
 
-export default function CategoryIcon(props:{icon: Icon, className?: string}) {
+export function CategoryIcon(props:{icon: Icon, className?: string}) {
 	return (
 		<>
 			<img src={selectIconToRender(props.icon)} alt={props.icon} className={`h-10 w-10 p-1 rounded ${props.className}`}/>
