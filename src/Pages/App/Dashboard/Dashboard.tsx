@@ -4,8 +4,8 @@ import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
 import Loading from "@UI/Simple/Loading"
 import {
-	Category, CategoryWithAmount, DailyTransaction, NormalizedCategoryForChart,
-	NormalizedTransactionForChart, RequestStatus,
+	Category,
+	RequestStatus,
 	Transaction,
 	User
 } from "@/Types/Types"
@@ -16,11 +16,7 @@ import ErrorPage from "@Pages/Base/ErrorPages"
 import dayjs from "dayjs"
 import {DateRange} from "react-day-picker"
 import {subMonths} from "date-fns"
-import ClusteredChart from "@Pages/App/Dashboard/Components/ClusteredChart"
-import OriginalChartFromDemo from "@Pages/App/Dashboard/Components/OriginalChartFromDemo"
 import CategoryPieChart from "@Pages/App/Dashboard/Components/CategoryPieChart"
-import {Chart} from "chart.js"
-import {current} from "@reduxjs/toolkit"
 
 const pastMonth = subMonths(new Date(), 1)
 const defaultRange: DateRange = {

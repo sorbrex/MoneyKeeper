@@ -38,6 +38,7 @@ const defaultRange: DateRange = {
 }
 
 export default function Transactions() {
+	const navigate = useNavigate()
 	const [alertShown, setAlertShown] = React.useState(false)
 	const [alertType, setAlertType] = React.useState<AlertType>("info")
 	const [alertMessage, setAlertMessage] = React.useState("None")
@@ -46,8 +47,6 @@ export default function Transactions() {
 	const [range, setRange] = useState<DateRange>(defaultRange)
 	const [dataFetchedStatus, setDataFetchedStatus] = useState<RequestStatus>("idle")
 	const [transactionList, setTransactionList] = useState<Array<Transaction>>([])
-	const normalizedData = useRef<any>()
-	const navigate = useNavigate()
 	const baseFormValues: CreateTransactionFormValues = {
 		id: "",
 		name: "",
@@ -57,18 +56,6 @@ export default function Transactions() {
 		type: "expense",
 	}
 	const previousTransactionData = useRef<CreateTransactionFormValues>(baseFormValues)
-
-
-	// Check Credentials Or Redirect
-	useEffect(() => {
-		document.title = "Transaction"
-		Auth().catch(() => {
-			navigate("/login")
-		})
-	}, [])
-	if (!getAuth()) {
-		return <Loading />
-	}
 
 	//Fetch User Data
 	const {
@@ -90,30 +77,34 @@ export default function Transactions() {
 		data: categoryList = [] as Array<Category>,
 	} = useGetCategoryQuery(getAuth())
 
+	// Check Credentials Or Redirect
+	useEffect(() => {
+		document.title = "Transaction"
+		Auth().catch(() => {
+			navigate("/login")
+		})
+	}, [])
 
 	useEffect(() => {
+		console.log("Received Remote Transaction List => ", remoteTransactionList)
 		setDataFetchedStatus("good")
 		if (remoteTransactionList.length > 0) {
-			const localTransactionList = remoteTransactionList.toReversed()
+			let localTransactionList = remoteTransactionList.toReversed()
 			setTransactionList(localTransactionList)
 			if (range) {
-				setTransactionList(localTransactionList.filter((transaction: Transaction) => {
+				localTransactionList = localTransactionList.filter((transaction: Transaction) => {
 					return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date)
-				}))
+				})
 			}
+			setTransactionList(localTransactionList)
 		}
 	}, [remoteTransactionList, range])
-
-	useEffect(() => {
-		normalizeDataForAreaChart()
-	}, [transactionList])
 
 	useEffect(() => {
 		if ((transactionIsError && transactionError) || (userIsError && userError)) {
 			setDataFetchedStatus("error")
 		}
 	}, [transactionIsError, userIsError])
-
 
 	if (!getAuth() || dataFetchedStatus === "running") {
 		return <Loading />
@@ -128,59 +119,6 @@ export default function Transactions() {
 			console.error("Transaction Error => ", transactionError)
 			return <ErrorPage message={JSON.stringify(transactionError)} />
 		}
-	}
-
-	// Normalize Data For Chart
-	function normalizeDataForAreaChart () {
-		const localNormalizedData: NormalizedTransactionForChart = []
-
-		//{
-		//	"date": "01/09/2021",
-		//	"Food": [79],
-		//	"Health": [210],
-		//	"Hobby": [25],
-		//	"Home": [100],
-		//	"Car": [80]
-		//}
-
-		//Group By Date
-		transactionList.forEach((transaction: Transaction) => {
-			//Search for Already Existing Date
-			let index = localNormalizedData.findIndex((item: any) => item.date === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
-
-			//If Not Found, Create New Element With Date and Category Amount
-			if(index === -1) {
-				localNormalizedData.push({
-					date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
-					...categoryList.map((category: Category) => {
-						return {
-							[category.id]: 0
-						}
-					})
-				})
-				index = localNormalizedData.length - 1
-			}
-
-			//Expense or Income?
-			if(showIncome && transaction.type === "income" || !showIncome && transaction.type === "expense") {
-				//If Already Existing, Add Amount
-				if (localNormalizedData[index][transaction.categoryId]) {
-					localNormalizedData[index][transaction.categoryId] = localNormalizedData[index][transaction.categoryId] as number + transaction.amount
-				} else {
-					//If Not Existing, Create New Element
-					localNormalizedData[index][transaction.categoryId] = transaction.amount
-				}
-			}
-		})
-
-		//Sort By Date from the oldest to the newest
-		localNormalizedData.reverse()
-		normalizedData.current = localNormalizedData.map((item: any) => {
-			return {
-				type: showIncome ? "income" : "expense",
-				...item,
-			}
-		})
 	}
 
 	function handleChangeDateRange (range: DateRange | undefined) {
@@ -259,23 +197,23 @@ export default function Transactions() {
 					<AddTransactionModalForm setModalState={ setModalIsOpen } categoryList={categoryList} presentData={previousTransactionData.current}/>
 				</ReactModal>
 
-					<div id="toggler" className="flex flex-row justify-center">
-						<p className="mx-2">Expense</p>
-						<Toggle active={showIncome} onToggle={() => setShowIncome(!showIncome)}/>
-						<p className="mx-2">Income</p>
-					</div>
+				<div id="toggler" className="flex flex-row justify-center">
+					<p className="mx-2">Expense</p>
+					<Toggle active={showIncome} onToggle={() => setShowIncome(!showIncome)}/>
+					<p className="mx-2">Income</p>
+				</div>
 
-					{/*GRAPHIC*/}
-					<TransactionChart data={normalizedData.current}/>
+				{/*GRAPHIC*/}
+				<TransactionChart data={transactionList} categoryList={categoryList} showIncome={showIncome}/>
 
-					{/*USER INTERACTION*/}
-					<div className="w-full flex flex-col items-center justify-center">
-						<DatePicker onRangeSelected={handleChangeDateRange} range={range} />
-						<ButtonPrimary content="Add New" onClick={() => setModalIsOpen(true)} />
-					</div>
+				{/*USER INTERACTION*/}
+				<div className="w-full flex flex-col items-center justify-center">
+					<DatePicker onRangeSelected={handleChangeDateRange} range={range} />
+					<ButtonPrimary content="Add New" onClick={() => setModalIsOpen(true)} />
+				</div>
 
 
-					{/*TRANSACTION LIST*/}
+				{/*TRANSACTION LIST*/}
 				<div className="max-h-[250px] overflow-y-auto">
 					<TransactionList transaction={transactionList} categoryList={categoryList} editable={true} onEdit={handleEdit} onDelete={handleDelete} />
 				</div>

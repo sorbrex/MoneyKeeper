@@ -94,18 +94,14 @@ export default function CategoryPieChart(props: PieChartProps) {
 			return transaction.type !== "income"
 		})
 
-		const categoryTotals = {}
+		const categoryTotals: {[key: string]: number} = {}
 
 		filteredTransactionList.forEach(transaction => {
 			const categoryName = categoryList.find((category: Category) => category.id === transaction.categoryId)?.name || "Expense"
 
 			if (Object.hasOwn(categoryTotals, categoryName)) {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				categoryTotals[categoryName] += transaction.amount
 			} else {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				categoryTotals[categoryName] = transaction.amount
 			}
 		})
