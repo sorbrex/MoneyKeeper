@@ -153,7 +153,9 @@ export default function Transactions() {
 				localNormalizedData.push({
 					date: dayjs(transaction.createdAt).format("DD/MM/YYYY"),
 					...categoryList.map((category: Category) => {
-						return {category.name: 0}
+						return {
+							[category.id]: 0
+						}
 					})
 				})
 				index = localNormalizedData.length - 1

@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from "react";
-import { NormalizedTransactionForChart} from "@/Types/Types";
-import { Line } from 'react-chartjs-2';
+import React, {useEffect, useState} from "react"
+import { NormalizedTransactionForChart} from "@/Types/Types"
+import { Line } from "react-chartjs-2"
 import {
 	Chart as ChartJS,
 	CategoryScale,
@@ -17,9 +17,9 @@ import {
 	DatasetChartOptions,
 	ScaleChartOptions,
 	ChartTypeRegistry, LineControllerChartOptions,
-} from 'chart.js';
-import {getAllColors} from "@UI/Simple/CategoryIcon";
-import {_DeepPartialObject} from "chart.js/dist/types/utils";
+} from "chart.js"
+import {getAllColors} from "@UI/Simple/CategoryIcon"
+import {_DeepPartialObject} from "chart.js/dist/types/utils"
 
 ChartJS.register(
 	CategoryScale,
@@ -30,7 +30,7 @@ ChartJS.register(
 	Tooltip,
 	Filler,
 	Legend
-);
+)
 
 
 export default function TransactionChart(props: TransactionChartProps) {
@@ -69,31 +69,31 @@ export default function TransactionChart(props: TransactionChartProps) {
 		datasets: [
 			{
 				fill: true,
-				label: 'Casa',
+				label: "Casa",
 				data: [25, 59, 80, 81, 56, 55, 40],
-				borderColor: 'rgb(53, 162, 235)',
-				backgroundColor: 'rgba(53, 162, 235, 0.5)',
+				borderColor: "rgb(53, 162, 235)",
+				backgroundColor: "rgba(53, 162, 235, 0.5)",
 			},
 			{
 				fill: true,
-				label: 'Macchina',
+				label: "Macchina",
 				data: [32, 55, 45, 67, 89, 23, 45],
-				borderColor: 'rgb(255, 99, 132)',
-				backgroundColor: 'rgba(255, 99, 132, 0.5)',
+				borderColor: "rgb(255, 99, 132)",
+				backgroundColor: "rgba(255, 99, 132, 0.5)",
 			},
 			{
 				fill: true,
-				label: 'Medicine',
+				label: "Medicine",
 				data: [13, 25, 59, 80, 81, 56, 55],
-				borderColor: 'rgb(75, 192, 192)',
-				backgroundColor: 'rgba(75, 192, 192, 0.5)',
+				borderColor: "rgb(75, 192, 192)",
+				backgroundColor: "rgba(75, 192, 192, 0.5)",
 			},
 			{
 				fill: true,
-				label: 'Passatempi',
+				label: "Passatempi",
 				data: [42, 13, 25, 59, 80, 81, 56],
-				borderColor: 'rgb(255, 205, 86)',
-				backgroundColor: 'rgba(255, 205, 86, 0.5)',
+				borderColor: "rgb(255, 205, 86)",
+				backgroundColor: "rgba(255, 205, 86, 0.5)",
 			}
 		]
 	})
@@ -118,7 +118,7 @@ export default function TransactionChart(props: TransactionChartProps) {
 
 	return (
 		<Line data={chartData} options={chartOption} />
-	);
+	)
 }
 
 type TransactionChartProps = {

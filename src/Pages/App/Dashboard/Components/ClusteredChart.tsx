@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react"
 import {Category, CategoryWithAmount, NormalizedTransactionForChart} from "@/Types/Types"
-import {getAllColors} from "@UI/Simple/CategoryIcon";
-import {Doughnut} from "react-chartjs-2";
+import {getAllColors} from "@UI/Simple/CategoryIcon"
+import {Doughnut} from "react-chartjs-2"
 
 export default function ClusteredChart(props: ClusteredChartProps) {
 	const chartRef = useRef<any>()

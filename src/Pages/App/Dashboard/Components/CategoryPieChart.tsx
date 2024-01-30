@@ -1,5 +1,10 @@
 import React, {useEffect, useState} from "react"
-import { CategoryWithAmount } from "@/Types/Types"
+import {
+	Category,
+	CategoryWithAmount,
+	NormalizedCategoryForChart,
+	Transaction
+} from "@/Types/Types"
 import {
 	Chart as ChartJS,
 	CategoryScale,
@@ -15,10 +20,11 @@ import {
 	PluginChartOptions,
 	DatasetChartOptions,
 	DoughnutControllerChartOptions,
-} from 'chart.js';
-import {Doughnut} from 'react-chartjs-2';
+} from "chart.js"
+import "chart.js/auto" // ADD THIS
+import {Doughnut} from "react-chartjs-2"
 import { getAllColors } from "@UI/Simple/CategoryIcon"
-import {_DeepPartialObject} from "chart.js/dist/types/utils";
+import {_DeepPartialObject} from "chart.js/dist/types/utils"
 
 ChartJS.register(
 	CategoryScale,
@@ -29,12 +35,9 @@ ChartJS.register(
 	Tooltip,
 	Filler,
 	Legend
-);
+)
 
 export default function CategoryPieChart(props: PieChartProps) {
-	const data = props.data.map((category: CategoryWithAmount) => category.amount)
-	const labels = props.data.map((tuple: CategoryWithAmount) => tuple.category)
-
 	const chartOption = {
 		responsive: true,
 		maintainAspectRatio: false,
@@ -53,21 +56,16 @@ export default function CategoryPieChart(props: PieChartProps) {
 						size: 14,
 					}
 				}
-			},
-			title: {
-				display: true,
-				text: 'Chart.js Line Chart',
-			},
+			}
 		},
 	} as _DeepPartialObject<CoreChartOptions<"doughnut"> & ElementChartOptions<"doughnut"> & PluginChartOptions<"doughnut"> & DatasetChartOptions<"doughnut"> & DoughnutControllerChartOptions>
-
 	const [chartData, setChartData] = useState({
 		type: "doughnut",
-		labels: labels,
+		labels: ["None"],
 		datasets: [
 			{
 				label: "Amount: ",
-				data: data,
+				data: [0],
 				backgroundColor: getAllColors(),
 				borderColor: "#fff",
 				borderWidth: 1,
@@ -77,26 +75,70 @@ export default function CategoryPieChart(props: PieChartProps) {
 		]
 	})
 
-	useEffect(() => {
-		const data = props.data.map((category: CategoryWithAmount) => category.amount)
+	function updateChartData (transactionList: Transaction[], categoryList: Category[]) {
+		if (!transactionList || transactionList.length <= 0) {
+			console.log("Transaction Empty. Setting Chart Data to None")
+			setChartData({
+				...chartData,
+				labels: ["None"] as never[],
+				datasets: [
+					{
+						...chartData.datasets[0],
+						data: [1] as never[]
+					}
+				]
+			})
+			return
+		}
+
+		const filteredTransactionList = transactionList.filter((transaction: Transaction) => {
+			return transaction.type !== "income"
+		})
+
+		const categoryTotals = {}
+
+		filteredTransactionList.forEach(transaction => {
+			const categoryName = categoryList.find((category: Category) => category.id === transaction.categoryId)?.name || "Expense"
+
+			if (Object.hasOwn(categoryTotals, categoryName)) {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				categoryTotals[categoryName] += transaction.amount
+			} else {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				categoryTotals[categoryName] = transaction.amount
+			}
+		})
+
+		const localNormalizedData: NormalizedCategoryForChart = Object.entries(categoryTotals).map(([categoryName, totalAmount])=> ({
+			category: categoryName,
+			amount : totalAmount as number
+		}))
 
 		setChartData({
 			...chartData,
-			labels: labels,
+			labels: localNormalizedData.map((category: CategoryWithAmount) => category.category) as never[],
 			datasets: [
 				{
 					...chartData.datasets[0],
-					data: data
+					data: localNormalizedData.map((category: CategoryWithAmount) => category.amount) as never[]
 				}
 			]
 		})
-	}, [props.data])
+	}
+
+	useEffect(() => {
+		console.log("PieChartProps - Received Data: ", props.data)
+		updateChartData(props.data, props.categoryList)
+	}, [props])
 
 	return(
-			<Doughnut data={chartData} options={chartOption}/>
+		<Doughnut data={chartData} options={chartOption}/>
 	)
 }
 
 type PieChartProps = {
-	data: CategoryWithAmount[]
+	data: Transaction[]
+	categoryList: Category[]
 }

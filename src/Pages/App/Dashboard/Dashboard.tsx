@@ -37,9 +37,6 @@ export default function Dashboard() {
 	const [defaultRangeSelected, setDefaultRangeSelected] = useState("1M")
 	const [transactionList, setTransactionList] = useState<Array<Transaction>>([])
 	const [dataFetchedStatus, setDataFetchedStatus] = useState<RequestStatus>("idle")
-	const [normalizedTransactionData, setNormalizedTransactionData] = useState<NormalizedTransactionForChart>()
-	const [normalizedCategoryData, setNormalizedCategoryData] = useState<NormalizedCategoryForChart>()
-	const pieChartRef = React.useRef<any>()
 
 	//Fetch User Data
 	const {
@@ -63,21 +60,19 @@ export default function Dashboard() {
 	useEffect(() => {
 		setDataFetchedStatus("good")
 		if (remoteTransactionList.length > 0) {
-			const localTransactionList = remoteTransactionList.toReversed()
-			setTransactionList(localTransactionList)
+			let localTransactionList = remoteTransactionList.toReversed()
 			if (range) {
-				setTransactionList(localTransactionList.filter((transaction: Transaction) => {
+				localTransactionList = localTransactionList.filter((transaction: Transaction) => {
 					return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date)
-				}))
+				})
 			}
+			setTransactionList(localTransactionList)
 		}
 	}, [remoteTransactionList, range])
 
 	useEffect(() => {
 		retrieveGeneralCashInfo()
-		normalizeTransactionDataForClusteredChart()
-		normalizeTransactionDataForPieChart()
-	}, [transactionList])
+	}, [remoteTransactionList])
 
 	useEffect(() => {
 		if ((transactionIsError && transactionError) || (userIsError && userError)) {
@@ -109,78 +104,44 @@ export default function Dashboard() {
 	}
 
 	// Normalize Data For Chart
-	function normalizeTransactionDataForClusteredChart () {
-		if (!transactionList) return
-
-		const localNormalizedData: NormalizedTransactionForChart = []
-
-		transactionList.forEach((transaction: Transaction) => {
-			let index = localNormalizedData.findIndex((item: DailyTransaction) => item["date"] === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
-			if(index === -1) {
-				localNormalizedData.push({
-					date: dayjs(transaction.createdAt).format("DD/MM/YYYY")
-				})
-				index = localNormalizedData.length - 1
-			}
-
-			if(transaction.type === "income") {
-				if (localNormalizedData[index]["income_" + transaction.categoryId]) {
-					localNormalizedData[index]["income_" + transaction.categoryId] = localNormalizedData[index]["income_" + transaction.categoryId] as number + transaction.amount
-				} else {
-					localNormalizedData[index]["income_" + transaction.categoryId] = transaction.amount
-				}
-			} else {
-				if (localNormalizedData[index]["expense_" + transaction.categoryId]) {
-					localNormalizedData[index]["expense_" + transaction.categoryId] = localNormalizedData[index]["expense_" + transaction.categoryId] as number + transaction.amount
-				} else {
-					localNormalizedData[index]["expense_" + transaction.categoryId]  = transaction.amount
-				}
-			}
-		})
-
-		//Sort By Date from the oldest to the newest
-		localNormalizedData.reverse()
-		console.log("Normalized Data: ", localNormalizedData)
-		setNormalizedTransactionData(localNormalizedData)
-	}
-
-	function normalizeTransactionDataForPieChart () {
-		if (!transactionList) return
-
-		const filteredTransactionList = transactionList.filter((transaction: Transaction) => {
-			return transaction.type !== "income"
-		})
-
-		const categoryTotals = {}
-
-		filteredTransactionList.forEach(transaction => {
-			const categoryId = transaction.categoryId
-
-			if (Object.hasOwn(categoryTotals, categoryId)) {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				categoryTotals[categoryId] += transaction.amount
-			} else {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				categoryTotals[categoryId] = transaction.amount
-			}
-		})
-
-		const localNormalizedData: NormalizedCategoryForChart = Object.entries(categoryTotals).map(([categoryId, totalAmount])=> ({
-			category: categoryList.find((category: Category) => category.id === categoryId)?.name || "Expense",
-			amount : totalAmount as number
-		}))
-
-		console.log(localNormalizedData)
-
-		setNormalizedCategoryData(localNormalizedData)
-	}
+	// function normalizeTransactionDataForClusteredChart () {
+	// 	if (!transactionList) return
+	//
+	// 	const localNormalizedData: NormalizedTransactionForChart = []
+	//
+	// 	transactionList.forEach((transaction: Transaction) => {
+	// 		let index = localNormalizedData.findIndex((item: DailyTransaction) => item["date"] === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
+	// 		if(index === -1) {
+	// 			localNormalizedData.push({
+	// 				date: dayjs(transaction.createdAt).format("DD/MM/YYYY")
+	// 			})
+	// 			index = localNormalizedData.length - 1
+	// 		}
+	//
+	// 		if(transaction.type === "income") {
+	// 			if (localNormalizedData[index]["income_" + transaction.categoryId]) {
+	// 				localNormalizedData[index]["income_" + transaction.categoryId] = localNormalizedData[index]["income_" + transaction.categoryId] as number + transaction.amount
+	// 			} else {
+	// 				localNormalizedData[index]["income_" + transaction.categoryId] = transaction.amount
+	// 			}
+	// 		} else {
+	// 			if (localNormalizedData[index]["expense_" + transaction.categoryId]) {
+	// 				localNormalizedData[index]["expense_" + transaction.categoryId] = localNormalizedData[index]["expense_" + transaction.categoryId] as number + transaction.amount
+	// 			} else {
+	// 				localNormalizedData[index]["expense_" + transaction.categoryId]  = transaction.amount
+	// 			}
+	// 		}
+	// 	})
+	//
+	// 	//Sort By Date from the oldest to the newest
+	// 	localNormalizedData.reverse()
+	// 	console.log("Normalized Data: ", localNormalizedData)
+	// }
 
 	function retrieveGeneralCashInfo () {
-		if (!transactionList) return
+		if (!remoteTransactionList) return
 
-		const filteredTransactionList = transactionList.filter((transaction: Transaction) => {
+		const filteredTransactionList = remoteTransactionList.filter((transaction: Transaction) => {
 			return dayjs(transaction.createdAt).isBetween(dayjs().subtract(1, "month"), dayjs())
 		})
 
@@ -294,7 +255,7 @@ export default function Dashboard() {
 									<h1 className="text-center md:text-left xl:mt-0 text-4xl">Expenses By Category:</h1>
 								</div>
 								<div className="w-full h-[400px]">
-									{normalizedCategoryData ? <CategoryPieChart data={normalizedCategoryData} /> : <Loading />}
+									{transactionList && <CategoryPieChart data={transactionList} categoryList={categoryList}/>}
 								</div>
 							</div>
 						</div>

@@ -41,17 +41,17 @@ export default function AddTransactionModalForm(props: ModalProps) {
 				...values
 			}
 		}).then(response => {
-				if (response.status.toString().includes("20")){
-					setAlertType("success")
-					setAlertMessage(isUpdate ? "Transaction Updated!" : "Transaction Created!")
-				} else {
-					setAlertType("error")
-					setAlertMessage(`Cannot ${isUpdate ? 'Update' : 'Create'} the Transaction! ${response.data.message}`)
-				}
-			})
+			if (response.status.toString().includes("20")){
+				setAlertType("success")
+				setAlertMessage(isUpdate ? "Transaction Updated!" : "Transaction Created!")
+			} else {
+				setAlertType("error")
+				setAlertMessage(`Cannot ${isUpdate ? "Update" : "Create"} the Transaction! ${response.data.message}`)
+			}
+		})
 			.catch(error => {
 				setAlertType("error")
-				setAlertMessage(`Cannot ${isUpdate ? 'Update' : 'Create'} the Transaction! ${error}`)
+				setAlertMessage(`Cannot ${isUpdate ? "Update" : "Create"} the Transaction! ${error}`)
 			}).finally(() => {
 				showAlertHideModal()
 			})

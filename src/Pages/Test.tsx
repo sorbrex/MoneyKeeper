@@ -1,6 +1,6 @@
 import React from "react"
 import CenteredContainer from "@/Layouts/CenteredContainer"
-import TransactionChart from "@Pages/App/Transaction/Components/TransactionChart";
+import TransactionChart from "@Pages/App/Transaction/Components/TransactionChart"
 
 const stubData = [
 	{
