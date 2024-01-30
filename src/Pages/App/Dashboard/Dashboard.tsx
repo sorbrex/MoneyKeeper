@@ -102,7 +102,7 @@ export default function Dashboard() {
 			return <ErrorPage message={JSON.stringify(transactionError)} />
 		}
 	}
-
+	//TODO: Move This inside the Chart Component
 	// Normalize Data For Chart
 	// function normalizeTransactionDataForClusteredChart () {
 	// 	if (!transactionList) return

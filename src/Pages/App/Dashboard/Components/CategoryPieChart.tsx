@@ -65,7 +65,7 @@ export default function CategoryPieChart(props: PieChartProps) {
 		datasets: [
 			{
 				label: "Amount: ",
-				data: [0],
+				data: [1],
 				backgroundColor: getAllColors(),
 				borderColor: "#fff",
 				borderWidth: 1,
@@ -77,7 +77,6 @@ export default function CategoryPieChart(props: PieChartProps) {
 
 	function updateChartData (transactionList: Transaction[], categoryList: Category[]) {
 		if (!transactionList || transactionList.length <= 0) {
-			console.log("Transaction Empty. Setting Chart Data to None")
 			setChartData({
 				...chartData,
 				labels: ["None"] as never[],
@@ -129,7 +128,6 @@ export default function CategoryPieChart(props: PieChartProps) {
 	}
 
 	useEffect(() => {
-		console.log("PieChartProps - Received Data: ", props.data)
 		updateChartData(props.data, props.categoryList)
 	}, [props])
 
