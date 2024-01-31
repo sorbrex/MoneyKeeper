@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react"
-import {Category, NormalizedTransactionForChart, Transaction} from "@/Types/Types"
+import {Category, Transaction} from "@/Types/Types"
 import { Line } from "react-chartjs-2"
 import {
 	Chart as ChartJS,
@@ -15,8 +15,7 @@ import {
 	ElementChartOptions,
 	PluginChartOptions,
 	DatasetChartOptions,
-	ScaleChartOptions,
-	ChartTypeRegistry, LineControllerChartOptions,
+	LineControllerChartOptions,
 } from "chart.js"
 import {getAllColors} from "@UI/Simple/CategoryIcon"
 import {_DeepPartialObject} from "chart.js/dist/types/utils"
@@ -76,11 +75,11 @@ export default function TransactionAreaChart(props: TransactionAreaChartProps) {
 		})
 
 		const labels = data.map((transaction: Transaction) => dayjs(transaction.createdAt).format("DD/MM/YYYY"))
-		const dataset = Object.keys(resultObject).map((key) => {
+		const dataset = Object.keys(resultObject).map((categoryName) => {
 			return {
 				fill: true,
-				label: key,
-				data: resultObject[key],
+				label: categoryName,
+				data: resultObject[categoryName],
 				backgroundColor: "",
 				borderColor: "",
 			}

@@ -111,11 +111,11 @@ export default function Transactions() {
 
 	if (dataFetchedStatus === "error") {
 		if (userIsError && userError) {
-			console.error("User Error => ", userError)
+			console.error("Transactions Page User Error => ", userError)
 			return <ErrorPage message={JSON.stringify(userError)} />
 		}
 		if (transactionIsError && transactionError) {
-			console.error("Transaction Error => ", transactionError)
+			console.error("Transaction Page Transaction Error => ", transactionError)
 			return <ErrorPage message={JSON.stringify(transactionError)} />
 		}
 	}
@@ -203,7 +203,7 @@ export default function Transactions() {
 				</div>
 
 				{/*GRAPHIC*/}
-				<div className="w-full h-[450px]">
+				<div className="w-full h-[300px] md:h-[400px]">
 					<TransactionChart data={transactionList} categoryList={categoryList} showIncome={showIncome}/>
 				</div>
 
@@ -213,9 +213,8 @@ export default function Transactions() {
 					<ButtonPrimary content="Add New" onClick={() => setModalIsOpen(true)} />
 				</div>
 
-
 				{/*TRANSACTION LIST*/}
-				<div className="max-h-[250px] overflow-y-auto">
+				<div className="max-h-[250px] md:max-h-[200px] md:pt-2 overflow-y-auto">
 					<TransactionList transaction={transactionList} categoryList={categoryList} editable={true} onEdit={handleEdit} onDelete={handleDelete} />
 				</div>
 				<div className="fixed bottom-32 w-full flex justify-center items-center">

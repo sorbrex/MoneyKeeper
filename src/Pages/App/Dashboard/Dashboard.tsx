@@ -17,6 +17,7 @@ import dayjs from "dayjs"
 import {DateRange} from "react-day-picker"
 import {subMonths} from "date-fns"
 import CategoryPieChart from "@Pages/App/Dashboard/Components/CategoryPieChart"
+import ClusteredChart from "@Pages/App/Dashboard/Components/ClusteredChart";
 
 const pastMonth = subMonths(new Date(), 1)
 const defaultRange: DateRange = {
@@ -90,49 +91,14 @@ export default function Dashboard() {
 	// Error Handling Page
 	if (dataFetchedStatus === "error") {
 		if (userIsError && userError) {
-			console.error("User Error => ", userError)
+			console.error("Dashboard User Error => ", userError)
 			return <ErrorPage message={JSON.stringify(userError)} />
 		}
 		if (transactionIsError && transactionError) {
-			console.error("Transaction Error => ", transactionError)
+			console.error("Dashboard Transaction Error => ", transactionError)
 			return <ErrorPage message={JSON.stringify(transactionError)} />
 		}
 	}
-	//TODO: Move This inside the Chart Component
-	// Normalize Data For Chart
-	// function normalizeTransactionDataForClusteredChart () {
-	// 	if (!transactionList) return
-	//
-	// 	const localNormalizedData: NormalizedTransactionForChart = []
-	//
-	// 	transactionList.forEach((transaction: Transaction) => {
-	// 		let index = localNormalizedData.findIndex((item: DailyTransaction) => item["date"] === dayjs(transaction.createdAt).format("DD/MM/YYYY"))
-	// 		if(index === -1) {
-	// 			localNormalizedData.push({
-	// 				date: dayjs(transaction.createdAt).format("DD/MM/YYYY")
-	// 			})
-	// 			index = localNormalizedData.length - 1
-	// 		}
-	//
-	// 		if(transaction.type === "income") {
-	// 			if (localNormalizedData[index]["income_" + transaction.categoryId]) {
-	// 				localNormalizedData[index]["income_" + transaction.categoryId] = localNormalizedData[index]["income_" + transaction.categoryId] as number + transaction.amount
-	// 			} else {
-	// 				localNormalizedData[index]["income_" + transaction.categoryId] = transaction.amount
-	// 			}
-	// 		} else {
-	// 			if (localNormalizedData[index]["expense_" + transaction.categoryId]) {
-	// 				localNormalizedData[index]["expense_" + transaction.categoryId] = localNormalizedData[index]["expense_" + transaction.categoryId] as number + transaction.amount
-	// 			} else {
-	// 				localNormalizedData[index]["expense_" + transaction.categoryId]  = transaction.amount
-	// 			}
-	// 		}
-	// 	})
-	//
-	// 	//Sort By Date from the oldest to the newest
-	// 	localNormalizedData.reverse()
-	// 	console.log("Normalized Data: ", localNormalizedData)
-	// }
 
 	function retrieveGeneralCashInfo () {
 		if (!remoteTransactionList) return
@@ -241,7 +207,7 @@ export default function Dashboard() {
 
 								{/*Column Clustered Chart*/}
 								<div id="ExpenseIncomeClusteredChart_Chart" className="w-full min-h-[400px] flex justify-center items-end">
-									{/*<ClusteredChart chartId="ClusteredChart" data={normalizedTransactionData} categoryList={categoryList} />*/}
+									{transactionList && <ClusteredChart data={transactionList} categoryList={categoryList} />}
 								</div>
 							</div>
 
