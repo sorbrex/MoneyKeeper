@@ -67,68 +67,40 @@ export default function ClusteredChart(props: ClusteredChartProps) {
 			})
 		}
 
-		const expenseList = data.filter(transaction => transaction.type === "expense")
-		const incomeList = data.filter(transaction => transaction.type === "income")
-		const labels = data.map((transaction: Transaction) => dayjs(transaction.createdAt).format("DD/MM/YYYY"))
+		const oldLabels = data.map((transaction: Transaction) => dayjs(transaction.createdAt).format("DD/MM/YYYY"))
+
+		console.log("Old Labels: ", oldLabels)
+
+		const labels = new Set<string>()
+		oldLabels.forEach((label) => labels.add(label))
 
 		// Initialize the final object with arrays of zeros for each type of transaction
-		const resultObject: {[key: string]: {[key: string]: number[]}} = {
-			"expense": {},
-			"income": {}
-		}
+		const resultObject: {[key: string]: number[]} = {}
 
-		categoryList.forEach(category => {
-			resultObject['expense'][category.name] = Array(labels.length).fill(0)
-			resultObject['income'][category.name] = Array(labels.length).fill(0)
-		})
+		resultObject['expense'] = Array(labels.size).fill(0)
+		resultObject['income'] = Array(labels.size).fill(0)
 
 		// Loop through the original array and update the result object
-		expenseList.forEach((transaction, index) => {
-			const categoryName = categoryList.find(category => category.id === transaction.categoryId)?.name || "Other"
-			resultObject['expense'][categoryName][index] = transaction.amount || 0
-		})
-
-		incomeList.forEach((transaction, index) => {
-			const categoryName = categoryList.find(category => category.id === transaction.categoryId)?.name || "Other"
-			resultObject['income'][categoryName][index] = transaction.amount || 0
+		data.forEach((transaction, index) => {
+			resultObject[transaction.type][index] += transaction.amount || 0
 		})
 
 		console.log("Result Object: ", resultObject)
-		const expenseDataset = Object.keys(resultObject['expense']).map((categoryName) => {
+
+		const dataset = Object.keys(resultObject).map((type) => {
 			return {
 				fill: true,
-				label: categoryName + " (Expense)",
-				data: resultObject['expense'][categoryName],
-				backgroundColor: "",
-				stack: "Expense"
-			}
-		})
-		const incomeDataset = Object.keys(resultObject['income']).map((categoryName) => {
-			return {
-				fill: true,
-				label: categoryName + " (Income)",
-				data: resultObject['income'][categoryName],
-				backgroundColor: "",
-				stack: "Income"
+				label: type,
+				data: resultObject[type],
+				backgroundColor: type === "expense" ? "#F27289" : "#00B2A3",
+				stack: type
 			}
 		})
 
-		for (let i = 0; i < expenseDataset.length; i++) {
-			const element = expenseDataset[i]
-			element.backgroundColor = getAllColors()[i]
-		}
-
-		for (let i = 0; i < incomeDataset.length; i++) {
-			const element = incomeDataset[i]
-			element.backgroundColor = getAllColors()[i]
-		}
-		const finalDataset = []
-		finalDataset.push(expenseDataset)
-		finalDataset.push(incomeDataset)
 		setChartData({
 			...chartData,
-			labels: labels,
-			datasets: finalDataset.flat(),
+			labels: Array.from(labels),
+			datasets: dataset,
 		})
 	}
 

@@ -33,6 +33,63 @@ ChartJS.register(
 	Legend
 )
 
+function parseDataForAreaChart(transactions: Transaction[], categoryList: Category[]) {
+	const chartData = {};
+	if (!transactions || transactions.length === 0) return
+	transactions.forEach((transaction) => {
+		const date = new Date(transaction.createdAt).toLocaleDateString();
+		const category = transaction.categoryId;
+
+		if (!chartData[date]) {
+			chartData[date] = {};
+		}
+
+		if (!chartData[date][category]) {
+			chartData[date][category] = 0;
+		}
+
+		if (transaction.type === 'expense') {
+			chartData[date][category] += transaction.amount;
+		}
+	});
+
+	const uniqueDates = Array.from(new Set(transactions.map((t) => new Date(t.createdAt).toLocaleDateString())));
+	const keys = Object.keys(chartData);
+	console.log("Keys: ", keys)
+	console.log("chartData: ", chartData)
+
+	keys.map((singleDate) => console.log("Single Date Object: ", chartData[singleDate]))
+
+	// const datasets = Object.keys(chartData).map((date) => ({
+	// 	label: category,
+	// 	data: chartData[date].map((category) => chartData[date][category]),
+	// 	fill: true,
+	// 	borderColor: getRandomColor(),
+	// 	backgroundColor: 'rgba(75,192,192,0.2)', // You can customize the background color
+	// }));
+
+	//
+	// console.log("parseDataForAreaChart: ", {
+	// 	labels: uniqueDates,
+	// 	datasets,
+	// })
+
+	// return {
+	// 	labels: uniqueDates,
+	// 	datasets,
+	// };
+}
+
+function getRandomColor() {
+	const letters = '0123456789ABCDEF';
+	let color = '#';
+	for (let i = 0; i < 6; i++) {
+		color += letters[Math.floor(Math.random() * 16)];
+	}
+	return color;
+}
+
+
 
 export default function TransactionAreaChart(props: TransactionAreaChartProps) {
 
@@ -139,8 +196,13 @@ export default function TransactionAreaChart(props: TransactionAreaChartProps) {
 
 
 	useEffect(() => {
-		console.log("TransactionAreaChart Update: ", props)
-		updateData(props.data, props.categoryList, props.showIncome)
+		//updateData(props.data, props.categoryList, props.showIncome)
+		const chartData = parseDataForAreaChart(props.data, props.categoryList)
+		// setChartData({
+		// 	...chartData,
+		// 	labels: chartData.labels,
+		// 	datasets: chartData.datasets,
+		// })
 	}, [props])
 
 	return (
