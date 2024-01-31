@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useLayoutEffect, useRef} from "react"
+import React, {useEffect, useState, useRef} from "react"
 import {Auth, BASE_URL, getAuth} from "@/Helpers/Helpers"
 import AppHeader from "@UI/Complex/Header/AppHeader"
 import AppFooter from "@UI/Complex/Footer/AppFooter"
@@ -7,7 +7,7 @@ import {
 	AlertType,
 	Category,
 	CreateTransactionFormValues,
-	NormalizedTransactionForChart, RequestStatus,
+	RequestStatus,
 	Transaction,
 	User
 } from "@/Types/Types"
@@ -17,7 +17,6 @@ import ReactModal from "react-modal"
 import TransactionChart from "@Pages/App/Transaction/Components/TransactionChart"
 import AddTransactionModalForm from "@Pages/App/Transaction/Components/AddTransactionModalForm"
 import ErrorPage from "@Pages/Base/ErrorPages"
-import CenteredContainer from "@/Layouts/CenteredContainer"
 import DatePicker from "@UI/Complex/DatePicker"
 import ButtonPrimary from "@UI/Simple/Buttons/ButtonPrimary"
 import dayjs from "dayjs"
@@ -96,7 +95,7 @@ export default function Transactions() {
 					return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date)
 				})
 			}
-			setTransactionList(localTransactionList)
+			setTransactionList(localTransactionList.toReversed())
 		}
 	}, [remoteTransactionList, range])
 
@@ -204,7 +203,9 @@ export default function Transactions() {
 				</div>
 
 				{/*GRAPHIC*/}
-				<TransactionChart data={transactionList} categoryList={categoryList} showIncome={showIncome}/>
+				<div className="w-full h-[450px]">
+					<TransactionChart data={transactionList} categoryList={categoryList} showIncome={showIncome}/>
+				</div>
 
 				{/*USER INTERACTION*/}
 				<div className="w-full flex flex-col items-center justify-center">

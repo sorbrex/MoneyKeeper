@@ -21,8 +21,7 @@ import {
 import {getAllColors} from "@UI/Simple/CategoryIcon"
 import {_DeepPartialObject} from "chart.js/dist/types/utils"
 import dayjs from "dayjs"
-import _default from "chart.js/dist/core/core.interaction"
-import index = _default.modes.index
+import "chart.js/auto" // ADD THIS
 
 ChartJS.register(
 	CategoryScale,
@@ -40,18 +39,22 @@ export default function TransactionAreaChart(props: TransactionAreaChartProps) {
 
 	// Normalize Data For Chart
 	function updateData (data: Array<Transaction>, categoryList: Array<Category>, showIncome = false) {
-		const localNormalizedData: NormalizedTransactionForChart = []
-		if (!data || data.length === 0) return console.log("No Data")
-
-		//This is the structure of the normalized data
-		//{
-		//	"date": "01/09/2021",
-		//	"Food": [79],
-		//	"Health": [210],
-		//	"Hobby": [25],
-		//	"Home": [100],
-		//	"Car": [80]
-		//}
+		if (!data || data.length === 0) {
+			setChartData({
+				...chartData,
+				labels: [""],
+				datasets: [
+					{
+						fill: true,
+						label: "None",
+						data: [0],
+						borderColor: getAllColors()[0],
+						backgroundColor: getAllColors()[0] + "50",
+					}
+				],
+			})
+			return console.log("No Data")
+		}
 
 		//Expense or Income?
 		if(showIncome) {
@@ -89,21 +92,16 @@ export default function TransactionAreaChart(props: TransactionAreaChartProps) {
 			element.backgroundColor = getAllColors()[i] + "50"
 		}
 
-		console.log("Normalized Data: ", dataset)
-
 		setChartData({
 			...chartData,
 			labels: labels,
-			datasets: dataset
-
+			datasets: dataset,
 		})
 	}
 
-	//const data = props.data.map((tuple) => tuple.category)
-	//const labels = props.data.map((tuple) => tuple.date)
-	const labels = ["01/09/2021", "02/09/2021", "03/09/2021", "04/09/2021", "05/09/2021", "06/09/2021", "07/09/2021"]
 	const chartOption = {
 		responsive: true,
+		maintainAspectRatio: false,
 		elements: {
 			line: {
 				tension: 0.3
@@ -127,37 +125,15 @@ export default function TransactionAreaChart(props: TransactionAreaChartProps) {
 			}
 		},
 	} as _DeepPartialObject<CoreChartOptions<"line"> & ElementChartOptions<"line"> & PluginChartOptions<"line"> & DatasetChartOptions<"line"> & LineControllerChartOptions>
-
 	const [chartData, setChartData] = useState({
-		labels: labels,
+		labels: [""],
 		datasets: [
 			{
 				fill: true,
-				label: "Casa",
-				data: [25, 59, 80, 81, 56, 55, 40],
+				label: "None",
+				data: [0],
 				borderColor: "rgb(53, 162, 235)",
 				backgroundColor: "rgba(53, 162, 235, 0.5)",
-			},
-			{
-				fill: true,
-				label: "Macchina",
-				data: [32, 55, 45, 67, 89, 23, 45],
-				borderColor: "rgb(255, 99, 132)",
-				backgroundColor: "rgba(255, 99, 132, 0.5)",
-			},
-			{
-				fill: true,
-				label: "Medicine",
-				data: [13, 25, 59, 80, 81, 56, 55],
-				borderColor: "rgb(75, 192, 192)",
-				backgroundColor: "rgba(75, 192, 192, 0.5)",
-			},
-			{
-				fill: true,
-				label: "Passatempi",
-				data: [42, 13, 25, 59, 80, 81, 56],
-				borderColor: "rgb(255, 205, 86)",
-				backgroundColor: "rgba(255, 205, 86, 0.5)",
 			}
 		]
 	})
@@ -165,7 +141,7 @@ export default function TransactionAreaChart(props: TransactionAreaChartProps) {
 
 	useEffect(() => {
 		console.log("TransactionAreaChart Update: ", props)
-		updateData(props.data, props.categoryList)
+		updateData(props.data, props.categoryList, props.showIncome)
 	}, [props])
 
 	return (
