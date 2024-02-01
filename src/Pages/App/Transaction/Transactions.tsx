@@ -190,7 +190,7 @@ export default function Transactions() {
 					onAfterClose={() => refetch()}
 					contentLabel="Add Transaction"
 					shouldCloseOnEsc={true}
-					style={{content:{display: "flex", justifyContent: "center", alignItems: "center", height: "75%", width: "70%", margin: "auto"}}}
+					style={{content:{display: "flex", justifyContent: "center", alignItems: "center", height: "75%", width: "85%", margin: "auto"}}}
 					appElement={document.getElementById("root") as HTMLElement}
 				>
 					<AddTransactionModalForm setModalState={ setModalIsOpen } categoryList={categoryList} presentData={previousTransactionData.current}/>
