@@ -95,7 +95,8 @@ export default function Transactions() {
 					return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date)
 				})
 			}
-			setTransactionList(localTransactionList.toReversed())
+			localTransactionList.reverse()
+			setTransactionList(localTransactionList)
 		}
 	}, [remoteTransactionList, range])
 

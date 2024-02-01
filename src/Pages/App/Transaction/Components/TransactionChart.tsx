@@ -53,7 +53,7 @@ export default function TransactionAreaChart(props: TransactionAreaChartProps) {
 			return console.log("No Data")
 		}
 
-		let filteredData: Transaction[] = []
+		let filteredData: Transaction[]
 
 		//Expense or Income?
 		if(showIncome) {
