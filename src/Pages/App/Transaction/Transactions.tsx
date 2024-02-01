@@ -87,14 +87,12 @@ export default function Transactions() {
 	useEffect(() => {
 		setDataFetchedStatus("good")
 		if (remoteTransactionList.length > 0) {
-			let localTransactionList = remoteTransactionList.toReversed()
-			setTransactionList(localTransactionList)
+			let localTransactionList = remoteTransactionList
 			if (range) {
 				localTransactionList = localTransactionList.filter((transaction: Transaction) => {
 					return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date)
 				})
 			}
-			localTransactionList.reverse()
 			setTransactionList(localTransactionList)
 		}
 	}, [remoteTransactionList, range])
@@ -214,7 +212,7 @@ export default function Transactions() {
 				</div>
 
 				{/*TRANSACTION LIST*/}
-				<div className="max-h-[250px] md:max-h-[200px] md:pt-2 overflow-y-auto">
+				<div className="max-h-[350px] md:max-h-[200px] md:pt-2 overflow-y-scroll">
 					<TransactionList transaction={transactionList} categoryList={categoryList} editable={true} onEdit={handleEdit} onDelete={handleDelete} />
 				</div>
 				<div className="fixed bottom-32 w-full flex justify-center items-center">

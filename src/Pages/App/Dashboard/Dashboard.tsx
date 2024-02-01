@@ -206,7 +206,7 @@ export default function Dashboard() {
 								</div>
 
 								{/*Column Clustered Chart*/}
-								<div id="ExpenseIncomeClusteredChart_Chart" className="w-full min-h-[400px] flex justify-center items-end">
+								<div id="ExpenseIncomeClusteredChart_Chart" className="w-full min-h-full p-8 md:min-h-[400px] flex justify-center items-end">
 									{transactionList && <ClusteredChart data={transactionList} />}
 								</div>
 							</div>

@@ -80,7 +80,7 @@ export default function Account() {
 
 	return (
 		<>
-			<section id="Account_Page" className="h-screen flex flex-col bg-white text-black">
+			<section id="Account_Page" className="flex flex-col bg-white text-black">
 
 				<AppHeader username={accountInfo.name} page={document.title}/>
 

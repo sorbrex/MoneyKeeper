@@ -26,7 +26,7 @@ export default function AppHeader(props: {page: string, username: string}) {
 					<div className="py-2 px-4 m-1 flex items-start cursor-pointer" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <AiOutlineClose size="2em"/> : <AiOutlineMenu size="2em"/>}</div>
 				</div>
 
-				<div className={`absolute right-0 top-20 bg-white min-w-[200px] min-h-[200px] flex flex-col justify-between sm:hidden ${menuOpen ? "visible" : "hidden"}`}>
+				<div className={`absolute z-[9999] right-0 top-20 bg-white min-w-[200px] min-h-[200px] flex flex-col justify-between sm:hidden ${menuOpen ? "visible" : "hidden"}`}>
 					<ContainerLeft>
 						<ButtonLink content='Dashboard' pageRef="/dashboard" underline={props.page === "Dashboard"}/>
 						<ButtonLink content='Transaction' pageRef="/transaction" underline={props.page === "Transaction"}/>
