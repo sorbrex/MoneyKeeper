@@ -184,10 +184,11 @@ export default function Dashboard() {
 							<p className="w-full text-center text-lg font-bold my-2">{monthIncome} &euro;</p>
 						</div>
 					</div>
-					<div id="DashboardContent" className="w-full">
+					<div id="DashboardContent" className="w-full flex flex-col justify-center items-center">
+
 
 						{/*Charts*/}
-						<div id="Charts" className="flex flex-col xl:flex-row">
+						<div id="Charts" className="w-full flex flex-col xl:flex-row">
 
 							{/*Column Clustered Chart Expenses - Incomes Filtered*/}
 							<div id="ExpenseIncomeClusteredChart" className="w-full flex flex-col justify-center items-center">
@@ -195,18 +196,8 @@ export default function Dashboard() {
 									<h1 className="text-center md:text-left text-4xl">Expenses & Incomes:</h1>
 								</div>
 
-								{/*Range Expenses - Incomes*/}
-								<div id="UserInteraction_DefaultRange" className="w-full max-w-xl xl:h-24 flex justify-around items-center">
-									<button type="button" onClick={()=>handleChangeDateRange("1D")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("1D") && "border-2 border-softBlack"}`}>1D</button>
-									<button type="button" onClick={()=>handleChangeDateRange("1W")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("1W") && "border-2 border-softBlack"}`}>1W</button>
-									<button type="button" onClick={()=>handleChangeDateRange("1M")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("1M") && "border-2 border-softBlack"}`}>1M</button>
-									<button type="button" onClick={()=>handleChangeDateRange("3M")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("3M") && "border-2 border-softBlack"}`}>3M</button>
-									<button type="button" onClick={()=>handleChangeDateRange("1Y")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("1Y") && "border-2 border-softBlack"}`}>1Y</button>
-									<button type="button" onClick={()=>handleChangeDateRange("0")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("ALL") && "border-2 border-softBlack"}`}>ALL</button>
-								</div>
-
 								{/*Column Clustered Chart*/}
-								<div id="ExpenseIncomeClusteredChart_Chart" className="w-full min-h-full p-8 md:min-h-[400px] flex justify-center items-end">
+								<div id="ExpenseIncomeClusteredChart_Chart" className="w-full p-4 md:min-h-[300px] flex justify-center items-end">
 									{transactionList && <ClusteredChart data={transactionList} />}
 								</div>
 							</div>
@@ -214,12 +205,23 @@ export default function Dashboard() {
 							{/*Pie Chart Ever Categories Expenses*/}
 							<div id="CategoryPieChart" className="w-full flex flex-col justify-center items-center ">
 								<div className="w-full items-center justify-start">
-									<h1 className="text-center md:text-left xl:mt-0 text-4xl">Expenses By Category:</h1>
+									<h1 className="text-center md:text-left text-4xl">Expenses By Category:</h1>
 								</div>
-								<div className="w-full h-[400px]">
+								<div className="w-full mt-8 h-[400px]">
 									{transactionList && <CategoryPieChart data={transactionList} categoryList={categoryList}/>}
 								</div>
 							</div>
+						</div>
+
+						{/*Range Expenses - Incomes*/}
+						<hr className="w-full my-8"/>
+						<div id="UserInteraction_DefaultRange" className="w-full max-w-xl flex justify-around items-center">
+							<button type="button" onClick={()=>handleChangeDateRange("1D")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("1D") && "border-2 border-softBlack"}`}>1D</button>
+							<button type="button" onClick={()=>handleChangeDateRange("1W")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("1W") && "border-2 border-softBlack"}`}>1W</button>
+							<button type="button" onClick={()=>handleChangeDateRange("1M")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("1M") && "border-2 border-softBlack"}`}>1M</button>
+							<button type="button" onClick={()=>handleChangeDateRange("3M")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("3M") && "border-2 border-softBlack"}`}>3M</button>
+							<button type="button" onClick={()=>handleChangeDateRange("1Y")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("1Y") && "border-2 border-softBlack"}`}>1Y</button>
+							<button type="button" onClick={()=>handleChangeDateRange("0")} className={`w-[50px] h-[25px] bg-gray-300 rounded shadow ${defaultRangeSelected.includes("ALL") && "border-2 border-softBlack"}`}>ALL</button>
 						</div>
 
 						{/*Transactions List*/}
