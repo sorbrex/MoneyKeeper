@@ -43,12 +43,11 @@ export default function Account() {
 	}
 
 	if (isError) {
-		console.log({error})
+		console.error({error})
 		return <ErrorMessage name={JSON.stringify(error)} />
 	}
 
 	function updateAccountInfo() {
-		console.log("Updating Account Info From Server...")
 		refetch()
 	}
 
@@ -58,7 +57,7 @@ export default function Account() {
 	}
 
 	function handleAccountDeletion() {
-		console.log("Deleting Account From Server...")
+		console.warn("Deleting Account From Server...")
 		if (confirm("Are you sure you want to delete your account?\n All your data will be lost!")) {
 			Axios.delete(`${BASE_URL}/app/deleteUser`,{
 				headers: {
@@ -69,7 +68,7 @@ export default function Account() {
 				sessionStorage.removeItem("users-jwt")
 				navigate("/login")
 			}).catch((err) => {
-				console.log(err)
+				console.error(err)
 				alert("Something went wrong!")
 			})
 		} else {
@@ -128,7 +127,7 @@ export default function Account() {
 					</div>
 				</CenteredContainer>
 
-				<AppFooter />
+				{/*<AppFooter />*/}
 			</section>
 
 		</>

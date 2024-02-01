@@ -26,7 +26,7 @@ export default function Recovery_Form() {
 		}
 
 		const result = await Axios.post(`${BASE_URL}/user/reset` || "", newValues).catch(error => {
-			console.log("Error On Request: ", error)
+			console.error("Error On Request: ", error)
 			receivedError = error?.response?.data?.error || error?.response?.data?.message || undefined
 		})
 

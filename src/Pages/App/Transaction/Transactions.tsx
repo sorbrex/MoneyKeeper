@@ -85,7 +85,6 @@ export default function Transactions() {
 	}, [])
 
 	useEffect(() => {
-		console.log("Received Remote Transaction List => ", remoteTransactionList)
 		setDataFetchedStatus("good")
 		if (remoteTransactionList.length > 0) {
 			let localTransactionList = remoteTransactionList.toReversed()
@@ -227,7 +226,7 @@ export default function Transactions() {
 			</section>
 
 			{/*FOOTER*/}
-			<AppFooter />
+			{/*<AppFooter />*/}
 		</>
 	)
 }

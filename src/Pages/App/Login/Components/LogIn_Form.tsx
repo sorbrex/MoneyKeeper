@@ -27,7 +27,7 @@ export default function Login_Form() {
 		}
 
 		const result = await Axios.post(`${BASE_URL}/user/login` || "", newValues).catch(error => {
-			console.log("Error On Request: ", error)
+			console.error("Error On Request: ", error)
 			receivedError = error?.response?.data?.error || error?.response?.data?.message || undefined
 		})
 

@@ -17,7 +17,7 @@ export default function AccountPasswordLabel (props:AccountPasswordLabelProps) {
 				onAfterClose={() => props.updatePassword()}
 				contentLabel="Upload Account Password"
 				shouldCloseOnEsc={true}
-				style={{content:{display: "flex", justifyContent: "center", alignItems: "center", height: "75%", width: "50%", margin: "auto"}}}
+				style={{content:{display: "flex", justifyContent: "center", alignItems: "center", height: "75%", width: "85%", margin: "auto"}}}
 				appElement={document.getElementById("root") as HTMLElement}
 			>
 				<UpdatePasswordModalForm setModalState={ setModalIsOpen } originalPassword={props.originalPassword}/>

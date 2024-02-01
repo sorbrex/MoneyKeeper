@@ -38,7 +38,7 @@ export default function ProfilePictureModal(props: ModalProps) {
 				setAlertType("success")
 				setAlertMessage("Profile Picture Updated!")
 			}).catch((err) => {
-				console.log("Error: ", err)
+				console.error("Error: ", err)
 				setAlertType("error")
 				setAlertMessage("Profile Picture Update Failed!")
 			}).finally(() => {

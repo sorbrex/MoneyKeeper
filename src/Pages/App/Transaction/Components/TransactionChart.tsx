@@ -37,7 +37,7 @@ export default function TransactionAreaChart(props: TransactionAreaChartProps) {
 	// Normalize Data For Chart
 	function updateData (originalData: Array<Transaction>, categoryList: Array<Category>, showIncome = false) {
 		if (!originalData || originalData.length === 0) {
-			setChartData({
+			return setChartData({
 				...chartData,
 				labels: [""],
 				datasets: [
@@ -50,7 +50,6 @@ export default function TransactionAreaChart(props: TransactionAreaChartProps) {
 					}
 				],
 			})
-			return console.log("No Data")
 		}
 
 		let filteredData: Transaction[]

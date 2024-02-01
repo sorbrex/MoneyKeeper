@@ -30,7 +30,7 @@ export default function UpdatePasswordModalForm(props: ModalProps) {
 
 		// Check if old password is correct
 		if (sha256(values.oldPassword).toString() !== props.originalPassword) {
-			console.log("Old Password Is Incorrect")
+			console.error("Old Password Is Incorrect")
 			setAlertType("error")
 			setAlertMessage("Old Password Is Incorrect")
 			setLoading(false)
@@ -43,7 +43,7 @@ export default function UpdatePasswordModalForm(props: ModalProps) {
 
 		// Check if new password is different from old password (prevent unnecessary requests)
 		if(sha256(values.oldPassword).toString() === sha256(values.newPassword).toString()) {
-			console.log("New Password Cannot Be The Same As Old Password")
+			console.error("New Password Cannot Be The Same As Old Password")
 			setAlertType("error")
 			setAlertMessage("New Password Cannot Be The Same As Old Password")
 			setLoading(false)

@@ -168,7 +168,7 @@ export default function Dashboard() {
 	return (
 		<>
 			<AppHeader username={accountInfo.name} page={document.title}/>
-			<section id="Dashboard_Page" className="text-black body-font">
+			<section id="Dashboard_Page" className="text-black body-font bg-white">
 				<div id="InternalLayout" className="w-full px-4 flex flex-col md:flex-row">
 					<div id="Sidebar" className="w-full md:max-w-[200px] lg:max-w-[300px]">
 						<div id="Available" className="w-full my-4">
@@ -230,7 +230,7 @@ export default function Dashboard() {
 					</div>
 				</div>
 			</section>
-			<AppFooter />
+			{/*<AppFooter />*/}
 		</>
 	)
 }

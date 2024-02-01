@@ -16,7 +16,7 @@ export default function LogIn() {
 			Auth().then((res) => {
 				res && navigate("/dashboard")
 			}).catch((err) => {
-				console.log("Login Hook Auth Error: ", err)
+				console.error("Login Hook Auth Error: ", err)
 			})
 		}
 
