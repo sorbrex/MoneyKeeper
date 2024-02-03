@@ -9,7 +9,6 @@ import {Auth, BASE_URL, getAuth} from "@/Helpers/Helpers"
 import {User} from "@/Types/Types"
 import Loading from "@UI/Simple/Loading"
 import AppHeader from "@UI/Complex/Header/AppHeader"
-import AppFooter from "@UI/Complex/Footer/AppFooter"
 import {useNavigate} from "react-router"
 import AccountPasswordLabel from "@Pages/App/Account/Components/AccountPasswordLabel"
 import Axios from "axios"
@@ -126,8 +125,6 @@ export default function Account() {
 
 					</div>
 				</CenteredContainer>
-
-				{/*<AppFooter />*/}
 			</section>
 
 		</>

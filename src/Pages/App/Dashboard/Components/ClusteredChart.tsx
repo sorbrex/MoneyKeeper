@@ -8,9 +8,9 @@ import {
 	Title,
 	Tooltip,
 	Legend,
-} from 'chart.js';
-import { Bar } from 'react-chartjs-2';
-import {getAllColors} from "@UI/Simple/CategoryIcon";
+} from "chart.js"
+import { Bar } from "react-chartjs-2"
+import {getAllColors} from "@UI/Simple/CategoryIcon"
 ChartJS.register(
 	CategoryScale,
 	LinearScale,
@@ -18,7 +18,7 @@ ChartJS.register(
 	Title,
 	Tooltip,
 	Legend
-);
+)
 
 
 
@@ -31,7 +31,7 @@ export default function ClusteredChart(props: ClusteredChartProps) {
 				display: false
 			}
 		}
-	};
+	}
 	const [chartData, setChartData] = useState({
 		labels: [""],
 		datasets: [
@@ -58,36 +58,36 @@ export default function ClusteredChart(props: ClusteredChartProps) {
 			})
 		}
 
-		const parsedData: {[key: string]: {[key:string]: number}} = {};
+		const parsedData: {[key: string]: {[key:string]: number}} = {}
 
 		originalData.forEach((singleTransaction) => {
-			const date = new Date(singleTransaction.createdAt).toLocaleDateString();
+			const date = new Date(singleTransaction.createdAt).toLocaleDateString()
 
 			if (!parsedData[date]) {
-				parsedData[date] = { expense: 0, income: 0 };
+				parsedData[date] = { expense: 0, income: 0 }
 			}
 
-			if (singleTransaction.type === 'income') {
-				parsedData[date].income += singleTransaction.amount;
-			} else if (singleTransaction.type === 'expense') {
-				parsedData[date].expense += singleTransaction.amount;
+			if (singleTransaction.type === "income") {
+				parsedData[date].income += singleTransaction.amount
+			} else if (singleTransaction.type === "expense") {
+				parsedData[date].expense += singleTransaction.amount
 			}
-		});
+		})
 
 		const uniqueDates = Object.keys(parsedData)
 
 		const datasets = [
 			{
-				label: 'Income',
+				label: "Income",
 				data: uniqueDates.map((date) => parsedData[date]?.income || 0),
 				backgroundColor: "#00B2A3", // Green color for income
 			},
 			{
-				label: 'Expense',
+				label: "Expense",
 				data: uniqueDates.map((date) => parsedData[date]?.expense || 0),
 				backgroundColor: "#F27289", // Red color for expenses
 			},
-		];
+		]
 
 
 		setChartData({

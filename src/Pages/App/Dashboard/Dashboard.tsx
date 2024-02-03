@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react"
 import {Auth, getAuth} from "@/Helpers/Helpers"
 import AppHeader from "@UI/Complex/Header/AppHeader"
-import AppFooter from "@UI/Complex/Footer/AppFooter"
 import Loading from "@UI/Simple/Loading"
 import {
 	Category,
@@ -17,7 +16,7 @@ import dayjs from "dayjs"
 import {DateRange} from "react-day-picker"
 import {subMonths} from "date-fns"
 import CategoryPieChart from "@Pages/App/Dashboard/Components/CategoryPieChart"
-import ClusteredChart from "@Pages/App/Dashboard/Components/ClusteredChart";
+import ClusteredChart from "@Pages/App/Dashboard/Components/ClusteredChart"
 
 const pastMonth = subMonths(new Date(), 1)
 const defaultRange: DateRange = {
@@ -198,7 +197,7 @@ export default function Dashboard() {
 
 								{/*Column Clustered Chart*/}
 								<div id="ExpenseIncomeClusteredChart_Chart" className="w-full p-4 md:min-h-[300px] flex justify-center items-end">
-									{transactionList && <ClusteredChart data={transactionList} />}
+									{transactionList && <ClusteredChart data={transactionList}/>}
 								</div>
 							</div>
 
@@ -232,7 +231,6 @@ export default function Dashboard() {
 					</div>
 				</div>
 			</section>
-			{/*<AppFooter />*/}
 		</>
 	)
 }

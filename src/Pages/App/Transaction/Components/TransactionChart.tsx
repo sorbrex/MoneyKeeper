@@ -63,24 +63,24 @@ export default function TransactionAreaChart(props: TransactionAreaChartProps) {
 
 		if (!filteredData || filteredData.length === 0) return
 
-		const parsedData: {[key: string]:{[key: string]:number}} = {};
+		const parsedData: {[key: string]:{[key: string]:number}} = {}
 
 		filteredData.reverse().forEach((singleTransaction) => {
-			const date = new Date(singleTransaction.createdAt).toLocaleDateString();
-			const categoryId = singleTransaction.categoryId;
+			const date = new Date(singleTransaction.createdAt).toLocaleDateString()
+			const categoryId = singleTransaction.categoryId
 
 			if (!parsedData[date]) {
-				parsedData[date] = {};
+				parsedData[date] = {}
 			}
 
 			if (!parsedData[date][categoryId]) {
-				parsedData[date][categoryId] = 0;
+				parsedData[date][categoryId] = 0
 			}
 
 			if (singleTransaction.amount) {
-				parsedData[date][categoryId] += singleTransaction.amount;
+				parsedData[date][categoryId] += singleTransaction.amount
 			}
-		});
+		})
 
 		const uniqueDates = Object.keys(parsedData)
 
@@ -88,10 +88,10 @@ export default function TransactionAreaChart(props: TransactionAreaChartProps) {
 		categoryList.forEach((categoryObject) => {
 			uniqueDates.forEach((date) => {
 				if (!parsedData[date][categoryObject.id]) {
-					parsedData[date][categoryObject.id] = 0;
+					parsedData[date][categoryObject.id] = 0
 				}
-			});
-		});
+			})
+		})
 
 
 		const datasets = categoryList.map((categoryObject) => ({
@@ -100,7 +100,7 @@ export default function TransactionAreaChart(props: TransactionAreaChartProps) {
 			fill: true,
 			backgroundColor: "",
 			borderColor: "",
-		}));
+		}))
 
 		for (let i = 0; i < datasets.length; i++) {
 			const element = datasets[i]
