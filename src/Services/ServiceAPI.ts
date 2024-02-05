@@ -26,32 +26,40 @@ export const MKServerAPI = createApi({
 			providesTags: ["User"],
 		}),
 
-		updateUser: builder.mutation({
+		updateUserPassword: builder.mutation<void, string>({
 			query: (password: string) => ({
-				url: "updateUser",
+				url: "changePassword",
 				method: "PATCH",
 				headers: {
 					Authorization: `Bearer ${getAuth()}`
 				},
-				body: { password },
+				body: { newPassword: password },
 			}),
 			invalidatesTags: ["User"],
 		}),
 
-		//Category Endpoint
-		getCategory: builder.query({
-			query: (token: string) => (
-				{
-					url: "getCategories",
-					method: "GET",
-					headers: {
-						Authorization: `Bearer ${token}`
-					}
-				}
-			),
-			providesTags: ["Category"],
+		updateUserProfilePic: builder.mutation<void, Buffer>({ //Fix URL
+			query: (profilePic: Buffer) => ({
+				url: "updateProfilePicture",
+				method: "PATCH",
+				headers: {
+					Authorization: `Bearer ${getAuth()}`
+				},
+				body: { profilePicture: profilePic },
+			}),
+			invalidatesTags: ["User"],
 		}),
 
+		deleteUser: builder.mutation<void, void>({
+			query: () => ({
+				url: "deleteUser",
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${getAuth()}`
+				},
+			}),
+			invalidatesTags: ["User"],
+		}),
 
 		//Data Endpoint
 		getTransactions: builder.query({
@@ -69,28 +77,64 @@ export const MKServerAPI = createApi({
 
 		createTransaction: builder.mutation({
 			query: (transaction: Transaction) => ({
-				url: "newTransaction",
+				url: "createTransaction",
 				method: "POST",
 				body: { ...transaction },
+				headers: {
+					Authorization: `Bearer ${getAuth()}`
+				},
 			}),
 			invalidatesTags: ["Transaction"], //Here we invalidate the tag, so we will call all the fetching endpoints with this tag as dependencies
 		}),
 
-		deleteTransaction: builder.mutation({
-			query: (transactionId) => ({
-				url: `deleteTransaction/${transactionId}`,
+		deleteTransaction: builder.mutation<void, string>({
+			query: (transactionId: string) => ({
+				url: "deleteTransaction",
 				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${getAuth()}`
+				},
+				body: { transactionId },
 			}),
 			invalidatesTags: ["Transaction"],
 		}),
+
+		updateTransaction: builder.mutation<void, Transaction>({
+			query: (transaction: Transaction) => ({
+				url: "updateTransaction",
+				method: "PATCH",
+				headers: {
+					Authorization: `Bearer ${getAuth()}`
+				},
+				body: { ...transaction },
+			}),
+			invalidatesTags: ["Transaction"],
+		}),
+
+		//Category Endpoint
+		getCategory: builder.query({
+			query: (token: string) => (
+				{
+					url: "getCategories",
+					method: "GET",
+					headers: {
+						Authorization: `Bearer ${token}`
+					}
+				}
+			),
+			providesTags: ["Category"],
+		}),
+
 	}),
 })
 
 export const {
 	useGetUserQuery,
-	//	useUpdateUserMutation,
-	useGetCategoryQuery,
+	useUpdateUserPasswordMutation,
+	useUpdateUserProfilePicMutation,
 	useGetTransactionsQuery,
-	//useCreateTransactionMutation,
-	//useDeleteTransactionMutation
+	useCreateTransactionMutation,
+	useDeleteTransactionMutation,
+	useUpdateTransactionMutation,
+	useGetCategoryQuery,
 } = MKServerAPI // Export hooks for usage in functional components
