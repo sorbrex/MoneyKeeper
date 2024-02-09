@@ -4,14 +4,13 @@ import ProfilePicture from "@Pages/App/Account/Components/ProfilePicture"
 import { AiOutlineLogout, AiOutlineDelete } from "react-icons/ai"
 import Title from "@UI/Simple/Typography/Title"
 import AccountInfoLabel from "@Pages/App/Account/Components/AccountInfoLabel"
-import {useGetUserQuery} from "@/Services/ServiceAPI"
-import {Auth, BASE_URL, getAuth} from "@/Helpers/Helpers"
+import {useDeleteUserMutation, useGetUserQuery} from "@/Services/ServiceAPI"
+import {Auth, getAuth} from "@/Helpers/Helpers"
 import {User} from "@/Types/Types"
 import Loading from "@UI/Simple/Loading"
 import AppHeader from "@UI/Complex/Header/AppHeader"
 import {useNavigate} from "react-router"
 import AccountPasswordLabel from "@Pages/App/Account/Components/AccountPasswordLabel"
-import Axios from "axios"
 import {ErrorMessage} from "formik"
 
 export default function Account() {
@@ -30,12 +29,13 @@ export default function Account() {
 
 	const {
 		data: accountInfo = {} as User,
-		refetch,
 		isLoading,
 		isFetching,
 		isError,
 		error,
 	} = useGetUserQuery(getAuth())
+	const [deleteUser] = useDeleteUserMutation()
+
 
 	if (isLoading || isFetching) {
 		return <Loading />
@@ -46,10 +46,6 @@ export default function Account() {
 		return <ErrorMessage name={JSON.stringify(error)} />
 	}
 
-	function updateAccountInfo() {
-		refetch()
-	}
-
 	function handleLogout() {
 		sessionStorage.removeItem("users-jwt")
 		navigate("/login")
@@ -58,18 +54,17 @@ export default function Account() {
 	function handleAccountDeletion() {
 		console.warn("Deleting Account From Server...")
 		if (confirm("Are you sure you want to delete your account?\n All your data will be lost!")) {
-			Axios.delete(`${BASE_URL}/app/deleteUser`,{
-				headers: {
-					Authorization: `Bearer ${getAuth()}`,
-				},
-			}).then(() => {
-				alert("Account Deleted!")
-				sessionStorage.removeItem("users-jwt")
-				navigate("/login")
-			}).catch((err) => {
-				console.error(err)
-				alert("Something went wrong!")
-			})
+
+			deleteUser()
+				.unwrap()
+				.then(() => {
+					alert("Account Deleted!")
+					sessionStorage.removeItem("users-jwt")
+					navigate("/login")
+				}).catch((err) => {
+					console.error(err)
+					alert("Something went wrong!")
+				})
 		} else {
 			console.log("Cancelled")
 		}
@@ -91,7 +86,7 @@ export default function Account() {
 						<div id="Account_Sidebar" className="p-4 bg-black text-white flex flex-col items-center justify-between w-full md:w-1/4 min-h-[300px] md:min-h-[500px] rounded-t-xl md:rounded-l-xl md:rounded-tr-none">
 
 							<div>
-								<ProfilePicture source={accountInfo.remoteImageUrl} updatePic={updateAccountInfo}/>
+								<ProfilePicture source={accountInfo.remoteImageUrl}/>
 								<h1 className="text-2xl mt-2">{accountInfo.name} {accountInfo.surname}</h1>
 							</div>
 
@@ -118,7 +113,7 @@ export default function Account() {
 
 							<div id="Bottom_Row_Info" className="flex flex-col md:flex-row items-center justify-center md:justify-between w-full">
 								<AccountInfoLabel content={accountInfo.email} type="email"/>
-								<AccountPasswordLabel originalPassword={accountInfo.password} updatePassword={updateAccountInfo}/>
+								<AccountPasswordLabel originalPassword={accountInfo.password}/>
 							</div>
 
 						</div>

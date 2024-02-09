@@ -1,5 +1,5 @@
-import React, {useEffect, useState, useRef} from "react"
-import {Auth, BASE_URL, getAuth} from "@/Helpers/Helpers"
+import React, {useEffect, useState, useRef, useMemo} from "react"
+import {Auth, getAuth} from "@/Helpers/Helpers"
 import AppHeader from "@UI/Complex/Header/AppHeader"
 import Loading from "@UI/Simple/Loading"
 import {
@@ -10,7 +10,12 @@ import {
 	Transaction,
 	User
 } from "@/Types/Types"
-import {useGetCategoryQuery, useGetTransactionsQuery, useGetUserQuery} from "@/Services/ServiceAPI"
+import {
+	useDeleteTransactionMutation,
+	useGetCategoryQuery,
+	useGetTransactionsQuery,
+	useGetUserQuery
+} from "@/Services/ServiceAPI"
 import {useNavigate} from "react-router"
 import ReactModal from "react-modal"
 import TransactionChart from "@Pages/App/Transaction/Components/TransactionChart"
@@ -20,7 +25,6 @@ import DatePicker from "@UI/Complex/DatePicker"
 import ButtonPrimary from "@UI/Simple/Buttons/ButtonPrimary"
 import dayjs from "dayjs"
 import Toggle from "@UI/Simple/Toggle"
-import Axios from "axios"
 import Alert from "@UI/Simple/Alert"
 import {DateRange} from "react-day-picker"
 import {subMonths} from "date-fns"
@@ -54,6 +58,12 @@ export default function Transactions() {
 		type: "expense",
 	}
 	const previousTransactionData = useRef<CreateTransactionFormValues>(baseFormValues)
+	const [deleteTransaction] = useDeleteTransactionMutation()
+
+	// Get Categories
+	const {
+		data: categoryList = [] as Array<Category>,
+	} = useGetCategoryQuery(getAuth())
 
 	//Fetch User Data
 	const {
@@ -66,14 +76,19 @@ export default function Transactions() {
 	const {
 		data: remoteTransactionList = [] as Array<Transaction>,
 		isError: transactionIsError,
-		error: transactionError,
-		refetch,
+		error: transactionError
 	} = useGetTransactionsQuery({token:getAuth()})
 
-	// Get Categories
-	const {
-		data: categoryList = [] as Array<Category>,
-	} = useGetCategoryQuery(getAuth())
+  // useMemo test
+	// const transactionListFiltered = useMemo(()=>{
+	// 	let localTransactionList = remoteTransactionList
+	// 	if (range) {
+	// 		localTransactionList = localTransactionList.filter((transaction: Transaction) => {
+	// 			return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date,'day','[]')
+	// 		})
+	// 	}
+	// 	return localTransactionList
+	// },[remoteTransactionList, range])
 
 	// Check Credentials Or Redirect
 	useEffect(() => {
@@ -89,7 +104,7 @@ export default function Transactions() {
 			let localTransactionList = remoteTransactionList
 			if (range) {
 				localTransactionList = localTransactionList.filter((transaction: Transaction) => {
-					return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date)
+					return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date,'day','[]')
 				})
 			}
 			setTransactionList(localTransactionList)
@@ -140,22 +155,12 @@ export default function Transactions() {
 		//Delete Transaction
 		if(confirm("Are you sure you want to delete this transaction?")) {
 			//Make Server Request To Delete Transaction
-			Axios.delete(`${BASE_URL}/app/deleteTransaction`, {
-				headers: {
-					"Authorization": `Bearer ${getAuth()}`
-				},
-				data: {
-					transactionId: transactionId
-				}
-			}).then(response => {
-				if (response.status.toString().includes("20")){
+			deleteTransaction(transactionId)
+				.unwrap()
+				.then(_ => {
 					setAlertType("success")
 					setAlertMessage("Transaction Deleted!")
-				} else {
-					setAlertType("error")
-					setAlertMessage(`Cannot Delete Transaction! ${response.data.message}`)
-				}
-			})
+				})
 				.catch(error => {
 					setAlertType("error")
 					setAlertMessage(`Cannot Delete Transaction! ${error}`)
@@ -183,8 +188,8 @@ export default function Transactions() {
 				{/*MODAL*/}
 				<ReactModal
 					isOpen={modalIsOpen}
+					onAfterClose={() => previousTransactionData.current = baseFormValues}
 					onRequestClose={() => {previousTransactionData.current = baseFormValues; setModalIsOpen(false)}}
-					onAfterClose={() => refetch()}
 					contentLabel="Add Transaction"
 					shouldCloseOnEsc={true}
 					style={{content:{display: "flex", justifyContent: "center", alignItems: "center", height: "75%", width: "85%", margin: "auto"}}}

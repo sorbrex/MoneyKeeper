@@ -1,5 +1,3 @@
-import Axios from "axios"
-import {BASE_URL, getAuth} from "@/Helpers/Helpers"
 import React from "react"
 import {AlertType, Category, CreateTransactionFormValues} from "@/Types/Types"
 import Alert from "@UI/Simple/Alert"
@@ -8,12 +6,15 @@ import * as Yup from "yup"
 import SubmitButton from "@UI/Simple/Buttons/SubmitButton"
 import DismissButton from "@UI/Simple/Buttons/DismissButton"
 import { AiOutlineCaretDown } from "react-icons/ai"
+import {useCreateTransactionMutation, useUpdateTransactionMutation} from "@/Services/ServiceAPI";
 
 export default function AddTransactionModalForm(props: ModalProps) {
 	const [alertShown, setAlertShown] = React.useState(false)
 	const [alertType, setAlertType] = React.useState<AlertType>("info")
 	const [alertMessage, setAlertMessage] = React.useState("None")
 	const [loading, setLoading] = React.useState(false)
+	const [updateTransaction] = useUpdateTransactionMutation()
+	const [createTransaction] = useCreateTransactionMutation()
 
 	function showAlertHideModal() {
 		setAlertShown(true)
@@ -29,26 +30,20 @@ export default function AddTransactionModalForm(props: ModalProps) {
 	async function handleTransactionSubmit (values: CreateTransactionFormValues) {
 		setLoading(true)
 		const isUpdate = !!props.presentData?.name
-		// Add New Transaction
-		await Axios({
-			method: isUpdate ? "PATCH" : "POST",
-			url: isUpdate ? `${BASE_URL}/app/updateTransaction` : `${BASE_URL}/app/createTransaction`  || "",
-			headers: {
-				"Authorization": `Bearer ${getAuth()}`,
-				"Content-Type": "application/json"
-			},
-			data: {
-				...values
-			}
-		}).then(response => {
-			if (response.status.toString().includes("20")){
+		let mutationToUse
+
+		if(isUpdate){
+			mutationToUse = updateTransaction
+		} else {
+			mutationToUse = createTransaction
+		}
+
+		mutationToUse({...values})
+			.unwrap()
+			.then(_ => {
 				setAlertType("success")
 				setAlertMessage(isUpdate ? "Transaction Updated!" : "Transaction Created!")
-			} else {
-				setAlertType("error")
-				setAlertMessage(`Cannot ${isUpdate ? "Update" : "Create"} the Transaction! ${response.data.message}`)
-			}
-		})
+			})
 			.catch(error => {
 				setAlertType("error")
 				setAlertMessage(`Cannot ${isUpdate ? "Update" : "Create"} the Transaction! ${error}`)

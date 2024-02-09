@@ -1,10 +1,11 @@
 import {Category, Transaction} from "@/Types/Types"
 import dayjs from "dayjs"
 import {AiOutlineDelete, AiOutlineEdit} from "react-icons/ai"
-import React from "react"
+import React, {useEffect} from "react"
 import {parseCategoryIcon} from "@UI/Simple/CategoryIcon"
 
 export default function TransactionList(props:TransactionListProps) {
+
 	return (
 		<div className="flex flex-col w-full h-full">
 			{(!props.transaction || props.transaction.length === 0) && <h1 className="text-center text-gray-500 mt-16 min-h-[100px]">No Transactions Found</h1>}

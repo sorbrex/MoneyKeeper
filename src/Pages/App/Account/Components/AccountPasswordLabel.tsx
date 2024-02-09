@@ -14,7 +14,6 @@ export default function AccountPasswordLabel (props:AccountPasswordLabelProps) {
 			<ReactModal
 				isOpen={modalIsOpen}
 				onRequestClose={() => setModalIsOpen(false)}
-				onAfterClose={() => props.updatePassword()}
 				contentLabel="Upload Account Password"
 				shouldCloseOnEsc={true}
 				style={{content:{display: "flex", justifyContent: "center", alignItems: "center", height: "75%", width: "85%", margin: "auto"}}}
@@ -36,5 +35,4 @@ export default function AccountPasswordLabel (props:AccountPasswordLabelProps) {
 
 type AccountPasswordLabelProps = {
 	originalPassword: string
-	updatePassword: () => void
 }

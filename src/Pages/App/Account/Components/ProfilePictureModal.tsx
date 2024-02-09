@@ -1,16 +1,16 @@
-import Axios from "axios"
 import { useDropzone } from "react-dropzone"
 import { AiOutlineUpload } from "react-icons/ai"
-import {BASE_URL, getAuth} from "@/Helpers/Helpers"
 import React from "react"
 import {AlertType} from "@/Types/Types"
 import Alert from "@UI/Simple/Alert"
-const boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
+import {useUpdateUserProfilePicMutation} from "@/Services/ServiceAPI";
 
 export default function ProfilePictureModal(props: ModalProps) {
 	const [alertShown, setAlertShown] = React.useState(false)
 	const [alertType, setAlertType] = React.useState<AlertType>("info")
 	const [alertMessage, setAlertMessage] = React.useState("None")
+
+	const [updateProfilePicture] = useUpdateUserProfilePicMutation()
 
 	const { getRootProps, getInputProps } = useDropzone({
 		accept: {
@@ -24,31 +24,25 @@ export default function ProfilePictureModal(props: ModalProps) {
 			setAlertShown(true)
 
 			const file = acceptedFiles[0] // Only one file allowed
-			Axios({
-				method: "post",
-				url: `${BASE_URL}/app/updateProfilePicture`,
-				data: {
-					profilePicture: file
-				},
-				headers: {
-					"Authorization": `Bearer ${getAuth()}`,
-					"Content-Type": `multipart/form-data; boundary=${boundary}`
-				},
-			}).then(() => {
-				setAlertType("success")
-				setAlertMessage("Profile Picture Updated!")
-			}).catch((err) => {
-				console.error("Error: ", err)
-				setAlertType("error")
-				setAlertMessage("Profile Picture Update Failed!")
-			}).finally(() => {
-				setTimeout(() => {
-					setAlertShown(false)
+			updateProfilePicture(file)
+				.unwrap()
+				.then(() => {
+					setAlertType("success")
+					setAlertMessage("Profile Picture Updated!")
+				})
+				.catch((err) => {
+					console.error("Error: ", err)
+					setAlertType("error")
+					setAlertMessage("Profile Picture Update Failed!")
+				})
+				.finally(() => {
 					setTimeout(() => {
-						props.setModalState(false)
-					}, 300)
-				}, 2500)
-			})
+						setAlertShown(false)
+						setTimeout(() => {
+							props.setModalState(false)
+						}, 300)
+					}, 2500)
+				})
 		}
 	})
 

@@ -1,5 +1,3 @@
-import Axios from "axios"
-import {BASE_URL, getAuth} from "@/Helpers/Helpers"
 import React from "react"
 import {AlertType, PasswordChangeFormValues} from "@/Types/Types"
 import Alert from "@UI/Simple/Alert"
@@ -8,12 +6,14 @@ import * as Yup from "yup"
 import SubmitButton from "@UI/Simple/Buttons/SubmitButton"
 import sha256 from "crypto-js/sha256"
 import DismissButton from "@UI/Simple/Buttons/DismissButton"
+import {useUpdateUserPasswordMutation} from "@/Services/ServiceAPI";
 
 export default function UpdatePasswordModalForm(props: ModalProps) {
 	const [alertShown, setAlertShown] = React.useState(false)
 	const [alertType, setAlertType] = React.useState<AlertType>("info")
 	const [alertMessage, setAlertMessage] = React.useState("None")
 	const [loading, setLoading] = React.useState(false)
+	const [updateUserPassword] = useUpdateUserPasswordMutation()
 
 	function showAlertHideModal() {
 		setAlertShown(true)
@@ -55,24 +55,11 @@ export default function UpdatePasswordModalForm(props: ModalProps) {
 		}
 
 		// Send Password Change Request
-		await Axios.post(
-			`${BASE_URL}/app/changePassword` || "",
-			{
-				newPassword: sha256(values.newPassword).toString()
-			}, {
-				headers: {
-					"Authorization": `Bearer ${getAuth()}`,
-					"Content-Type": "application/json"
-				}
-			})
-			.then(response => {
-				if (response.status.toString().includes("20")){
-					setAlertType("success")
-					setAlertMessage("Password Change Successfully!")
-				} else {
-					setAlertType("error")
-					setAlertMessage(`Cannot Change Password! ${response.data.message}`)
-				}
+		updateUserPassword(sha256(values.newPassword).toString())
+			.unwrap()
+			.then(_ => {
+				setAlertType("success")
+				setAlertMessage("Password Change Successfully!")
 			})
 			.catch(error => {
 				setAlertType("error")

@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import {BASE_URL, getAuth} from "@/Helpers/Helpers"
-import {Transaction} from "@/Types/Types"
+import {CreateTransactionFormValues, Transaction} from "@/Types/Types"
 
+const boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
 
 export const MKServerAPI = createApi({
 	reducerPath: "MKServerAPI",
@@ -43,7 +44,8 @@ export const MKServerAPI = createApi({
 				url: "updateProfilePicture",
 				method: "PATCH",
 				headers: {
-					Authorization: `Bearer ${getAuth()}`
+					Authorization: `Bearer ${getAuth()}`,
+					"Content-Type": `multipart/form-data; boundary=${boundary}`
 				},
 				body: { profilePicture: profilePic },
 			}),
@@ -75,8 +77,8 @@ export const MKServerAPI = createApi({
 			providesTags: ["Transaction"],
 		}),
 
-		createTransaction: builder.mutation({
-			query: (transaction: Transaction) => ({
+		createTransaction: builder.mutation<void, CreateTransactionFormValues>({
+			query: (transaction: CreateTransactionFormValues) => ({
 				url: "createTransaction",
 				method: "POST",
 				body: { ...transaction },
@@ -87,6 +89,18 @@ export const MKServerAPI = createApi({
 			invalidatesTags: ["Transaction"], //Here we invalidate the tag, so we will call all the fetching endpoints with this tag as dependencies
 		}),
 
+		updateTransaction: builder.mutation<void, CreateTransactionFormValues>({
+			query: (transaction: CreateTransactionFormValues) => ({
+				url: "updateTransaction",
+				method: "PATCH",
+				headers: {
+					Authorization: `Bearer ${getAuth()}`
+				},
+				body: { ...transaction },
+			}),
+			invalidatesTags: ["Transaction"],
+		}),
+
 		deleteTransaction: builder.mutation<void, string>({
 			query: (transactionId: string) => ({
 				url: "deleteTransaction",
@@ -95,18 +109,6 @@ export const MKServerAPI = createApi({
 					Authorization: `Bearer ${getAuth()}`
 				},
 				body: { transactionId },
-			}),
-			invalidatesTags: ["Transaction"],
-		}),
-
-		updateTransaction: builder.mutation<void, Transaction>({
-			query: (transaction: Transaction) => ({
-				url: "updateTransaction",
-				method: "PATCH",
-				headers: {
-					Authorization: `Bearer ${getAuth()}`
-				},
-				body: { ...transaction },
 			}),
 			invalidatesTags: ["Transaction"],
 		}),
@@ -132,6 +134,7 @@ export const {
 	useGetUserQuery,
 	useUpdateUserPasswordMutation,
 	useUpdateUserProfilePicMutation,
+	useDeleteUserMutation,
 	useGetTransactionsQuery,
 	useCreateTransactionMutation,
 	useDeleteTransactionMutation,

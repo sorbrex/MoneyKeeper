@@ -12,7 +12,6 @@ export default function ProfilePicture(props: ProfilePictureProps) {
 			<ReactModal
 				isOpen={modalIsOpen}
 				onRequestClose={() => setModalIsOpen(false)}
-				onAfterClose={() => props.updatePic()}
 				contentLabel="Upload Profile Picture"
 				shouldCloseOnEsc={true}
 				style={{content:{display: "flex", justifyContent: "center", alignItems: "center", height: "25%", width: "25%", margin: "auto"}}}
@@ -32,6 +31,5 @@ export default function ProfilePicture(props: ProfilePictureProps) {
 }
 
 type ProfilePictureProps = {
-	source?: string,
-	updatePic: () => void
+	source?: string
 }

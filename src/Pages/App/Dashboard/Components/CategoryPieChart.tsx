@@ -65,7 +65,7 @@ export default function CategoryPieChart(props: PieChartProps) {
 		datasets: [
 			{
 				label: "Amount: ",
-				data: [1],
+				data: [0],
 				backgroundColor: getAllColors(),
 				borderColor: "#fff",
 				borderWidth: 1,
@@ -83,7 +83,7 @@ export default function CategoryPieChart(props: PieChartProps) {
 				datasets: [
 					{
 						...chartData.datasets[0],
-						data: [1] as never[]
+						data: [0] as never[]
 					}
 				]
 			})
