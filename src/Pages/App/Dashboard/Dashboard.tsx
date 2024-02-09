@@ -59,7 +59,7 @@ export default function Dashboard() {
 			let localTransactionList = remoteTransactionList.toReversed()
 			if (range) {
 				localTransactionList = localTransactionList.filter((transaction: Transaction) => {
-					return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date)
+					return dayjs(transaction.createdAt).isBetween(range.from as Date, range.to as Date, 'day','[]')
 				})
 			}
 			setTransactionList(localTransactionList)
@@ -103,7 +103,7 @@ export default function Dashboard() {
 		if (!remoteTransactionList) return
 
 		const filteredTransactionList = remoteTransactionList.filter((transaction: Transaction) => {
-			return dayjs(transaction.createdAt).isBetween(dayjs().subtract(1, "month"), dayjs())
+			return dayjs(transaction.createdAt).isBetween(dayjs().subtract(1, "month"), dayjs(), 'day','[]')
 		})
 
 		let totalExpense = 0
