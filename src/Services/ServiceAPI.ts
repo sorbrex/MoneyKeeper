@@ -42,7 +42,7 @@ export const MKServerAPI = createApi({
 		updateUserProfilePic: builder.mutation<void, Buffer>({ //Fix URL
 			query: (profilePic: Buffer) => ({
 				url: "updateProfilePicture",
-				method: "PATCH",
+				method: "POST",
 				headers: {
 					Authorization: `Bearer ${getAuth()}`,
 					"Content-Type": `multipart/form-data; boundary=${boundary}`
