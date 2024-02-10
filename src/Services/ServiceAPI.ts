@@ -39,15 +39,14 @@ export const MKServerAPI = createApi({
 			invalidatesTags: ["User"],
 		}),
 
-		updateUserProfilePic: builder.mutation<void, Buffer>({ //Fix URL
-			query: (profilePic: Buffer) => ({
+		updateUserProfilePic: builder.mutation<void, FormData>({
+			query: (formData: FormData) => ({
 				url: "updateProfilePicture",
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ${getAuth()}`,
-					"Content-Type": `multipart/form-data; boundary=${boundary}`
 				},
-				body: { profilePicture: profilePic },
+				body: formData,
 			}),
 			invalidatesTags: ["User"],
 		}),
